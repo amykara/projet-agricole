@@ -1,0 +1,125 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriConnect - Connecter producteurs et acheteurs</title>
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- En-tête -->
+    {% include "Agri_Connect_CI/header_footer/header.html" %}
+
+    <!-- Section Hero -->
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h1>Agriculture locale, commerce direct</h1>
+                <p>Connectez-vous directement avec les producteurs locaux et trouvez des produits frais près de chez vous.</p>
+                <div class="hero-buttons">
+                    <a href="{% url 'page' 'catalog' %}" class="btn btn-light">Découvrir les produits</a>
+                    <a href="{% url 'inscription' %}" class="btn btn-outline-light">Créer un compte</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?q=80&w=500&auto=format&fit=crop" alt="Produits agricoles">
+                <div class="stats-card">
+                    <div class="stats-number">500+</div>
+                    <div class="stats-text">Producteurs locaux</div>
+                </div>
+            </div>
+        </div>
+        <div class="wave-separator">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="#ffffff"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Comment ça marche -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>Comment ça marche</h2>
+                <p>Découvrez nos différents rôles et trouvez celui qui vous correspond</p>
+            </div>
+            <div class="roles-grid">
+                <div class="role-card">
+                    <div class="role-icon"><i class="fas fa-shopping-basket"></i></div>
+                    <h3>Acheteurs</h3>
+                    <p>Accédez à des produits frais et de qualité cultivés par des producteurs locaux. Contactez-les directement et organisez vos achats.</p>
+                    <a href="{% url 'inscription' %}" class="link-arrow">S'inscrire <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="role-card">
+                    <div class="role-icon"><i class="fas fa-tractor"></i></div>
+                    <h3>Producteurs</h3>
+                    <p>Vendez vos produits directement aux acheteurs sans intermédiaire. Créez des annonces et développez votre clientèle.</p>
+                    <a href="{% url 'inscription_producteur' %}" class="link-arrow">Devenir producteur <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="role-card">
+                    <div class="role-icon"><i class="fas fa-truck"></i></div>
+                    <h3>Livreurs</h3>
+                    <p>Facilitez les échanges entre producteurs et acheteurs en offrant vos services de livraison dans votre zone.</p>
+                    <a href="" class="link-arrow">Devenir livreur <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="role-card">
+                    <div class="role-icon"><i class="fas fa-users"></i></div>
+                    <h3>Communauté</h3>
+                    <p>Rejoignez une communauté qui valorise l'agriculture locale et les circuits courts pour une alimentation plus durable.</p>
+                    <a href="{% url 'page' 'about' %}" class="link-arrow">En savoir plus <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+ {% include "Agri_Connect_CI/sections_index/section-produit.html" %}
+
+ <!-- Section Annonces récentes -->
+ {% include "Agri_Connect_CI/sections_index/annonces-recentes.html" %}
+
+    <!-- Section Annonces récentes -->
+{% include "Agri_Connect_CI/sections_index/section-pro.html" %}
+
+    <!-- Section CTA -->
+    <section class="cta-section">
+        <div class="container cta-content">
+            <div class="cta-text">
+                <h2>Prêt à rejoindre notre communauté?</h2>
+                <p>Créez votre compte ou et commencez dès aujourd'hui à développer votre réseau local.</p>
+                <div class="cta-buttons">
+                    <a href="{% url 'inscription' %}" class="btn btn-light">Créer un compte</a>
+                    <a href="{% url 'page' 'about' %}" class="btn btn-outline-light">En savoir plus</a>
+                </div>
+            </div>
+            <div class="img-grid">
+                <img src="https://images.unsplash.com/photo-1533062618053-d51e617307ec?q=80&w=300&auto=format&fit=crop" alt="Agriculture" />
+                <img src="https://images.unsplash.com/photo-1486328228599-85db4443971f?q=80&w=300&auto=format&fit=crop" alt="Légumes" />
+                <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?q=80&w=300&auto=format&fit=crop" alt="Marché" />
+                <img src="https://images.unsplash.com/photo-1533062618053-d51e617307ec?q=80&w=300&auto=format&fit=crop" alt="Fruits" />
+            </div>
+        </div>
+    </section>
+
+    <!-- Pied de page -->
+      {% include 'Agri_Connect_CI/header_footer/footer.html' %}
+    
+    <!-- Toast de notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i class="fas toast-icon"></i>
+            <span class="toast-message">Notification</span>
+        </div>
+        <button class="toast-close"><i class="fas fa-times"></i></button>
+    </div>
+    
+    <script src="{% static 'Agri_Connect_CI/js/main.js' %}"></script>
+    <script src="{% static 'Agri_Connect_CI/js/products.js' %}"></script>
+</body>
+</html>
+

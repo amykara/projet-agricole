@@ -1,0 +1,89 @@
+{% load static %}
+<nav class="main-nav">
+    <div class="nav-container">
+        <div class="nav-content">
+            <!-- Logo avec icône -->
+            <div class="logo-wrapper">
+                <a href="{% url 'home' %}" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    AgriConnect
+                </a>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <div class="desktop-nav">
+                <a href="{% url 'home' %}" class="nav-link {% if request.path == '/' %}active{% endif %}">Accueil</a>
+                <a href="{% url 'page' 'catalog' %}" class="nav-link {% if 'catalog' in request.path %}active{% endif %}">Catalogue</a>
+                <a href="{% url 'page' 'annonces' %}" class="nav-link {% if 'annonces' in request.path %}active{% endif %}">Annonces</a>
+                <a href="{% url 'page' 'livreur' %}" class="nav-link {% if 'about' in request.path %}active{% endif %}">Livreurs</a>
+
+         <!-- User menu pour utilisateur connecté -->
+<div class="user-menu">
+    <div class="user-toggle">
+        <div class="user-avatar">{{ user.username|slice:":2"|upper }}</div>
+        <div class="user-name">{{ user.username }}</div>
+        <i class="fas fa-chevron-down"></i>
+    </div>
+    
+    <div class="user-dropdown">
+                {% if user.is_authenticated %}
+                    {% if user.role == 'acheteur' %}
+                        <a href="{% url 'tableau_de_bord_acheteur' %}" class="dropdown-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Tableau de bord
+                        </a>
+                    {% elif user.role == 'producteur' %}
+                        <a href="{% url 'tableau_bord_producteur' %}" class="dropdown-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Tableau de bord
+                        </a>
+                    {% elif user.role == 'livreur' %}
+                        <a href="{% url 'tableau_bord_livreur' %}" class="dropdown-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Tableau de bord
+                        </a>
+                    {% endif %}
+                {% endif %}
+
+                <a href="{% url 'deconnexion' %}" class="dropdown-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Déconnexion
+                </a>
+            </div>
+        </div>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div class="mobile-menu">
+            <a href="{% url 'home' %}" class="mobile-nav-link active">Accueil</a>
+            <a href="{% url 'page' page_name='catalog' %}" class="mobile-nav-link">Catalogue</a>
+            <a href="{% url 'page' page_name='annonces' %}" class="mobile-nav-link">Annonces</a>
+            <a href="{% url 'page' page_name='about' %}" class="mobile-nav-link">À propos</a>
+            <a href="{% url 'page' page_name='faq' %}" class="mobile-nav-link">FAQ</a>
+            
+            <!-- Mobile user menu -->
+            <div class="mobile-user-menu">
+                <div class="mobile-user-header">
+                    <div class="mobile-user-avatar">{{ user.username|slice:":2"|upper }}</div>
+                    <div class="mobile-user-name">{{ user.username }}</div>
+                </div>
+                <a href="" class="mobile-dropdown-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Tableau de bord
+                </a>
+                <a href="{% url 'deconnexion' %}" class="mobile-dropdown-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Déconnexion
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>

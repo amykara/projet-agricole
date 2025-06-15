@@ -1,0 +1,675 @@
+{% load static %}
+{% load custom_filters %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Livreur - AgriConnect</title>
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/autres/css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Styles de base */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Navigation */
+        .dashboard-section {
+            scroll-margin-top: 100px;
+        }
+        
+        .dashboard-nav-link {
+            transition: all 0.3s ease;
+            color: #6B7280;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            margin: 0.25rem 0;
+        }
+        
+        .dashboard-nav-link:hover {
+            background-color: #F2F8F2;
+            color: #2A7D4F;
+            transform: translateX(3px);
+        }
+        
+        .dashboard-nav-link.active {
+            background-color: #F2F8F2;
+            color: #2A7D4F;
+            font-weight: 500;
+            border-left: 3px solid #2A7D4F;
+        }
+        
+        .dashboard-nav-link i {
+            transition: all 0.3s ease;
+            width: 20px;
+            text-align: center;
+            margin-right: 0.75rem;
+        }
+        
+        /* Badges et indicateurs */
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 18px;
+            height: 18px;
+            background-color: #EF4444;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+        
+        /* Cartes */
+        .card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid #E5E7EB;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Formulaires */
+        .form-select {
+            transition: all 0.3s ease;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.375rem;
+            padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+            background-color: white;
+        }
+        
+        .form-select:focus {
+            border-color: #2A7D4F;
+            box-shadow: 0 0 0 2px rgba(42, 125, 79, 0.2);
+            outline: none;
+        }
+        
+        /* Avatar */
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .avatar {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+            color: white;
+            background-color: #8B5E34;
+            overflow: hidden;
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Statistiques */
+        .stat-card {
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            background-color: rgba(42, 125, 79, 0.05);
+            border: 1px solid rgba(42, 125, 79, 0.1);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Boutons */
+        .btn-primary {
+            background-color: #2A7D4F;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .btn-primary:hover {
+            background-color: #247347;
+            transform: translateY(-1px);
+        }
+        
+        .btn-primary i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Alertes */
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .alert-success {
+            background-color: #D1FAE5;
+            color: #065F46;
+            border: 1px solid #A7F3D0;
+        }
+        
+        .alert-error {
+            background-color: #FEE2E2;
+            color: #B91C1C;
+            border: 1px solid #FECACA;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        
+        /* Dispositions */
+        .sticky-sidebar {
+            position: sticky;
+            top: 6rem;
+            height: calc(100vh - 6rem);
+            overflow-y: auto;
+        }
+        /* Navigation améliorée */
+nav.bg-white {
+    background-color: #2A7D4F !important; /* Couleur verte AgriConnect */
+    border-bottom: none !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+nav.bg-white a.text-agri-primary {
+    color: white !important;
+    font-weight: 500;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+}
+
+nav.bg-white a.text-agri-primary:hover {
+    color: rgba(255, 255, 255, 0.9) !important;
+    transform: translateY(-1px);
+}
+
+nav.bg-white a.text-agri-error {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    transition: all 0.3s ease;
+}
+
+nav.bg-white a.text-agri-error:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: white !important;
+}
+
+.container.mx-auto.px-4.py-3 {
+    padding: 0.75rem 1.5rem !important;
+}
+
+/* Logo */
+nav.bg-white a.flex.items-center span {
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+}
+
+/* Espacement des liens */
+nav.bg-white .flex.space-x-4 {
+    gap: 1.5rem;
+}
+        
+    </style>
+</head>
+<body class="bg-agri-light min-h-screen flex flex-col">
+    <!-- Messages d'alerte -->
+    {% if messages %}
+    <div class="container mx-auto px-4 mt-4">
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}error{% endif %} animate-fadeIn">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Header/Navbar -->
+    <nav class="bg-white border-b border-agri-gray/20 sticky top-0 z-10 shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="{% url 'home' %}" class="flex items-center">
+                <span class="text-xl font-bold text-agri-primary">AgriConnect</span>
+            </a>
+            <div class="flex items-center space-x-4">
+                <a href="{% url 'tableau_bord_livreur' %}" class="text-agri-primary font-medium hover:text-agri-primary/90 transition-colors">Tableau de bord</a>
+                <a href="{% url 'deconnexion' %}" class="text-agri-error hover:text-agri-error/80 transition-colors">Déconnexion</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <div class="container mx-auto py-8 px-4 max-w-7xl">
+            <div class="flex flex-col md:flex-row gap-8">
+                <!-- Sidebar -->
+                <div class="w-full md:w-1/4">
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden sticky-sidebar">
+                        <div class="p-6 border-b border-gray-100">
+                            <div class="flex items-center">
+                                <div class="avatar-container mr-4">
+                                    <div class="avatar">
+                                        {% if user.photo_profil %}
+                                            <img src="{{ user.photo_profil.url }}" alt="Photo de profil">
+                                        {% else %}
+                                            {{ user.full_name|first|upper }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg text-gray-900">{{ user.full_name }}</h3>
+                                    <p class="text-sm text-gray-500">Livreur</p>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center">
+                                <span class="status-badge bg-green-100 text-green-800 border border-green-300 mr-2">Vérifié</span>
+                                <div class="flex items-center text-agri-yellow">
+                                    <i class="fas fa-star text-xs"></i>
+                                    <span class="text-xs ml-1">{{ livreur.moyenne_notes|default:"0" }}/5</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4">
+                            <nav class="space-y-1">
+                                <a href="#dashboard" class="dashboard-nav-link active">
+                                    <i class="fas fa-home"></i> Tableau de bord
+                                </a>
+                                 {% if livreur and livreur.id %}
+                                    <a href="{% url 'livreur_detail' livreur.id %}" class="dashboard-nav-link">
+                                        <i class="fas fa-user"></i> Profil public
+                                    </a>
+                                {% else %}
+                                    <span class="dashboard-nav-link text-gray-400">
+                                        <i class="fas fa-user"></i> Profil non disponible
+                                    </span>
+                                {% endif %}
+                                <a href="{% url 'editer_profil_livreur' %}" class="dashboard-nav-link">
+                                    <i class="fas fa-pen-to-square"></i> Editer profil
+                                </a>
+                                <a href="#annonces" class="dashboard-nav-link">
+                                    <i class="fas fa-truck"></i> Mes annonces
+                                </a>
+                                <a href="#connections" class="dashboard-nav-link">
+                                    <i class="fas fa-exchange-alt"></i> Mises en relation
+                                </a>
+                                <a href="#notifications" class="dashboard-nav-link relative">
+                                    <i class="fas fa-bell"></i> Notifications
+                                    {% if unread_notifications > 0 %}
+                                    <span class="notification-badge">{{ unread_notifications }}</span>
+                                    {% endif %}
+                                </a>
+                               
+                                 <a href="{% url 'page' 'livreur' %}" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-truck mr-3 text-lg"></i> Livreur
+                                </a>
+
+                                <a href="{% url 'home' %}" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-arrow-left mr-3 text-lg"></i> Retour à l'accueil
+                                </a>
+
+                                <a href="{% url 'deconnexion' %}" class="flex items-center px-4 py-3 rounded-md text-agri-error hover:bg-red-50 transition-colors duration-300">
+                                    <i class="fas fa-sign-out-alt mr-3 text-lg"></i> Déconnexion
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main content -->
+                <div class="w-full md:w-3/4">
+                    <!-- Dashboard section -->
+                    <section id="dashboard" class="dashboard-section bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                            <h2 class="text-xl font-semibold text-gray-900">Bienvenue, <span class="text-agri-primary">{{ user.full_name }}</span>!</h2>
+                            
+                            <form method="post" action="{% url 'update_livreur_statut' %}" class="flex items-center">
+                                {% csrf_token %}
+                                <span class="mr-2 text-sm text-gray-600">Statut:</span>
+                                <select name="statut" class="form-select text-sm">
+                                    <option value="disponible" {% if livreur.etat.nom == 'disponible' %}selected{% endif %}>Disponible</option>
+                                    <option value="en mission" {% if livreur.etat.nom == 'en mission' %}selected{% endif %}>En mission</option>
+                                    <option value="indisponible" {% if livreur.etat.nom == 'indisponible' %}selected{% endif %}>Indisponible</option>
+                                </select>
+                                <button type="submit" class="ml-2 text-agri-primary hover:text-agri-primary/80 transition-colors">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="stat-card">
+                                <h4 class="font-medium text-sm text-agri-primary">Livraisons complétées</h4>
+                                <p class="text-2xl font-bold text-gray-900 mt-1">{{ livraisons_completees }}</p>
+                            </div>
+                            <div class="stat-card" style="background-color: rgba(76, 175, 80, 0.05); border-color: rgba(76, 175, 80, 0.1);">
+                                <h4 class="font-medium text-sm text-agri-secondary">Annonces actives</h4>
+                                <p class="text-2xl font-bold text-gray-900 mt-1">{{ annonces_actives }}</p>
+                            </div>
+                            <div class="stat-card" style="background-color: rgba(139, 94, 52, 0.05); border-color: rgba(139, 94, 52, 0.1);">
+                                <h4 class="font-medium text-sm text-agri-accent">Note moyenne</h4>
+                                <div class="flex items-center mt-1">
+                                    <p class="text-2xl font-bold text-gray-900">{{ livreur.moyenne_notes|default:"0"|floatformat:1 }}</p>
+                                    <i class="fas fa-star text-agri-yellow ml-1"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end">
+                            <a href="#annonces" class="btn-primary">
+                                <i class="fas fa-plus"></i> Créer une annonce
+                            </a>
+                        </div>
+                    </section>
+                    
+                    <!-- Deliveries/Annonces section -->
+                    <section id="annonces" class="dashboard-section bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                            <h2 class="text-xl font-semibold text-gray-900">Mes annonces</h2>
+                            <a href="{% url 'create_annonce' %}" class="btn-primary">
+                                <i class="fas fa-plus"></i> Nouvelle annonce
+                            </a>
+                        </div>
+                        
+                        <form method="get" action="#annonces" class="mb-4">
+                            <div class="flex flex-wrap gap-2">
+                                <button name="filter" value="all" type="submit" 
+                                    class="px-3 py-1 rounded-full text-sm {% if request.GET.filter == 'all' or not request.GET.filter %}bg-agri-primary text-white{% else %}bg-gray-100 text-gray-700{% endif %} transition-colors">
+                                    Toutes
+                                </button>
+                                <button name="filter" value="active" type="submit" 
+                                    class="px-3 py-1 rounded-full text-sm {% if request.GET.filter == 'active' %}bg-agri-primary text-white{% else %}bg-gray-100 text-gray-700{% endif %} transition-colors">
+                                    Actives
+                                </button>
+                                <button name="filter" value="expired" type="submit" 
+                                    class="px-3 py-1 rounded-full text-sm {% if request.GET.filter == 'expired' %}bg-agri-primary text-white{% else %}bg-gray-100 text-gray-700{% endif %} transition-colors">
+                                    Expirées
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="space-y-4">
+                            {% for annonce in annonces %}
+                            <div class="card p-4">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-2">
+                                    <div>
+                                        <span class="status-badge {% if annonce.statut == 'active' %}bg-green-100 text-green-800 border-green-300{% else %}bg-gray-100 text-gray-800 border-gray-300{% endif %}">
+                                            {{ annonce.get_statut_display }}
+                                        </span>
+                                        <h3 class="font-medium text-gray-900 mt-1">{{ annonce.titre }}</h3>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm text-gray-600">Publiée: <span class="font-medium">{{ annonce.date_annonce|date:"d/m/Y" }}</span></p>
+                                        {% if annonce.statut == 'active' %}
+                                        <p class="text-sm text-gray-600">Expire: <span class="font-medium">{{ annonce.date_expiration|date:"d/m/Y" }}</span></p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3 text-sm">
+                                    <div>
+                                        {% for produit in annonce.annonceproduit_set.all %}
+                                        <p class="text-gray-500">Trajet: <span class="text-gray-700">{{ produit.nom_produit }}</span></p>
+                                        <p class="text-gray-500">Capacité: <span class="text-gray-700">{{ produit.quantite }} {{ produit.unite.abbr }}</span></p>
+                                        {% endfor %}
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">Prix: <span class="text-gray-700">{{ produit.prix_unitaire }} {{ produit.devise.code }}</span></p>
+                                        <p class="text-gray-500">Contacts: <span class="text-gray-700">{{ annonce.miseenrelation_set.count }}</span></p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex flex-wrap justify-end gap-2">
+                                    <a href="{% url 'annonce_detail' annonce.id %}" class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors">
+                                        <i class="fas fa-eye mr-1"></i> Voir
+                                    </a>
+                                    <a href="{% url 'modifier_annonce_livreur' annonce.id %}" class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors">
+                                        <i class="fas fa-edit mr-1"></i> Modifier
+                                    </a>
+                                    <form method="post" action="{% url 'supprimer_annonce_livreur' annonce.id %}" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce?');">
+                                            <i class="fas fa-trash mr-1"></i> Supprimer
+                                        </button>
+                                    </form>
+                                    {% if annonce.statut == 'active' %}
+                                    <form method="post" action="{% url 'republier_annonce_livreur' annonce.id %}" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="px-3 py-1 bg-agri-primary text-white rounded text-sm hover:bg-agri-primary/90 transition-colors">
+                                            <i class="fas fa-sync mr-1"></i> Republier
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="text-center py-8">
+                                <i class="fas fa-truck text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-500">Vous n'avez aucune annonce pour le moment.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                    
+                    <!-- Connections section -->
+                    <section id="connections" class="dashboard-section bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                            <h2 class="text-xl font-semibold text-gray-900">Mises en relation</h2>
+                            <a href="{% url 'historique_relations_livreur' %}" class="text-sm text-agri-primary hover:text-agri-primary/80 transition-colors">
+                                <i class="fas fa-history mr-1"></i> Voir historique complet
+                            </a>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            {% for relation in mises_en_relation %}
+                            <div class="card p-4">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-2">
+                                    <div>
+                                        <span class="status-badge {% if relation.notation %}bg-green-100 text-green-800 border-green-300{% else %}bg-blue-100 text-blue-800 border-blue-300{% endif %}">
+                                            {% if relation.notation %}Finalisé{% else %}Nouveau contact{% endif %}
+                                        </span>
+                                        <h3 class="font-medium text-gray-900 mt-1">{{ relation.client.full_name }}</h3>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm text-gray-600">Date: <span class="font-medium">{{ relation.date_contact|date:"d/m/Y H:i" }}</span></p>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3 text-sm">
+                                    <div>
+                                        <p class="text-gray-500">Moyen: <span class="text-gray-700">{{ relation.moyen_contact.nom }}</span></p>
+                                        {% if relation.producteur %}
+                                        <p class="text-gray-500">Producteur: <span class="text-gray-700">{{ relation.producteur.utilisateur.full_name }}</span></p>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">Statut: <span class="text-gray-700">{{ relation.get_statut_display }}</span></p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex flex-wrap justify-between items-center gap-2">
+                                    <a href="{% url 'detail_relation_livreur' relation.id %}" class="text-sm text-agri-primary hover:text-agri-primary/80 transition-colors">
+                                        <i class="fas fa-chevron-down mr-1"></i> Voir plus
+                                    </a>
+                                    {% with whatsapp=relation.client.contact_set|get_contact:'WhatsApp' %}
+                                    {% if whatsapp %}
+                                    <a href="https://wa.me/{{ whatsapp.valeur }}" target="_blank" class="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600 transition-colors flex items-center">
+                                        <i class="fab fa-whatsapp mr-1"></i> Contacter
+                                    </a>
+                                    {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="text-center py-8">
+                                <i class="fas fa-exchange-alt text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-500">Aucune mise en relation récente.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                    
+                    <!-- Notifications section -->
+                    <section id="notifications" class="dashboard-section bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                            <h2 class="text-xl font-semibold text-gray-900">Notifications</h2>
+                            <form method="post" action="{% url 'marquer_notifications_lues' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="text-sm text-agri-primary hover:text-agri-primary/80 transition-colors">
+                                    <i class="fas fa-check mr-1"></i> Tout marquer comme lu
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            {% for notification in notifications %}
+                            <div class="border-l-4 border-agri-primary bg-agri-primary/5 p-4 rounded-r">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                    <div class="flex items-start">
+                                        <div class="bg-agri-primary text-white p-2 rounded-full mr-3">
+                                            <i class="fas fa-{{ notification.icon|default:'bell' }} text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-medium text-gray-900">{{ notification.titre }}</h3>
+                                            <p class="text-sm text-gray-600">{{ notification.message }}</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-gray-500">{{ notification.date_envoi|timesince }}</span>
+                                </div>
+                                <form method="post" action="{% url 'marquer_notification_lue' notification.id %}" class="mt-2 flex justify-end">
+                                    {% csrf_token %}
+                                    <button type="submit" class="text-sm text-agri-primary hover:text-agri-primary/80 transition-colors">
+                                        Marquer comme lu
+                                    </button>
+                                </form>
+                            </div>
+                            {% empty %}
+                            <div class="text-center py-8">
+                                <i class="fas fa-bell-slash text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-500">Aucune notification non lue.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-agri-dark text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <span class="text-xl font-bold">AgriConnect</span>
+                    <p class="text-sm mt-1">Plateforme de mise en relation agricole</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="border-t border-agri-gray/20 mt-6 pt-6 text-center text-sm">
+                <p>© {% now "Y" %} AgriConnect. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Gestion du scroll pour la navigation
+        document.querySelectorAll('.dashboard-nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.hash) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.hash);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        
+                        // Mise à jour du lien actif
+                        document.querySelectorAll('.dashboard-nav-link').forEach(l => l.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Mise à jour de l'URL sans rechargement
+                        history.pushState(null, null, this.hash);
+                    }
+                }
+            });
+        });
+
+        // Mise à jour du lien actif au scroll
+        function updateActiveLink() {
+            const sections = document.querySelectorAll('.dashboard-section');
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 100)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            document.querySelectorAll('.dashboard-nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', updateActiveLink);
+        window.addEventListener('load', updateActiveLink);
+        
+        // Gestion du changement d'état de la page (pour les boutons précédent/suivant)
+        window.addEventListener('popstate', function() {
+            if (location.hash) {
+                const target = document.querySelector(location.hash);
+                if (target) {
+                    target.scrollIntoView();
+                    updateActiveLink();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

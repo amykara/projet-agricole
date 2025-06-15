@@ -1,0 +1,503 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriConnect - Connecter producteurs et acheteurs</title>
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/index_connexion.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+   
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'agri-primary': '#2A7D4F',
+                        'agri-secondary': '#4CAF50',
+                        'agri-accent': '#8B5E34',
+                        'agri-dark': '#1A2D1A',
+                        'agri-light': '#F2F8F2',
+                        'agri-gray': '#6B7280',
+                        'agri-yellow': '#F9BB47',
+                        'agri-error': '#DC2626',
+                    }
+                }
+            }
+        }
+    </script>
+   
+</head>
+<body>
+  
+
+{% include 'Agri_Connect_CI/header_footer/header_logged_in.html' %}
+
+<main>
+    <section class="hero-section">
+        <div class="hero-container">
+            <div class="hero-grid">
+                <!-- Colonne de texte à gauche -->
+                <div class="hero-text">
+                    <h1>Produits frais directement des producteurs locaux</h1>
+                    <p class="hero-description">
+                        Découvrez une large sélection de fruits et légumes frais cultivés près de chez vous.
+                    </p>
+                    
+                    <div class="hero-buttons">
+                    <a href="{% url 'page' 'catalog' %}" class="btn btn-icon">
+                        <i class="fas fa-seedling"></i> <!-- Icône plante -->
+                        <span>Nos produits frais</span>
+                    </a>
+                    
+                    <a href="{% url 'page' 'annonces' %}" class="btn btn-outline-icon">
+                        <i class="fas fa-handshake"></i> <!-- Icône poignée de main -->
+                        <span>Services & Annonces</span>
+                    </a>
+                </div>
+                </div>
+                
+                <!-- Colonne du carrousel à droite -->
+                <div class="carousel-container">
+                    <div class="image-carousel">
+                        <div class="carousel-track">
+                            {% load static %}
+                        <div class="carousel-slide active">
+                            <img src="{% static 'Agri_Connect_CI/autres/images/photo-1518977676601-b53f82aba655.avif' %}" alt="Tomates">
+                        </div>
+                            <div class="carousel-slide">
+                                <img src="{% static 'Agri_Connect_CI/autres/images/photo-1550258987-190a2d41a8ba.avif' %}" alt="Carottes">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="{% static 'Agri_Connect_CI/autres/images/photo-1551754655-cd27e38d2076.avif' %}" alt="Pommes de terre">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="{% static 'Agri_Connect_CI/autres/images/photo-1586201375761-83865001e31c.avif' %}" alt="Oignons">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="{% static 'Agri_Connect_CI/autres/images/photo-1592924357228-91a4daadcfea.avif' %}" alt="Poivrons">
+                            </div>
+
+                        </div>
+                        <div class="carousel-indicators">
+                            <button class="indicator active" data-index="0"></button>
+                            <button class="indicator" data-index="1"></button>
+                            <button class="indicator" data-index="2"></button>
+                            <button class="indicator" data-index="3"></button>
+                            <button class="indicator" data-index="4"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+ {% include "Agri_Connect_CI/sections_index/section-produit.html" %}
+
+ <!-- Section Annonces récentes -->
+ {% include "Agri_Connect_CI/sections_index/annonces-recentes.html" %}
+
+    <!-- Section Annonces récentes -->
+{% include "Agri_Connect_CI/sections_index/section-pro.html" %}
+
+
+   <!-- Comment ça marche -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nos opportunitées</h2>
+                <p>Découvrez nos différents rôles et trouvez celui qui vous correspond</p>
+            </div>
+            <div class="roles-grid">
+             
+            
+                
+                <div class="role-card">
+                    <div class="role-icon"><i class="fas fa-tractor"></i></div>
+                    <h3>Producteurs</h3>
+                    <p>Vendez vos produits directement aux acheteurs sans intermédiaire. Créez des annonces et développez votre clientèle.</p>
+                    <a href="register-producer.html" class="link-arrow">Devenir producteur <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="role-card">
+                    <div class="role-icon"><i class="fas fa-truck"></i></div>
+                    <h3>Livreurs</h3>
+                    <p>Facilitez les échanges entre producteurs et acheteurs en offrant vos services de livraison dans votre zone.</p>
+                    <a href="register-producer.html" class="link-arrow">Devenir livreur <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Pied de page -->
+  {% include 'Agri_Connect_CI/header_footer/footer.html' %}
+    
+    <!-- Toast de notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i class="fas toast-icon"></i>
+            <span class="toast-message">Notification</span>
+        </div>
+        <button class="toast-close"><i class="fas fa-times"></i></button>
+    </div>
+    
+  
+    <script src="{% static 'Agri_Connect_CI/js/products.js' %}"></script>
+</body>
+</html>
+ <style>
+    .user-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: #2A7D4F;
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    
+    if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', function() {
+            // Basculer l'affichage du menu mobile
+            const isOpen = mobileMenu.style.display === 'block';
+            mobileMenu.style.display = isOpen ? 'none' : 'block';
+            
+            // Changer l'icône
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+            
+            // Empêcher le défilement de la page lorsque le menu est ouvert
+            document.body.style.overflow = isOpen ? '' : 'hidden';
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Gérer les boutons de navigation du carousel
+    setupCarousel();
+});
+
+// Configuration du carousel de produits
+function setupCarousel() {
+    const carouselContainer = document.querySelector('.product-carousel');
+    if (!carouselContainer) return;
+    
+    const cardsContainer = carouselContainer.querySelector('.product-cards');
+    const prevBtn = carouselContainer.querySelector('.prev');
+    const nextBtn = carouselContainer.querySelector('.next');
+    
+    if (!cardsContainer || !prevBtn || !nextBtn) return;
+    
+    // Calcul de la largeur à faire défiler
+    let cardWidth = 0;
+    const cards = cardsContainer.querySelectorAll('.product-card');
+    if (cards.length > 0) {
+        // Ajouter la marge à la largeur
+        cardWidth = cards[0].offsetWidth + parseInt(window.getComputedStyle(cards[0]).marginRight);
+    }
+    
+    // Variables pour le défilement
+    let position = 0;
+    const visibleCards = getVisibleCardsCount();
+    const maxPosition = (cards.length - visibleCards) * cardWidth;
+    
+    // Fonctions pour les boutons de navigation
+    prevBtn.addEventListener('click', () => {
+        position = Math.max(position - cardWidth, 0);
+        cardsContainer.scrollTo({ left: position, behavior: 'smooth' });
+        updateButtonState();
+    });
+    
+    nextBtn.addEventListener('click', () => {
+        position = Math.min(position + cardWidth, maxPosition);
+        cardsContainer.scrollTo({ left: position, behavior: 'smooth' });
+        updateButtonState();
+    });
+    
+    // Mettre à jour l'état des boutons
+    function updateButtonState() {
+        prevBtn.disabled = position <= 0;
+        nextBtn.disabled = position >= maxPosition;
+        
+        prevBtn.style.opacity = prevBtn.disabled ? '0.5' : '1';
+        nextBtn.style.opacity = nextBtn.disabled ? '0.5' : '1';
+    }
+    
+    // Initialiser l'état des boutons
+    updateButtonState();
+    
+    // Recalculer en cas de redimensionnement
+    window.addEventListener('resize', () => {
+        // Réinitialiser la position
+        position = 0;
+        cardsContainer.scrollTo({ left: 0 });
+        
+        // Recalculer
+        cardWidth = cards[0].offsetWidth + parseInt(window.getComputedStyle(cards[0]).marginRight);
+        const newVisibleCards = getVisibleCardsCount();
+        maxPosition = Math.max(0, (cards.length - newVisibleCards) * cardWidth);
+        
+        updateButtonState();
+    });
+}
+
+// Détermine le nombre de cartes visibles selon la largeur d'écran
+function getVisibleCardsCount() {
+    const width = window.innerWidth;
+    if (width < 576) return 1;
+    if (width < 992) return 2;
+    return 3;
+}
+
+
+   
+
+    // Fonction pour faire défiler les profils
+    function setupScroll(containerId, prevButtonClass, nextButtonClass) {
+      const container = document.getElementById(containerId);
+      const prevButton = document.querySelector(`.${prevButtonClass}`);
+      const nextButton = document.querySelector(`.${nextButtonClass}`);
+      
+      const cardWidth = container.querySelector('.profile-card').offsetWidth + 24; // 24 = gap
+      const scrollAmount = cardWidth * 3; // Faire défiler 3 cartes à la fois
+      
+      prevButton.addEventListener('click', () => {
+        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      });
+      
+      nextButton.addEventListener('click', () => {
+        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      });
+      
+      // Désactiver les boutons si nécessaire
+      container.addEventListener('scroll', () => {
+        prevButton.disabled = container.scrollLeft <= 10;
+        nextButton.disabled = container.scrollLeft >= container.scrollWidth - container.clientWidth - 10;
+      });
+    }
+
+    // Charger les données
+    document.addEventListener('DOMContentLoaded', () => {
+      const livreursContainer = document.getElementById('livreurs-container');
+      const producteursContainer = document.getElementById('producteurs-container');
+      
+      // Ajouter les livreurs
+      livreursData.forEach(livreur => {
+        livreursContainer.appendChild(createProfileCard(livreur, 'livreur'));
+      });
+      
+      // Ajouter les producteurs
+      producteursData.forEach(producteur => {
+        producteursContainer.appendChild(createProfileCard(producteur, 'producteur'));
+      });
+      
+      // Configurer le défilement
+      setupScroll('livreurs-container', 'prev-livreur', 'next-livreur');
+      setupScroll('producteurs-container', 'prev-producteur', 'next-producteur');
+      
+      // Initialiser les icônes
+      lucide.createIcons();
+      
+      // Désactiver les boutons précédents au chargement
+      document.querySelectorAll('.prev-livreur, .prev-producteur').forEach(btn => {
+        btn.disabled = true;
+      });
+    });
+  
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Gestion des accordéons
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+        
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const icon = this.querySelector('i');
+                
+                // Fermer tous les autres accordéons
+                document.querySelectorAll('.accordion-content').forEach(item => {
+                    if (item !== content) {
+                        item.classList.add('hidden');
+                        item.previousElementSibling.querySelector('i').classList.remove('rotate-180');
+                    }
+                });
+                
+                // Basculer l'accordéon actuel
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            });
+        });
+
+       // Script pour le carrousel
+document.addEventListener('DOMContentLoaded', function() {
+    const track = document.querySelector('.carousel-track');
+    const slides = document.querySelectorAll('.carousel-slide');
+    const indicators = document.querySelectorAll('.indicator');
+    const totalSlides = slides.length;
+    let currentIndex = 0;
+    let interval;
+    
+    // Initialisation
+    function initCarousel() {
+        // Positionner les slides côte à côte
+        track.style.width = `${totalSlides * 100}%`;
+        slides.forEach(slide => {
+            slide.style.width = `${100 / totalSlides}%`;
+        });
+        
+        startInterval();
+    }
+    
+    function updateCarousel() {
+        const percentage = -currentIndex * (100 / totalSlides);
+        track.style.transform = `translateX(${percentage}%)`;
+        
+        // Mettre à jour les indicateurs
+        indicators.forEach((indicator, index) => {
+            indicator.classList.toggle('active', index === currentIndex);
+        });
+    }
+    
+    function startInterval() {
+        clearInterval(interval);
+        interval = setInterval(() => {
+            currentIndex = (currentIndex + 1) % totalSlides;
+            updateCarousel();
+        }, 3000);
+    }
+    
+    // Navigation via les indicateurs
+    indicators.forEach(indicator => {
+        indicator.addEventListener('click', () => {
+            currentIndex = parseInt(indicator.dataset.index);
+            updateCarousel();
+            startInterval();
+        });
+    });
+    
+    // Démarrer le carrousel
+    initCarousel();
+});
+    const track = document.querySelector('.carousel-track');
+    const slides = Array.from(document.querySelectorAll('.carousel-slide'));
+    const indicators = Array.from(document.querySelectorAll('.indicator'));
+    let currentIndex = 0;
+    
+    function updateCarousel() {
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        
+        // Mettre à jour les indicateurs
+        indicators.forEach((indicator, index) => {
+            indicator.classList.toggle('active', index === currentIndex);
+        });
+        
+        // Mettre à jour les slides
+        slides.forEach((slide, index) => {
+            slide.classList.toggle('active', index === currentIndex);
+        });
+    }
+    
+    // Changement automatique toutes les 3 secondes
+    const interval = setInterval(() => {
+        currentIndex = (currentIndex + 1) % slides.length;
+        updateCarousel();
+    }, 3000);
+    
+    // Navigation via les indicateurs
+    indicators.forEach(indicator => {
+        indicator.addEventListener('click', () => {
+            clearInterval(interval);
+            currentIndex = parseInt(indicator.dataset.index);
+            updateCarousel();
+        });
+    });
+});
+
+    
+    
+
+    // Fonction pour afficher les notifications toast
+    function showToast(message, type = 'success') {
+        const toastContainer = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `px-4 py-2 rounded-md shadow-lg mb-2 flex items-center justify-between ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white`;
+        toast.innerHTML = `
+            <span>${message}</span>
+            <button class="ml-4 text-white hover:text-gray-200">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        toastContainer.appendChild(toast);
+        
+        // Fermer le toast après 5 secondes
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+            setTimeout(() => toast.remove(), 300);
+        }, 5000);
+        
+        // Fermer le toast au clic
+        toast.querySelector('button').addEventListener('click', () => {
+            toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+            setTimeout(() => toast.remove(), 300);
+        });
+    }
+    
+ document.addEventListener('DOMContentLoaded', function() {
+    // Gestion du menu utilisateur
+    const userToggle = document.querySelector('.user-toggle');
+    const userDropdown = document.querySelector('.user-dropdown');
+    
+    if (userToggle && userDropdown) {
+        userToggle.addEventListener('click', function(e) {
+            e.stopPropagation(); // Empêche la propagation du clic
+            const isOpen = userDropdown.style.display === 'block';
+            
+            // Fermer tous les autres dropdowns ouverts
+            document.querySelectorAll('.user-dropdown').forEach(dropdown => {
+                if (dropdown !== userDropdown) {
+                    dropdown.style.display = 'none';
+                }
+            });
+            
+            // Basculer l'état du dropdown actuel
+            userDropdown.style.display = isOpen ? 'none' : 'block';
+            
+            // Rotation de l'icône
+            const icon = this.querySelector('.fa-chevron-down');
+            if (icon) {
+                icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+            }
+        });
+        
+        // Fermer le dropdown quand on clique ailleurs
+        document.addEventListener('click', function() {
+            userDropdown.style.display = 'none';
+            const icon = userToggle.querySelector('.fa-chevron-down');
+            if (icon) {
+                icon.style.transform = 'rotate(0deg)';
+            }
+        });
+    }
+});
+
+</script>
+
+
+
+
+
+
+        

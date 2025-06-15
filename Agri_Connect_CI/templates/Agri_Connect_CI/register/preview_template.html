@@ -1,0 +1,184 @@
+{% load custom_filters %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prévisualisation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Copiez tout le CSS de votre template original ici */
+        :root {
+            /* Votre CSS existant */
+        }
+        /* ... */
+    </style>
+</head>
+<body>
+    <!-- Contenu principal seulement -->
+    <div class="annonce-detail">
+        <div class="container">
+            <div class="annonce-grid">
+                <!-- Contenu principal -->
+                <div>
+                    <div class="card">
+                        <!-- Galerie d'images -->
+                        <div class="gallery-container">
+                            <div class="main-image-container">
+                                <img id="mainImage" src="{{ main_image_url }}" 
+                                     alt="{{ titre }}" class="main-image">
+                            </div>
+                            <div class="thumbnail-container">
+                                {% for image in images %}
+                                <img src="{{ image }}" 
+                                     alt="{{ titre }}" 
+                                     class="thumbnail {% if forloop.first %}active{% endif %}"
+                                     onclick="changeMainImage('{{ image }}', this)">
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Contenu -->
+                        <div class="card-content">
+                            <!-- En-tête -->
+                            <div class="annonce-header">
+                                <div>
+                                    <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px;">
+                                        <h1 class="annonce-title">{{ produit_nom }}</h1>
+                                        <span class="badge badge-vente">{{ type_annonce }}</span>
+                                    </div>
+                                    
+                                    <div class="annonce-meta">
+                                        <div>
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <span>{{ localisation }}</span>
+                                        </div>
+                                        <div>
+                                            <i class="far fa-calendar-alt"></i>
+                                            <span>{{ date_publication }}</span>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-tag"></i>
+                                            <span>{{ categorie }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="price-container">
+                                    <div class="annonce-price">{{ prix }} {{ devise }}</div>
+                                    <div class="annonce-price-unit">/{{ unite }}</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Description -->
+                            <div>
+                                <h2 class="section-title">Description</h2>
+                                <p class="annonce-description">
+                                    {{ description }}
+                                </p>
+                            </div>
+                            
+                            <!-- Caractéristiques -->
+                            <div>
+                                <h2 class="section-title">Caractéristiques</h2>
+                                <div class="caracteristiques-grid">
+                                    <div class="caracteristique-item">
+                                        <div class="caracteristique-icon">
+                                            <i class="fas fa-weight"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 500;">Quantité</div>
+                                            <div>{{ quantite }} {{ unite }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="caracteristique-item">
+                                        <div class="caracteristique-icon">
+                                            <i class="fas fa-box"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 500;">Conditionnement</div>
+                                            <div>{{ conditionnement }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="caracteristique-item">
+                                        <div class="caracteristique-icon">
+                                            <i class="fas fa-truck"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 500;">Livraison</div>
+                                            <div>{{ livraison }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="caracteristique-item">
+                                        <div class="caracteristique-icon">
+                                            <i class="fas fa-certificate"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 500;">Certification</div>
+                                            <div>{{ certification }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <!-- Vendeur -->
+                    <div class="card vendeur-card">
+                        <div class="card-content">
+                            <div class="vendeur-header">
+                                <div class="vendeur-avatar">
+                                    <div class="vendeur-avatar-text">
+                                        {{ vendeur_initiale }}
+                                    </div>
+                                </div>
+                                <div class="vendeur-info">
+                                    <div class="vendeur-name">{{ vendeur_nom }}</div>
+                                    <div class="vendeur-role">{{ vendeur_role }}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="rating-container">
+                                <div class="rating-stars">
+                                    {% for i in "12345" %}
+                                        <i class="fas fa-star star-empty"></i>
+                                    {% endfor %}
+                                </div>
+                                <div class="rating-count">
+                                    Nouveau vendeur
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fonction pour changer l'image principale
+        function changeMainImage(newSrc, clickedThumb) {
+            const mainImg = document.getElementById('mainImage');
+            mainImg.style.opacity = '0';
+            
+            setTimeout(() => {
+                mainImg.src = newSrc;
+                mainImg.style.opacity = '1';
+                
+                // Retirer la classe active de toutes les thumbnails
+                document.querySelectorAll('.thumbnail').forEach(thumb => {
+                    thumb.classList.remove('active');
+                });
+                
+                // Ajouter la classe active à la thumbnail cliquée
+                clickedThumb.classList.add('active');
+            }, 200);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<style>
+
+
+/* Adaptation pour les petits écrans */
+@media (max-width: 576px) {
+    .annonces-header {
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .annonces-header h2 {
+        font-size: 1.7rem;
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .annonces-header .btn-primary {
+        padding: 6px 12px;
+        font-size: 1.1rem;
+    }
+}
+
+/* Pour les très petits écrans */
+@media (max-width: 400px) {
+    .annonces-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .annonces-header .btn-primary {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+    }
+}
+
+ .annonce-user {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 0.75rem;
+    background-color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-default {
+    color: #43a047;
+    font-size: 1.2rem;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+/* Styles pour les images d'annonces */
+.recent-annonces .annonce-image {
+    position: relative;
+    width: 100%;
+    height: 200px; /* Hauteur fixe pour toutes les images */
+    overflow: hidden;
+    background-color: #f5f5f5; /* Fond neutre si image manquante */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.recent-annonces .annonce-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Garantit que l'image couvre toute la zone */
+    object-position: center; /* Centre l'image */
+    transition: transform 0.3s ease;
+}
+
+.recent-annonces .annonce-card:hover .annonce-image img {
+    transform: scale(1.03);
+}
+
+/* Icône d'annonce par défaut */
+.recent-annonces .annonce-image.no-image::after {
+    content: "\f0a1"; /* Icône FontAwesome bullhorn (megaphone) */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 3rem;
+    color: #aaa;
+    position: absolute;
+}
+
+
+
+.recent-annonces .annonce-image.no-image::before {
+    display: block; /* Affiche l'icône si classe no-image */
+}
+
+/* Badge de type d'annonce */
+.recent-annonces .annonce-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+}
+
+/* Styles responsives */
+@media (max-width: 768px) {
+    .recent-annonces .annonce-image {
+        height: 160px; /* Hauteur légèrement réduite sur mobile */
+    }
+}
+</style>
+
+<!-- Section Annonces récentes -->
+<section class="recent-annonces">
+    <div class="container">
+        <div class="annonces-header">
+            <h2>Annonces récentes</h2>
+            <a href="{% url 'page' 'annonces' %}" class="btn btn-primary">Voir toutes les annonces</a>
+        </div>
+        
+        <div class="annonces-container">
+            <button class="carousel-button prev" aria-label="Annonce précédente">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <div class="annonces-carousel">
+                <div class="annonces-grid">
+                    {% for annonce in dernieres_annonces %}
+                    <div class="annonce-card">
+                        <div class="annonce-image {% if not annonce.annonceimage_set.first %}no-image{% endif %}">
+                            {% with annonce.annonceimage_set.first as image %}
+                                {% if image %}
+                                    <img src="{{ image.url_image.url }}" alt="{{ annonce.titre }}" loading="lazy">
+                                {% endif %}
+                            {% endwith %}
+                            <span class="annonce-badge badge-{{ annonce.type_annonce.nom|slugify }}">
+                                {{ annonce.type_annonce.nom }}
+                            </span>
+                        </div>
+                        <div class="annonce-content">
+                            <div class="annonce-user">
+                        <div class="user-avatar">
+                            {% if annonce.auteur.photo_profil %}
+                                <img src="{{ annonce.auteur.photo_profil.url }}" alt="{{ annonce.auteur.full_name }}">
+                            {% else %}
+                                <div class="avatar-default">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name">{{ annonce.auteur.full_name }}</span>
+                            <span class="user-role">{{ annonce.auteur.get_role_display }}</span>
+                        </div>
+                    </div>
+
+                            <h3 class="annonce-title">{{ annonce.titre }}</h3>
+                            <p class="annonce-description">
+                                {{ annonce.description|truncatechars:100 }}
+                            </p>
+                            <div class="annonce-meta">
+                                <div class="annonce-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>{{ annonce.zone.ville }}</span>
+                                </div>
+                                <div class="annonce-date">
+                                    {% if annonce.date_annonce.date == timezone.now.date %}
+                                        Aujourd'hui
+                                    {% elif annonce.date_annonce.date == timezone.now.date|add:"-1 day" %}
+                                        Hier
+                                    {% else %}
+                                        Il y a {{ annonce.date_annonce|timesince }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                           <div class="annonce-footer">
+                                {% if annonce.annonceproduit_set.exists %}
+                                <div class="annonce-price">
+                                    {{ annonce.annonceproduit_set.first.prix_unitaire }} 
+                                    {{ annonce.annonceproduit_set.first.devise.nom }}
+                                </div>
+                                {% endif %}
+                                
+                                {% if request.user.is_authenticated %}
+                                    <a href="{% url 'contacter_whatsapp' annonce.id %}" class="btn-repondre">
+                                        <i class="fas fa-reply"></i> Répondre
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'connexion' %}?next={% url 'annonce_detail' annonce.id %}" 
+                                    class="btn-repondre" title="Connectez-vous pour répondre">
+                                        <i class="fas fa-reply"></i> Répondre
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <button class="carousel-button next" aria-label="Annonce suivante">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</section>
+

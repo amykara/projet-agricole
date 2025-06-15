@@ -1,0 +1,335 @@
+/* ==============================================
+   Styles pour la page FAQ
+   ============================================== */
+
+/* Bannière FAQ */
+.faq-banner {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), url('https://images.unsplash.com/photo-1605000797499-95a51c5269ae?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat);
+    color: white;
+    text-align: center;
+    padding: var(--space-xxl) 0;
+}
+
+/* Section FAQ */
+.faq-section {
+    padding: var(--space-xxl) 0;
+    background-color: var(--color-bg-light);
+}
+
+.faq-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: var(--color-bg);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+/* Onglets FAQ */
+.faq-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-primary-bg);
+}
+
+.faq-tab {
+    flex: 1;
+    padding: var(--space-md) var(--space-lg);
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: var(--font-family-heading);
+    font-weight: 600;
+    color: var(--color-text-light);
+    transition: all var(--transition-fast);
+    position: relative;
+}
+
+.faq-tab.active {
+    color: var(--color-primary);
+    background-color: var(--color-bg);
+}
+
+.faq-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-primary);
+}
+
+.faq-tab:hover:not(.active) {
+    background-color: rgba(67, 160, 71, 0.1);
+    color: var(--color-primary-dark);
+}
+
+/* Contenu des onglets */
+.faq-tab-content {
+    display: none;
+    padding: var(--space-lg);
+}
+
+.faq-tab-content.active {
+    display: block;
+}
+
+/* Accordéon FAQ */
+.accordion {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.accordion-item {
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    transition: all var(--transition-normal);
+}
+
+.accordion-item:hover {
+    border-color: var(--color-primary-light);
+}
+
+.accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md) var(--space-lg);
+    background-color: var(--color-bg);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.accordion-header:hover {
+    background-color: var(--color-primary-bg);
+}
+
+.accordion-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin: 0;
+    color: var(--color-text);
+}
+
+.accordion-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    transition: transform var(--transition-fast);
+}
+
+.accordion-item.active .accordion-icon {
+    transform: rotate(45deg);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-normal);
+    padding: 0 var(--space-lg);
+    background-color: var(--color-bg-light);
+}
+
+.accordion-item.active .accordion-content {
+    max-height: 500px;
+    padding: var(--space-md) var(--space-lg);
+}
+
+.accordion-content p {
+    color: var(--color-text-light);
+    margin-bottom: 0;
+    line-height: 1.6;
+}
+
+/* Section Contact */
+.contact-section {
+    padding: var(--space-xxl) 0;
+    background-color: var(--color-bg);
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xxl);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.contact-info h2 {
+    font-size: var(--font-size-xxxl);
+    margin-bottom: var(--space-md);
+    color: var(--color-primary-dark);
+}
+
+.contact-info p {
+    color: var(--color-text-light);
+    margin-bottom: var(--space-xl);
+}
+
+.contact-methods {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.contact-method {
+    display: flex;
+    gap: var(--space-md);
+    align-items: flex-start;
+}
+
+.contact-icon {
+    width: 50px;
+    height: 50px;
+    background-color: var(--color-primary-bg);
+    color: var(--color-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-lg);
+    flex-shrink: 0;
+}
+
+.contact-details h3 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-xs);
+    color: var(--color-text);
+}
+
+.contact-details p {
+    color: var(--color-text-light);
+    margin-bottom: var(--space-xs);
+    font-size: var(--font-size-sm);
+}
+
+.whatsapp-link {
+    color: var(--color-primary);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    transition: color var(--transition-fast);
+}
+
+.whatsapp-link:hover {
+    color: var(--color-primary-dark);
+}
+
+.whatsapp-link i {
+    font-size: var(--font-size-sm);
+}
+
+.contact-form-container h2 {
+    font-size: var(--font-size-xxxl);
+    margin-bottom: var(--space-lg);
+    color: var(--color-primary-dark);
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.form-group label {
+    font-weight: 500;
+    color: var(--color-text);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    font-family: var(--font-family-base);
+    transition: border-color var(--transition-fast);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(67, 160, 71, 0.2);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-xl);
+    }
+    
+    .contact-info {
+        text-align: center;
+    }
+    
+    .contact-method {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .faq-tabs {
+        flex-direction: column;
+    }
+    
+    .faq-tab {
+        padding: var(--space-sm) var(--space-md);
+        text-align: left;
+        justify-content: flex-start;
+    }
+    
+    .faq-tab.active::after {
+        height: 100%;
+        width: 3px;
+        bottom: auto;
+        left: 0;
+        top: 0;
+    }
+    
+    .accordion-header {
+        padding: var(--space-sm) var(--space-md);
+    }
+    
+    .accordion-header h3 {
+        font-size: var(--font-size-base);
+    }
+    
+    .accordion-content {
+        padding: 0 var(--space-md);
+    }
+    
+    .accordion-item.active .accordion-content {
+        padding: var(--space-sm) var(--space-md);
+    }
+}
+
+/* Animation pour l'accordéon */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.accordion-content p {
+    animation: fadeIn var(--transition-normal) ease-out;
+}

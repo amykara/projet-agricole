@@ -1,0 +1,419 @@
+<!-- Section Professionnels -->
+<div class="container">
+    <!-- Section Livreurs Populaires -->
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title">Livreurs Populaires</h2>
+            <div class="nav-buttons">
+                <button class="nav-button prev-livreur" aria-label="Précédent">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="nav-button next-livreur" aria-label="Suivant">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="profiles-container" id="livreurs-container">
+            {% for livreur in livreurs_populaires %}
+             <a href="{% url 'livreur_detail' livreur.id %}" class="profile-card-link">
+                <div class="profile-card livreur">
+                    <div class="profile-image-container">
+                        {% if livreur.utilisateur.photo_profil %}
+                            <img src="{{ livreur.utilisateur.photo_profil.url }}" 
+                                 alt="{{ livreur.utilisateur.full_name }}" class="profile-avatar">
+                        {% else %}
+                            <div class="profile-icon-container">
+                                <i class="fas fa-truck-fast"></i>
+                            </div>
+                        {% endif %}
+                        <span class="profile-badge badge-livreur">Livreur</span>
+                    </div>
+                    <div class="profile-content">
+                        <h3 class="profile-name">{{ livreur.utilisateur.full_name }}</h3>
+                        <div class="profile-rating">
+                            {% if livreur.note_moyenne %}
+                                {% with stars=livreur.note_moyenne|floatformat:0 %}
+                                    {% for _ in "12345" %}
+                                        {% if forloop.counter <= stars %}
+                                            <i class="fas fa-star"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endwith %}
+                                <span class="rating-value">{{ livreur.note_moyenne|floatformat:1 }}</span>
+                            {% else %}
+                                <span class="no-rating">Pas encore noté</span>
+                            {% endif %}
+                        </div>
+                        <div class="profile-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>{{ livreur.utilisateur.zone.ville|default:"Non spécifié" }}</span>
+                        </div>
+                        <p class="profile-description">{{ livreur.description|truncatechars:60 }}</p>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Section Producteurs Populaires -->
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title">Producteurs Populaires</h2>
+            <div class="nav-buttons">
+                <button class="nav-button prev-producteur" aria-label="Précédent">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="nav-button next-producteur" aria-label="Suivant">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="profiles-container" id="producteurs-container">
+            {% for producteur in producteurs_populaires %}
+             <a href="{% url 'producteur_detail' producteur.id %}" class="profile-card-link">
+                <div class="profile-card producteur">
+                    <div class="profile-image-container">
+                        {% if producteur.utilisateur.photo_profil %}
+                            <img src="{{ producteur.utilisateur.photo_profil.url }}" 
+                                 alt="{{ producteur.utilisateur.full_name }}" class="profile-avatar">
+                        {% else %}
+                            <div class="profile-icon-container">
+                                <i class="fas fa-tractor"></i>
+                            </div>
+                        {% endif %}
+                        <span class="profile-badge badge-producteur">Producteur</span>
+                    </div>
+                    <div class="profile-content">
+                        <h3 class="profile-name">{{ producteur.utilisateur.full_name }}</h3>
+                        <div class="profile-rating">
+                            {% if producteur.note_moyenne %}
+                                {% with stars=producteur.note_moyenne|floatformat:0 %}
+                                    {% for _ in "12345" %}
+                                        {% if forloop.counter <= stars %}
+                                            <i class="fas fa-star"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endwith %}
+                                <span class="rating-value">{{ producteur.note_moyenne|floatformat:1 }}</span>
+                            {% else %}
+                                <span class="no-rating">Pas encore noté</span>
+                            {% endif %}
+                        </div>
+                        <div class="profile-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>{{ producteur.utilisateur.zone.ville|default:"Non spécifié" }}</span>
+                        </div>
+                        <p class="profile-description">{{ producteur.description_longue|truncatechars:60 }}</p>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<style>
+/* Style général des cartes */
+.profile-card {
+    width: 280px;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Conteneur d'image - Version cercle */
+.profile-image-container {
+    position: relative;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    padding: 20px 0;
+}
+
+/* Style pour l'image */
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Style pour le conteneur d'icône */
+.profile-icon-container {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border: 3px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Couleurs différentes pour livreurs/producteurs */
+.livreur .profile-icon-container {
+    background: linear-gradient(135deg, #4CAF50, #8BC34A);
+}
+
+.producteur .profile-icon-container {
+    background: linear-gradient(135deg, #2196F3, #03A9F4);
+}
+
+/* Taille des icônes */
+.profile-icon-container i {
+    font-size: 3.5rem;
+}
+
+/* Badge */
+.profile-badge {
+    position: absolute;
+    bottom: 20px;
+    right: 50%;
+    transform: translateX(50%);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.badge-livreur {
+    background-color: #4CAF50;
+}
+
+.badge-producteur {
+    background-color: #2196F3;
+}
+
+/* Contenu de la carte */
+.profile-content {
+    padding: 16px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-name {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+}
+
+/* Notation */
+.profile-rating {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-rating i {
+    color: #FFC107;
+    margin-right: 2px;
+    font-size: 16px;
+}
+
+.rating-value {
+    color: #666;
+    margin-left: 6px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.no-rating {
+    color: #999;
+    font-size: 14px;
+}
+
+/* Localisation */
+.profile-location {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4px 0 8px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.profile-location i {
+    margin-right: 6px;
+    color: #F44336;
+    font-size: 14px;
+}
+
+/* Description */
+.profile-description {
+    margin: 8px 0 0 0;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: center;
+    flex-grow: 1;
+}
+
+/* Conteneur des profils */
+.profiles-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 10px 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.profiles-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Boutons de navigation */
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.nav-button:hover {
+    background: #e0e0e0;
+}
+
+.nav-button i {
+    color: #555;
+    font-size: 16px;
+}
+
+/* Section */
+.section {
+    margin-bottom: 40px;
+}
+
+
+
+.section-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+/* Boutons de navigation - Version responsive */
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #e0e0e0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    opacity: 0.9;
+}
+
+.nav-button:hover {
+    background: #f5f5f5;
+    transform: scale(1.05);
+    opacity: 1;
+}
+
+.nav-button i {
+    color: #555;
+    font-size: 18px;
+}
+
+/* Mobile - Boutons toujours visibles et plus gros */
+@media (max-width: 767px) {
+    .nav-button {
+        width: 44px;
+        height: 44px;
+        background: rgba(255,255,255,0.9);
+        border: none;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+    
+    .nav-button i {
+        font-size: 20px;
+    }
+    
+    /* Position fixe sur mobile */
+    .nav-button.prev-livreur,
+    .nav-button.prev-producteur {
+       
+       display: none;
+    }
+    
+    .nav-button.next-livreur,
+    .nav-button.next-producteur {
+       
+        display: none;
+    }
+    
+    /* Ajustement pour éviter que les boutons cachent le contenu */
+    .profiles-container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+/* Desktop - Boutons dans l'en-tête */
+@media (min-width: 768px) {
+    .section-header {
+        position: relative;
+        padding-right: 100px; /* Espace pour les boutons */
+    }
+    
+    .nav-buttons {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}
+
+/* Animation au scroll */
+.profiles-container {
+    scroll-behavior: smooth;
+}
+</style>

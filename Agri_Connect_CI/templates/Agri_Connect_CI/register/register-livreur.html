@@ -1,0 +1,1292 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devenir Livreur - AgriConnect</title>
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Couleurs adaptées pour les livreurs (vert) */
+            --color-primary: #2ecc71;
+            --color-primary-dark: #27ae60;
+            --color-primary-light: #d5f5e3;
+            --color-secondary: #f39c12;
+            --color-accent: #3498db;
+            --color-text: #2D3748;
+            --color-text-light: #718096;
+            --color-text-lighter: #A0AEC0;
+            --color-border: #E2E8F0;
+            --color-bg: #F7FAFC;
+            --color-bg-light: #FFFFFF;
+            --color-success: #48BB78;
+            --color-danger: #F56565;
+            --color-warning: #ED8936;
+            
+            /* Espacements */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+            
+            /* Rayons de bordure */
+            --border-radius-sm: 0.25rem;
+            --border-radius-md: 0.5rem;
+            --border-radius-lg: 1rem;
+            --border-radius-xl: 1.5rem;
+            
+            /* Ombres */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            /* Transitions */
+            --transition-fast: 0.15s;
+            --transition-normal: 0.3s;
+            --transition-slow: 0.5s;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-lg);
+        }
+        
+        /* Header */
+        .header {
+            background-color: var(--color-bg-light);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-md) 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background-color: var(--color-primary);
+            color: white;
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: var(--space-sm);
+        }
+        
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--color-text);
+        }
+        
+        .nav-desktop ul {
+            display: flex;
+            list-style: none;
+            gap: var(--space-xl);
+        }
+        
+        .nav-desktop a {
+            text-decoration: none;
+            color: var(--color-text);
+            font-weight: 500;
+            transition: color var(--transition-fast);
+            position: relative;
+        }
+        
+        .nav-desktop a:hover {
+            color: var(--color-primary);
+        }
+        
+        .nav-desktop a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--color-primary);
+            transition: width var(--transition-fast);
+        }
+        
+        .nav-desktop a:hover::after {
+            width: 100%;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: var(--space-md);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius-md);
+            font-weight: 500;
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--color-primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--color-primary-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--color-text);
+            cursor: pointer;
+        }
+        
+        /* Form Container */
+        .auth-container {
+            max-width: 800px;
+            margin: 3rem auto;
+            background-color: var(--color-bg-light);
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .auth-header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+            color: white;
+            padding: var(--space-2xl) var(--space-xl);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-header::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .auth-header::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 200px;
+            height: 200px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .auth-header h1 {
+            font-size: 2rem;
+            margin-bottom: var(--space-sm);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .auth-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Navigation par onglets */
+        .form-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: var(--space-xl);
+            padding: 0 var(--space-xl);
+        }
+        
+        .form-tab {
+            padding: var(--space-md) var(--space-lg);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all var(--transition-fast);
+            font-weight: 500;
+            color: var(--color-text-light);
+            position: relative;
+        }
+        
+        .form-tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+        
+        .form-tab .tab-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--color-secondary);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .form-tab:hover:not(.active) {
+            color: var(--color-primary-dark);
+            background-color: var(--color-primary-light);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 0 var(--space-xl);
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Form Content */
+        .form-content {
+            padding: var(--space-2xl) var(--space-xl);
+        }
+        
+        .form-section-title {
+            font-size: 1.25rem;
+            color: var(--color-primary-dark);
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-sm);
+            border-bottom: 2px solid var(--color-border);
+            position: relative;
+        }
+        
+        .form-section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--color-primary);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-sm);
+            font-weight: 500;
+            color: var(--color-text);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            transition: all var(--transition-fast);
+            background-color: var(--color-bg-light);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+        }
+        
+        .form-input.error {
+            border-color: var(--color-danger);
+        }
+        
+        .error-message {
+            color: var(--color-danger);
+            font-size: 0.875rem;
+            margin-top: var(--space-xs);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius-md);
+            background-color: var(--color-bg-light);
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23718096" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            transition: all var(--transition-fast);
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+        }
+        
+        textarea.form-input {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-note {
+            font-size: 0.875rem;
+            color: var(--color-text-light);
+            margin-top: var(--space-xs);
+            font-style: italic;
+        }
+        
+        /* File Upload */
+        .file-upload {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+        
+        .file-upload-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            padding: 0.875rem 1rem;
+            background-color: var(--color-bg-light);
+            border: 2px dashed var(--color-border);
+            border-radius: var(--border-radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .file-upload-btn:hover {
+            border-color: var(--color-primary);
+            background-color: var(--color-primary-light);
+            color: var(--color-primary-dark);
+        }
+        
+        .file-upload-name {
+            font-size: 0.875rem;
+            color: var(--color-text-light);
+        }
+        
+        /* Checkbox */
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .checkbox-container input {
+            margin-top: 0.25rem;
+            accent-color: var(--color-primary);
+        }
+        
+        .checkbox-text {
+            font-size: 0.875rem;
+            color: var(--color-text);
+        }
+        
+        .checkbox-text a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .checkbox-text a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Vehicle Types */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: var(--space-sm);
+            margin-top: var(--space-sm);
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: 0.5rem;
+            border-radius: var(--border-radius-md);
+            transition: all var(--transition-fast);
+        }
+        
+        .checkbox-item:hover {
+            background-color: var(--color-primary-light);
+        }
+        
+        .checkbox-item input {
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* Process Info */
+        .process-info {
+            background-color: var(--color-primary-light);
+            border-radius: var(--border-radius-lg);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-2xl);
+            border-left: 4px solid var(--color-primary);
+        }
+        
+        .process-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+            color: var(--color-primary-dark);
+            font-weight: 600;
+        }
+        
+        .process-title i {
+            font-size: 1.25rem;
+        }
+        
+        .process-steps {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+        
+        .process-steps li {
+            position: relative;
+            padding-left: var(--space-xl);
+            margin-bottom: var(--space-md);
+            counter-increment: step-counter;
+        }
+        
+        .process-steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            background-color: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+        }
+        
+        .btn-submit:hover {
+            background-color: var(--color-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+        
+        /* Navigation entre onglets */
+        .tab-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: var(--space-xl);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--color-border);
+        }
+        
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .tab-btn-prev {
+            background-color: transparent;
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+        }
+        
+        .tab-btn-prev:hover {
+            background-color: var(--color-primary-light);
+        }
+        
+        .tab-btn-next {
+            background-color: var(--color-primary);
+            color: white;
+            border: 1px solid var(--color-primary);
+        }
+        
+        .tab-btn-next:hover {
+            background-color: var(--color-primary-dark);
+        }
+        
+        /* Auth Footer */
+        .auth-footer {
+            text-align: center;
+            margin-top: var(--space-xl);
+            padding-top: var(--space-xl);
+            border-top: 1px solid var(--color-border);
+        }
+        
+        .auth-footer p {
+            color: var(--color-text-light);
+            margin-bottom: var(--space-md);
+        }
+        
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .nav-desktop, .auth-buttons {
+                display: none;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .auth-header {
+                padding: var(--space-xl) var(--space-lg);
+            }
+            
+            .form-content {
+                padding: var(--space-xl) var(--space-lg);
+            }
+            
+            .checkbox-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .form-tabs {
+                flex-wrap: wrap;
+                gap: var(--space-sm);
+            }
+            
+            .form-tab {
+                padding: var(--space-sm) var(--space-md);
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .checkbox-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tab-navigation {
+                flex-direction: column;
+                gap: var(--space-sm);
+            }
+            
+            .tab-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include "Agri_Connect_CI/header_footer/header.html" %}
+
+
+    <!-- Contenu principal -->
+    <main>
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>Devenir Livreur Partenaire</h1>
+                <p>Rejoignez notre réseau de livraison et gagnez de l'argent en transportant des produits agricoles</p>
+            </div>
+            
+            <div class="form-content">
+                <div class="process-info">
+                    <div class="process-title">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Processus de validation</span>
+                    </div>
+                    <ul class="process-steps">
+                        <li>Complétez ce formulaire avec vos informations personnelles et professionnelles</li>
+                        <li>Notre équipe vérifiera vos informations et documents (délai de 24 à 48h)</li>
+                        <li>Vous recevrez un email de confirmation une fois votre compte validé</li>
+                        <li>Accédez à votre espace livreur et commencez à accepter des missions</li>
+                    </ul>
+                </div>
+                
+                <form id="delivererForm" novalidate>
+                    <!-- Navigation par onglets -->
+                    <div class="form-tabs">
+                        <div class="form-tab active" data-tab="personal">
+                            <i class="fas fa-user"></i> Informations
+                            <span class="tab-badge">1</span>
+                        </div>
+                        <div class="form-tab" data-tab="delivery">
+                            <i class="fas fa-truck"></i> Livraison
+                            <span class="tab-badge">2</span>
+                        </div>
+                        <div class="form-tab" data-tab="documents">
+                            <i class="fas fa-file-alt"></i> Documents
+                            <span class="tab-badge">3</span>
+                        </div>
+                        <div class="form-tab" data-tab="validation">
+                            <i class="fas fa-check-circle"></i> Validation
+                            <span class="tab-badge">4</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Onglet 1: Informations personnelles -->
+                    <div id="personal" class="tab-content active">
+                        <h2 class="form-section-title">Informations personnelles</h2>
+                        
+                        <div class="form-grid">
+                            <!-- Nom -->
+                            <div class="form-group">
+                                <label for="lastname" class="form-label">Nom</label>
+                                <input type="text" id="lastname" name="lastname" class="form-input" required>
+                                <div class="error-message" id="lastname-error"></div>
+                            </div>
+                            
+                            <!-- Prénom -->
+                            <div class="form-group">
+                                <label for="firstname" class="form-label">Prénom</label>
+                                <input type="text" id="firstname" name="firstname" class="form-input" required>
+                                <div class="error-message" id="firstname-error"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <!-- Email -->
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" id="email" name="email" class="form-input" required>
+                                <div class="error-message" id="email-error"></div>
+                            </div>
+                            
+                            <!-- Téléphone -->
+                            <div class="form-group">
+                                <label for="phone" class="form-label">Téléphone</label>
+                                <input type="tel" id="phone" name="phone" class="form-input" required>
+                                <div class="error-message" id="phone-error"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Mot de passe -->
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="password" class="form-label">Mot de passe</label>
+                                <input type="password" id="password" name="password" class="form-input" required>
+                                <div class="error-message" id="password-error"></div>
+                            </div>
+                            
+                            <!-- Confirmer mot de passe -->
+                            <div class="form-group">
+                                <label for="confirm-password" class="form-label">Confirmer le mot de passe</label>
+                                <input type="password" id="confirm-password" name="confirm-password" class="form-input" required>
+                                <div class="error-message" id="confirm-password-error"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-navigation">
+                            <div></div> <!-- Espace vide pour aligner le bouton suivant à droite -->
+                            <button type="button" class="btn btn-primary next-tab" data-next="delivery">
+                                Suivant <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Onglet 2: Informations de livraison -->
+                    <div id="delivery" class="tab-content">
+                        <h2 class="form-section-title">Informations de livraison</h2>
+                        
+                        <div class="form-grid">
+                            <!-- Type de véhicule -->
+                            <div class="form-group">
+                                <label for="vehicle-type" class="form-label">Type de véhicule</label>
+                                <select id="vehicle-type" name="vehicle-type" class="form-select" required>
+                                    <option value="">Sélectionnez un véhicule</option>
+                                    <option value="moto">Moto</option>
+                                    <option value="voiture">Voiture</option>
+                                    <option value="camionnette">Camionnette</option>
+                                    <option value="camion">Camion</option>
+                                    <option value="autre">Autre</option>
+                                </select>
+                                <div class="error-message" id="vehicle-type-error"></div>
+                            </div>
+                            
+                            <!-- Plaque d'immatriculation -->
+                            <div class="form-group">
+                                <label for="license-plate" class="form-label">Plaque d'immatriculation</label>
+                                <input type="text" id="license-plate" name="license-plate" class="form-input" required>
+                                <div class="error-message" id="license-plate-error"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Zones de livraison -->
+                        <div class="form-group">
+                            <label class="form-label">Zones de livraison (sélectionnez au moins une)</label>
+                            <div class="checkbox-grid">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="zone-abidjan" name="delivery-zone" value="abidjan">
+                                    <label for="zone-abidjan">Abidjan</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="zone-bouake" name="delivery-zone" value="bouake">
+                                    <label for="zone-bouake">Bouaké</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="zone-daloa" name="delivery-zone" value="daloa">
+                                    <label for="zone-daloa">Daloa</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="zone-korhogo" name="delivery-zone" value="korhogo">
+                                    <label for="zone-korhogo">Korhogo</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="zone-sanpedro" name="delivery-zone" value="sanpedro">
+                                    <label for="zone-sanpedro">San Pedro</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="zone-yamoussoukro" name="delivery-zone" value="yamoussoukro">
+                                    <label for="zone-yamoussoukro">Yamoussoukro</label>
+                                </div>
+                            </div>
+                            <div class="error-message" id="delivery-zone-error"></div>
+                        </div>
+                        
+                        <!-- Disponibilités -->
+                        <div class="form-group">
+                            <label class="form-label">Disponibilités</label>
+                            <div class="checkbox-grid" style="grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="day-monday" name="availability" value="monday">
+                                    <label for="day-monday">Lundi</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="day-tuesday" name="availability" value="tuesday">
+                                    <label for="day-tuesday">Mardi</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="day-wednesday" name="availability" value="wednesday">
+                                    <label for="day-wednesday">Mercredi</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="day-thursday" name="availability" value="thursday">
+                                    <label for="day-thursday">Jeudi</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="day-friday" name="availability" value="friday">
+                                    <label for="day-friday">Vendredi</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="day-saturday" name="availability" value="saturday">
+                                    <label for="day-saturday">Samedi</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="day-sunday" name="availability" value="sunday">
+                                    <label for="day-sunday">Dimanche</label>
+                                </div>
+                            </div>
+                            <div class="error-message" id="availability-error"></div>
+                        </div>
+                        
+                        <!-- Expérience -->
+                        <div class="form-group">
+                            <label for="experience" class="form-label">Expérience en livraison (optionnel)</label>
+                            <textarea id="experience" name="experience" class="form-input" rows="4"></textarea>
+                            <p class="form-note">Décrivez votre expérience dans le domaine de la livraison si vous en avez</p>
+                        </div>
+                        
+                        <div class="tab-navigation">
+                            <button type="button" class="btn btn-outline prev-tab" data-prev="personal">
+                                <i class="fas fa-arrow-left"></i> Précédent
+                            </button>
+                            <button type="button" class="btn btn-primary next-tab" data-next="documents">
+                                Suivant <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Onglet 3: Documents -->
+                    <div id="documents" class="tab-content">
+                        <h2 class="form-section-title">Documents requis</h2>
+                        
+                        <!-- Upload CNI -->
+                        <div class="form-group">
+                            <label for="id-card" class="form-label">Carte Nationale d'Identité</label>
+                            <div class="file-upload">
+                                <label for="id-card" class="file-upload-btn">
+                                    <i class="fas fa-upload"></i> Choisir un fichier
+                                </label>
+                                <input type="file" id="id-card" name="id-card" class="form-file" accept="image/*,.pdf" required>
+                                <span class="file-upload-name" id="id-card-name">Aucun fichier choisi</span>
+                                <div class="error-message" id="id-card-error"></div>
+                            </div>
+                            <p class="form-note">Format accepté : JPG, PNG, PDF - Max 5MB</p>
+                        </div>
+                        
+                        <!-- Upload Permis de conduire -->
+                        <div class="form-group">
+                            <label for="driver-license" class="form-label">Permis de conduire</label>
+                            <div class="file-upload">
+                                <label for="driver-license" class="file-upload-btn">
+                                    <i class="fas fa-upload"></i> Choisir un fichier
+                                </label>
+                                <input type="file" id="driver-license" name="driver-license" class="form-file" accept="image/*,.pdf" required>
+                                <span class="file-upload-name" id="driver-license-name">Aucun fichier choisi</span>
+                                <div class="error-message" id="driver-license-error"></div>
+                            </div>
+                            <p class="form-note">Format accepté : JPG, PNG, PDF - Max 5MB</p>
+                        </div>
+                        
+                        <!-- Photo du véhicule -->
+                        <div class="form-group">
+                            <label for="vehicle-photo" class="form-label">Photo de votre véhicule (optionnel)</label>
+                            <div class="file-upload">
+                                <label for="vehicle-photo" class="file-upload-btn">
+                                    <i class="fas fa-upload"></i> Choisir un fichier
+                                </label>
+                                <input type="file" id="vehicle-photo" name="vehicle-photo" class="form-file" accept="image/*">
+                                <span class="file-upload-name" id="vehicle-photo-name">Aucun fichier choisi</span>
+                            </div>
+                            <p class="form-note">Format accepté : JPG, PNG - Max 5MB</p>
+                        </div>
+                        
+                        <div class="tab-navigation">
+                            <button type="button" class="btn btn-outline prev-tab" data-prev="delivery">
+                                <i class="fas fa-arrow-left"></i> Précédent
+                            </button>
+                            <button type="button" class="btn btn-primary next-tab" data-next="validation">
+                                Suivant <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Onglet 4: Validation -->
+                    <div id="validation" class="tab-content">
+                        <h2 class="form-section-title">Validation finale</h2>
+                        
+                        <!-- Accepter les conditions -->
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="accept-terms" name="accept-terms" required>
+                            <label for="accept-terms" class="checkbox-text">
+                                J'accepte les <a href="terms.html">conditions d'utilisation</a> et la <a href="privacy.html">politique de confidentialité</a> d'AgriConnect Livraison, et je certifie que les informations fournies sont exactes.
+                            </label>
+                        </div>
+                        
+                        <!-- Bouton d'inscription -->
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-paper-plane"></i> Soumettre ma demande
+                        </button>
+                        
+                        <!-- Message d'erreur général -->
+                        <div class="error-message" id="general-error" style="text-align: center; margin-top: var(--space-md);"></div>
+                        
+                        <div class="tab-navigation">
+                            <button type="button" class="btn btn-outline prev-tab" data-prev="documents">
+                                <i class="fas fa-arrow-left"></i> Précédent
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                
+                <div class="auth-footer">
+                    <p>Vous avez déjà un compte ?</p>
+                    <div class="auth-links" style="margin-top: var(--space-md);">
+                        <a href="login.html" class="btn btn-outline">Se connecter</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    
+  <!-- Pied de page -->
+      {% include 'Agri_Connect_CI/header_footer/footer.html' %}
+
+    <!-- Notification Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle toast-icon"></i>
+            <div class="toast-message">Message de notification</div>
+        </div>
+        <button class="toast-close" aria-label="Fermer">&times;</button>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion de l'affichage du nom du fichier pour l'upload
+            const idCardInput = document.getElementById('id-card');
+            const idCardName = document.getElementById('id-card-name');
+            
+            if (idCardInput && idCardName) {
+                idCardInput.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        idCardName.textContent = this.files[0].name;
+                    } else {
+                        idCardName.textContent = 'Aucun fichier choisi';
+                    }
+                });
+            }
+            
+            const driverLicenseInput = document.getElementById('driver-license');
+            const driverLicenseName = document.getElementById('driver-license-name');
+            
+            if (driverLicenseInput && driverLicenseName) {
+                driverLicenseInput.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        driverLicenseName.textContent = this.files[0].name;
+                    } else {
+                        driverLicenseName.textContent = 'Aucun fichier choisi';
+                    }
+                });
+            }
+            
+            const vehiclePhotoInput = document.getElementById('vehicle-photo');
+            const vehiclePhotoName = document.getElementById('vehicle-photo-name');
+            
+            if (vehiclePhotoInput && vehiclePhotoName) {
+                vehiclePhotoInput.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        vehiclePhotoName.textContent = this.files[0].name;
+                    } else {
+                        vehiclePhotoName.textContent = 'Aucun fichier choisi';
+                    }
+                });
+            }
+            
+            // Gestion des onglets
+            const tabs = document.querySelectorAll('.form-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Désactiver tous les onglets et contenus
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Activer l'onglet et le contenu sélectionnés
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
+            // Navigation entre onglets avec les boutons Suivant/Précédent
+            document.querySelectorAll('.next-tab').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const nextTabId = this.getAttribute('data-next');
+                    
+                    // Valider l'onglet actuel avant de passer au suivant
+                    if (validateCurrentTab()) {
+                        // Désactiver tous les onglets et contenus
+                        tabs.forEach(t => t.classList.remove('active'));
+                        tabContents.forEach(c => c.classList.remove('active'));
+                        
+                        // Activer le prochain onglet
+                        document.querySelector(`.form-tab[data-tab="${nextTabId}"]`).classList.add('active');
+                        document.getElementById(nextTabId).classList.add('active');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.prev-tab').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const prevTabId = this.getAttribute('data-prev');
+                    
+                    // Désactiver tous les onglets et contenus
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Activer l'onglet précédent
+                    document.querySelector(`.form-tab[data-tab="${prevTabId}"]`).classList.add('active');
+                    document.getElementById(prevTabId).classList.add('active');
+                });
+            });
+
+            // Fonction de validation de l'onglet actuel
+            function validateCurrentTab() {
+                const activeTab = document.querySelector('.tab-content.active');
+                const requiredFields = activeTab.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value) {
+                        isValid = false;
+                        field.style.borderColor = 'red';
+                    } else {
+                        field.style.borderColor = '';
+                    }
+                });
+                
+                if (!isValid) {
+                    alert('Veuillez remplir tous les champs obligatoires avant de continuer.');
+                }
+                
+                return isValid;
+            }
+            
+            // Validation du formulaire
+            const delivererForm = document.getElementById('delivererForm');
+            
+            if (delivererForm) {
+                delivererForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    let isValid = validateForm();
+                    
+                    if (isValid) {
+                        // Simuler l'envoi du formulaire
+                        simulateFormSubmission();
+                    }
+                });
+            }
+            
+            function validateForm() {
+                // Réinitialiser tous les messages d'erreur
+                document.querySelectorAll('.error-message').forEach(el => {
+                    el.textContent = '';
+                });
+                
+                let isValid = true;
+                
+                // Valider les champs requis
+                const requiredFields = [
+                    { id: 'lastname', message: 'Le nom est requis' },
+                    { id: 'firstname', message: 'Le prénom est requis' },
+                    { id: 'email', message: 'L\'email est requis' },
+                    { id: 'phone', message: 'Le téléphone est requis' },
+                    { id: 'password', message: 'Le mot de passe est requis' },
+                    { id: 'vehicle-type', message: 'Le type de véhicule est requis' },
+                    { id: 'license-plate', message: 'La plaque d\'immatriculation est requise' }
+                ];
+                
+                requiredFields.forEach(field => {
+                    const input = document.getElementById(field.id);
+                    if (!input.value.trim()) {
+                        document.getElementById(`${field.id}-error`).textContent = field.message;
+                        input.classList.add('error');
+                        isValid = false;
+                    } else {
+                        input.classList.remove('error');
+                    }
+                });
+                
+                // Valider l'email
+                const email = document.getElementById('email').value.trim();
+                if (email && !validateEmail(email)) {
+                    document.getElementById('email-error').textContent = 'Veuillez saisir une adresse email valide';
+                    document.getElementById('email').classList.add('error');
+                    isValid = false;
+                }
+                
+                // Valider les mots de passe
+                const password = document.getElementById('password').value.trim();
+                const confirmPassword = document.getElementById('confirm-password').value.trim();
+                
+                if (password && password.length < 6) {
+                    document.getElementById('password-error').textContent = 'Le mot de passe doit contenir au moins 6 caractères';
+                    document.getElementById('password').classList.add('error');
+                    isValid = false;
+                }
+                
+                if (password !== confirmPassword) {
+                    document.getElementById('confirm-password-error').textContent = 'Les mots de passe ne correspondent pas';
+                    document.getElementById('confirm-password').classList.add('error');
+                    isValid = false;
+                }
+                
+                // Valider l'upload de la CNI
+                const idCard = document.getElementById('id-card');
+                if (!idCard.files || !idCard.files[0]) {
+                    document.getElementById('id-card-error').textContent = 'La CNI est requise';
+                    isValid = false;
+                }
+                
+                // Valider l'upload du permis de conduire
+                const driverLicense = document.getElementById('driver-license');
+                if (!driverLicense.files || !driverLicense.files[0]) {
+                    document.getElementById('driver-license-error').textContent = 'Le permis de conduire est requis';
+                    isValid = false;
+                }
+                
+                // Valider qu'au moins une zone de livraison est sélectionnée
+                const deliveryZones = document.querySelectorAll('input[name="delivery-zone"]:checked');
+                if (deliveryZones.length === 0) {
+                    document.getElementById('delivery-zone-error').textContent = 'Sélectionnez au moins une zone de livraison';
+                    isValid = false;
+                }
+                
+                // Valider qu'au moins un jour de disponibilité est sélectionné
+                const availabilities = document.querySelectorAll('input[name="availability"]:checked');
+                if (availabilities.length === 0) {
+                    document.getElementById('availability-error').textContent = 'Sélectionnez au moins un jour de disponibilité';
+                    isValid = false;
+                }
+                
+                // Valider les conditions d'utilisation
+                const acceptTerms = document.getElementById('accept-terms').checked;
+                if (!acceptTerms) {
+                    document.getElementById('general-error').textContent = 'Vous devez accepter les conditions d\'utilisation';
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
+            
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            function showToast(message, type = 'success') {
+                const toast = document.getElementById('toast');
+                const toastMessage = toast.querySelector('.toast-message');
+                const toastIcon = toast.querySelector('.toast-icon');
+                
+                // Configurer le toast selon le type
+                if (type === 'success') {
+                    toast.style.backgroundColor = '#48BB78';
+                    toastIcon.className = 'fas fa-check-circle toast-icon';
+                } else if (type === 'error') {
+                    toast.style.backgroundColor = '#F56565';
+                    toastIcon.className = 'fas fa-exclamation-circle toast-icon';
+                } else if (type === 'warning') {
+                    toast.style.backgroundColor = '#ED8936';
+                    toastIcon.className = 'fas fa-exclamation-triangle toast-icon';
+                }
+                
+                toastMessage.textContent = message;
+                toast.classList.add('show');
+                
+                // Fermer automatiquement après 5 secondes
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 5000);
+                
+                // Fermer manuellement
+                const closeBtn = toast.querySelector('.toast-close');
+                closeBtn.addEventListener('click', () => {
+                    toast.classList.remove('show');
+                });
+            }
+            
+            function simulateFormSubmission() {
+                // Afficher un message de chargement
+                const submitBtn = document.querySelector('.btn-submit');
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+                submitBtn.disabled = true;
+                
+                // Simuler un délai réseau
+                setTimeout(function() {
+                    // Pour la démo, nous simulons une soumission réussie
+                    showToast('Demande envoyée avec succès! Vous recevrez un email de confirmation sous 48h.', 'success');
+                    
+                    // Réinitialiser le bouton
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                    
+                    // Redirection vers la page d'accueil après un délai
+                    setTimeout(function() {
+                        window.location.href = 'index.html';
+                    }, 3000);
+                    
+                }, 2000);
+            }
+            
+            // Mettre à jour l'année dans le footer
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+        });
+    </script>
+</body>
+</html>

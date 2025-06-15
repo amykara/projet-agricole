@@ -1,0 +1,1275 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produits Agricoles - AgriMarket</title>
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/index_connexion.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #60ad5e;
+            --primary-dark: #005005;
+            --secondary: #ffab00;
+            --dark: #263238;
+            --light: #f5f5f5;
+            --gray: #eceff1;
+            --gray-dark: #cfd8dc;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            background-color: #f9f9f9;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* Header */
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: relative;
+            z-index: 50;
+        }
+        
+        /* Produits Header */
+        .produits-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 4rem 0 3rem;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            height: 200px;
+            
+        }
+          .produits-header p {
+          
+            margin-left: 250px;
+         
+        }
+        
+          .produits-header h1 {
+          
+            margin-top: -50px;
+         
+        }
+        
+        .produits-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgZmlsbD0idXJsKCNwYXR0ZXJuKSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIvPjwvc3ZnPg==');
+            opacity: 0.6;
+        }
+        
+        .produits-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .produits-subtitle {
+            font-size: 1.1rem;
+            max-width: 700px;
+            opacity: 0.9;
+            position: relative;
+        }
+        
+        /* Mini Producers Section - Version Pro */
+        .mini-producers {
+            background: white;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 1rem 0;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        
+        .mini-producers-container {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .mini-producers-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+        }
+        
+        .mini-producers-label::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--secondary);
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .mini-producers-scroller {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .auto-scroll {
+            display: flex;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            animation: scroll 30s linear infinite;
+            width: max-content;
+        }
+        
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        .mini-producer {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: white;
+            border-radius: 50px;
+            padding: 0.5rem 1rem 0.5rem 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        
+        .mini-producer:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: rgba(0,0,0,0.1);
+        }
+        
+        .mini-producer-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-light);
+        }
+        
+        .mini-producer-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .mini-producer-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            color: var(--primary-dark);
+        }
+        
+        .star-filled {
+            color: var(--secondary);
+        }
+        
+        .mini-producers-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .mini-producers-prev,
+        .mini-producers-next {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid var(--gray-dark);
+            color: var(--dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .mini-producers-prev:hover,
+        .mini-producers-next:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        
+/* Barre de recherche centrée */
+.search-section {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.input-with-icon {
+    width: 100%;
+    max-width: 600px; 
+}
+.search-btn, .clear-search-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.clear-search-btn {
+    right: 40px; /* Positionné avant le bouton de recherche */
+    color: #999;
+}
+
+.search-btn:hover, .clear-search-btn:hover {
+    color: var(--primary-dark);
+}
+
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary);
+}
+
+/* Bouton Filtres centré */
+.filter-btn-container {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+}
+
+/* Conteneur des filtres */
+.filters-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin: 1rem auto 2rem;
+    max-width: 1200px;
+}
+
+.filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 1.5rem;
+}
+
+.filter-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding-top: 0.5rem;
+}
+
+
+        
+        
+        .flex {
+            display: flex;
+        }
+        
+        .flex-col {
+            flex-direction: column;
+        }
+        
+        .items-center {
+            align-items: center;
+        }
+        
+        .gap-4 {
+            gap: 1rem;
+        }
+        
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .w-full {
+            width: 100%;
+        }
+        
+        .md\:w-2\/3 {
+            width: 66.666667%;
+        }
+        
+        .input-with-icon {
+            position: relative;
+            max-width: 600px;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+        }
+        
+        .input {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 3rem;
+            border: 1px solid var(--gray-dark);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: white;
+        }
+        
+        .input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(46, 125, 50, 0.05);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+                .avatar-default {
+            color: #43a047;
+            font-size: 1.2rem;
+         
+        }
+
+
+/* [Vos autres styles CSS...] */
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .filter-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .select {
+            position: relative;
+        }
+        
+        .select-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: white;
+            border: 1px solid var(--gray-dark);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .select-trigger:hover {
+            border-color: var(--primary);
+        }
+        
+        .select-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--gray-dark);
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 20;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .select-item {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        
+        .select-item:hover {
+            background: var(--gray);
+        }
+       
+        
+        /* Produits Grid */
+        .py-6 {
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+        
+        .produits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .produit-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .produit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .produit-image {
+            height: 180px;
+            overflow: hidden;
+        }
+        
+        .produit-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .produit-card:hover .produit-image img {
+            transform: scale(1.05);
+        }
+        
+        .produit-content {
+            padding: 1.25rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .produit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+        
+        .produit-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-right: 0.5rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .badge-vente {
+            background: rgba(46, 125, 50, 0.1);
+            color: var(--primary);
+        }
+        
+        .produit-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+            flex: 1;
+        }
+        
+        .produit-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .meta-icon {
+            font-size: 0.7rem;
+            color: var(--primary);
+        }
+        
+        .produit-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+        
+        .produit-price {
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        
+        .produit-price-unit {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: normal;
+        }
+        
+        .produit-vendeur {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--gray-dark);
+        }
+        
+        .vendeur-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .vendeur-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .vendeur-role {
+            font-size: 0.7rem;
+            color: #888;
+        }
+        
+        .vendeur-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.85rem;
+            color: var(--dark);
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-10 {
+            margin-top: 2.5rem;
+        }
+        
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hover\:animate-float:hover {
+            animation: float 2s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+        
+        /* Ajoutez cette règle dans votre section CSS */
+        .mini-producer-link {
+            text-decoration: none;
+            color: inherit;
+            display: inline-block; /* ou flex selon votre besoin */
+            flex-shrink: 0; /* important pour le défilement */
+        }
+
+        /* Optionnel : Style au survol du lien */
+        .mini-producer-link:hover .mini-producer {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: rgba(0,0,0,0.1);
+        }
+
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mini-producers-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+            
+            .mini-producers-label {
+                justify-content: center;
+            }
+            
+            .filters-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-actions {
+                justify-content: center;
+            }
+            
+            .produits-grid {
+                grid-template-columns: 1fr;
+            }
+             
+          .produits-header p {
+          
+          display: none;
+        }
+        }
+    </style>
+</head>
+<body>
+    
+{% if user.is_authenticated %}
+        {% include "Agri_Connect_CI/header_footer/header_logged_in.html" %}
+    {% else %}
+        {% include "Agri_Connect_CI/header_footer/header.html" %}
+    {% endif %} 
+    <main class="flex-grow">
+        <!-- En-tête de la page -->
+        <section class="produits-header">
+            <div class="container">
+                <h1 class="produits-title">Produits Agricoles</h1>
+                <p class="produits-subtitle">
+                    Découvrez une sélection de produits agricoles frais et de qualité provenant directement des producteurs de Côte d'Ivoire.
+                </p>
+            </div>
+        </section>
+        
+        <!-- Section Mini Producteurs - Version Pro -->
+        <section class="mini-producers">
+            <div class="container">
+                <div class="mini-producers-container">
+                    <span class="mini-producers-label">Producteurs à découvrir</span>
+                    <div class="mini-producers-scroller" id="mini-producers-scroller">
+                        <div class="auto-scroll">
+                            {% for producteur in producteurs %}
+                            <a href="{% url 'producteur_detail' producteur.id %}" class="mini-producer-link">
+                                <div class="mini-producer">
+                                    {% if producteur.utilisateur.photo_profil %}
+                                        <img src="{{ producteur.utilisateur.photo_profil.url }}" 
+                                            alt="{{ producteur.utilisateur.full_name }}" 
+                                            class="mini-producer-avatar">
+                                    {% else %}
+                                         <div class="avatar-default">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    {% endif %}
+                                    <span class="mini-producer-name">{{ producteur.utilisateur.full_name|truncatechars:15 }}</span>
+                                    <span class="mini-producer-rating">
+                                        <i class="fas fa-star star-filled"></i>
+                                        <span>{{ producteur.note_moyenne|floatformat:1 }}</span>
+                                    </span>
+                                </div>
+                            </a>
+                            {% endfor %}
+                            
+                            <!-- Duplication pour animation fluide -->
+                            {% for producteur in producteurs %}
+                            <a href="{% url 'producteur_detail' producteur.id %}" class="mini-producer-link">
+                                <div class="mini-producer">
+                                    {% if producteur.utilisateur.photo_profil %}
+                                        <img src="{{ producteur.utilisateur.photo_profil.url }}" 
+                                            alt="{{ producteur.utilisateur.full_name }}" 
+                                            class="mini-producer-avatar">
+                                    {% else %}
+                                        <div class="avatar-default ">
+                            <i class="fas fa-user"></i>
+                                 </div>
+                                           
+                                    {% endif %}
+                                    <span class="mini-producer-name">{{ producteur.utilisateur.full_name|truncatechars:15 }}</span>
+                                    <span class="mini-producer-rating">
+                                        <i class="fas fa-star star-filled"></i>
+                                        <span>{{ producteur.note_moyenne|floatformat:1 }}</span>
+                                    </span>
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="mini-producers-nav">
+                        <button class="mini-producers-prev">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="mini-producers-next">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+       <!-- Barre de recherche centrée (sticky) -->
+<section class="search-section">
+    <div class="container">
+        <div class="search-container">
+            <div class="input-with-icon">
+                
+                <input 
+                    type="text" 
+                    class="input" 
+                    placeholder="Rechercher un produit..."
+                    id="search-input"
+                    value="{{ request.GET.search|default:'' }}"
+                >
+                <!-- Bouton effacer (croix) -->
+                {% if request.GET.search %}
+                <button id="clear-search" class="clear-search-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+                {% endif %}
+                <!-- Bouton de recherche -->
+                <button id="search-button" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <!-- Bouton Filtres  -->
+        <div class="container filter-btn-container">
+            <button class="btn btn-outline flex items-center gap-2" id="toggle-filters">
+                <i class="fas fa-filter"></i>
+                Filtres
+            </button>
+        </div>
+
+        <!-- Filtres-->
+        <div class="container">
+            <div class="filters-container" id="filters-container" style="display: none;">
+                <div class="filters-grid">
+                    <!-- Catégorie -->
+                    <div class="filter-group">
+                        <label class="filter-label">Catégorie</label>
+                        <div class="select">
+                            <div class="select-trigger" id="category-trigger">
+                                <span>
+                                    {% if request.GET.categorie %}
+                                        {% for categorie in categories %}
+                                            {% if categorie.id == request.GET.categorie %}
+                                                {{ categorie.nom }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        Toutes les catégories
+                                    {% endif %}
+                                </span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="select-content" id="category-content">
+                                <div class="select-item" data-value="tous">Toutes les catégories</div>
+                                {% for categorie in categories %}
+                                <div class="select-item" data-value="{{ categorie.id }}">{{ categorie.nom }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Localisation -->
+                    <div class="filter-group">
+                        <label class="filter-label">Localisation</label>
+                        <div class="select">
+                            <div class="select-trigger" id="location-trigger">
+                                <span>
+                                    {% if request.GET.localisation %}
+                                        {{ request.GET.localisation }}
+                                    {% else %}
+                                        Toute la Côte d'Ivoire
+                                    {% endif %}
+                                </span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="select-content" id="location-content">
+                                <div class="select-item" data-value="tous">Toute la Côte d'Ivoire</div>
+                                {% for zone in zones %}
+                                <div class="select-item" data-value="{{ zone.ville }}">{{ zone.ville }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Conditionnement -->
+                    <div class="filter-group">
+                        <label class="filter-label">Conditionnement</label>
+                        <div class="select">
+                            <div class="select-trigger" id="packaging-trigger">
+                                <span>
+                                    {% if request.GET.conditionnement %}
+                                        {% for cond in conditionnements %}
+                                            {% if cond.id|stringformat:"s" == request.GET.conditionnement %}
+                                                {{ cond.nom }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        Tous les conditionnements
+                                    {% endif %}
+                                </span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="select-content" id="packaging-content">
+                                <div class="select-item" data-value="">Tous les conditionnements</div>
+                                {% for conditionnement in conditionnements %}
+                                <div class="select-item" data-value="{{ conditionnement.id }}">{{ conditionnement.nom }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Trier par -->
+                  
+<div class="filter-group">
+    <label class="filter-label">Trier par</label>
+    <div class="select">
+        <div class="select-trigger" id="sort-trigger">
+            <span>
+                {% if current_sort == 'ancien' %}
+                    Date (plus ancien)
+                {% elif current_sort == 'prix-croissant' %}
+                    Prix (croissant)
+                {% elif current_sort == 'prix-dec' %}
+                    Prix (décroissant)
+                {% else %}
+                    Date (plus récent)
+                {% endif %}
+            </span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="select-content" id="sort-content">
+            <div class="select-item {% if current_sort == 'recent' %}selected{% endif %}" 
+                 data-value="recent">Date (plus récent)</div>
+            <div class="select-item {% if current_sort == 'ancien' %}selected{% endif %}" 
+                 data-value="ancien">Date (plus ancien)</div>
+            <div class="select-item {% if current_sort == 'prix-croissant' %}selected{% endif %}" 
+                 data-value="prix-croissant">Prix (croissant)</div>
+            <div class="select-item {% if current_sort == 'prix-dec' %}selected{% endif %}" 
+                 data-value="prix-dec">Prix (décroissant)</div>
+        </div>
+    </div>
+</div>
+                    
+                    <!-- Actions -->
+                    <div class="filter-actions">
+                        <button class="btn btn-outline" id="reset-filters">Réinitialiser</button>
+                        <button class="btn btn-primary" id="apply-filters">Appliquer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+              
+        <!-- Résultats -->
+        <section class="container py-6">
+            <div>
+                
+                
+                <!-- Liste des produits -->
+                <div class="produits-grid" id="produits-grid">
+                    {% for produit in produits %}
+                    <div class="produit-card">
+                        <div class="produit-image">
+                            {% with produit.annonce.annonceimage_set.first as first_image %}
+                            <img src="{{ first_image.url_image.url }}" alt="{{ produit.nom_produit }}">
+                            {% endwith %}
+                        </div>
+                        <div class="produit-content">
+                            <div class="produit-header">
+                                <h3 class="produit-title">{{ produit.nom_produit }}</h3>
+                                <span class="badge badge-vente">Vente</span>
+                            </div>
+                            <p class="produit-description">
+                                {{ produit.annonce.description|truncatechars:100 }}
+                            </p>
+                            <div class="produit-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-tag meta-icon"></i>
+                                    <span>{{ produit.categorie.nom }}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-map-marker-alt meta-icon"></i>
+                                    <span>{{ produit.annonce.zone.ville }}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="far fa-calendar-alt meta-icon"></i>
+                                    <span>{{ produit.annonce.date_annonce|date:"d/m/Y" }}</span>
+                                </div>
+                            </div>
+                            <div class="produit-footer">
+                                <div class="produit-price">
+                                    {{ produit.prix_unitaire }} {{ produit.devise.code }}
+                                    <span class="produit-price-unit">/{{ produit.unite.abbr }}</span>
+                                </div>
+                                <a href="{% url 'annonce_detail' produit.annonce.id %}">
+                                    <button class="btn btn-outline">Voir détails</button>
+                                </a>
+                            </div>
+                            <div class="produit-vendeur">
+                                <div class="vendeur-info">
+                                    <span class="vendeur-name">{{ produit.annonce.auteur.full_name }}</span>
+                                    <span class="vendeur-role">Producteur</span>
+                                </div>
+                                {% with produit.annonce.auteur.producteur.moyenne_notes as note_moyenne %}
+                                <div class="vendeur-rating">
+                                    <i class="fas fa-star star-filled"></i>
+                                    <span>{{ note_moyenne|floatformat:1 }}</span>
+                                </div>
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                {% if produits.has_next %}
+                <div class="text-center mt-10">
+                    <button class="btn btn-outline flex items-center gap-2 mx-auto hover:animate-float" id="load-more">
+                        Voir plus de produits
+                        <i class="fas fa-arrow-down"></i>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+         {% include 'Agri_Connect_CI/header_footer/footer.html' %}
+
+
+    <script>
+        // Script pour les fonctionnalités interactives
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle filters
+            const toggleFilters = document.getElementById('toggle-filters');
+            const filtersContainer = document.getElementById('filters-container');
+            
+            toggleFilters.addEventListener('click', function() {
+                if (filtersContainer.style.display === 'none' || !filtersContainer.style.display) {
+                    filtersContainer.style.display = 'grid';
+                    this.innerHTML = '<i class="fas fa-times"></i> Fermer les filtres';
+                } else {
+                    filtersContainer.style.display = 'none';
+                    this.innerHTML = '<i class="fas fa-filter"></i> Filtres';
+                }
+            });
+            
+            // Select dropdown functionality
+            document.querySelectorAll('.select-trigger').forEach(trigger => {
+                const contentId = trigger.id.replace('trigger', 'content');
+                const content = document.getElementById(contentId);
+                
+                trigger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    // Close all other open selects
+                    document.querySelectorAll('.select-content').forEach(otherContent => {
+                        if (otherContent !== content && otherContent.style.display === 'block') {
+                            otherContent.style.display = 'none';
+                        }
+                    });
+                    
+                    // Toggle current select
+                    if (content.style.display === 'block') {
+                        content.style.display = 'none';
+                    } else {
+                        content.style.display = 'block';
+                    }
+                });
+                
+                // Handle item selection
+                content.querySelectorAll('.select-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        // Remove selected class from all items
+                        content.querySelectorAll('.select-item').forEach(i => {
+                            i.classList.remove('selected');
+                        });
+                        
+                        // Add selected class to clicked item
+                        this.classList.add('selected');
+                        
+                        trigger.querySelector('span').textContent = this.textContent;
+                        content.style.display = 'none';
+                    });
+                });
+            });
+            
+            // Close selects when clicking outside
+            document.addEventListener('click', function() {
+                document.querySelectorAll('.select-content').forEach(content => {
+                    content.style.display = 'none';
+                });
+            });
+            
+            // Mini producers animation control
+            const scroller = document.querySelector('.auto-scroll');
+            const prevBtn = document.querySelector('.mini-producers-prev');
+            const nextBtn = document.querySelector('.mini-producers-next');
+            const miniProducersSection = document.querySelector('.mini-producers');
+            
+            // Pause on hover
+            miniProducersSection.addEventListener('mouseenter', () => {
+                scroller.style.animationPlayState = 'paused';
+            });
+            
+            miniProducersSection.addEventListener('mouseleave', () => {
+                scroller.style.animationPlayState = 'running';
+            });
+            
+            // Manual navigation
+            prevBtn.addEventListener('click', () => {
+                const first = scroller.firstElementChild;
+                scroller.style.transition = 'transform 0.5s ease';
+                scroller.style.transform = 'translateX(0)';
+                setTimeout(() => {
+                    scroller.style.transition = 'none';
+                    scroller.appendChild(first);
+                    scroller.style.transform = 'translateX(-50%)';
+                }, 500);
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                const last = scroller.lastElementChild;
+                scroller.style.transition = 'none';
+                scroller.insertBefore(last, scroller.firstChild);
+                scroller.style.transform = 'translateX(-50%)';
+                setTimeout(() => {
+                    scroller.style.transition = 'transform 0.5s ease';
+                    scroller.style.transform = 'translateX(0)';
+                }, 10);
+            });
+
+                        // Gestion de l'application des filtres
+            document.getElementById('apply-filters').addEventListener('click', function() {
+                const params = new URLSearchParams();
+                
+                // Récupération des valeurs
+                const categoryValue = document.querySelector('#category-content .select-item.selected')?.dataset.value;
+                const locationValue = document.querySelector('#location-content .select-item.selected')?.dataset.value;
+                const packagingValue = document.querySelector('#packaging-content .select-item.selected')?.dataset.value;
+                const sortValue = document.querySelector('#sort-content .select-item.selected')?.dataset.value || 'recent';
+                const searchTerm = document.getElementById('search-input').value;
+                
+                // Ajout des paramètres
+                if (categoryValue) params.append('categorie', categoryValue);
+                if (locationValue) params.append('localisation', locationValue);
+                if (packagingValue) params.append('conditionnement', packagingValue);
+                if (sortValue !== 'recent') params.append('tri', sortValue);
+                if (searchTerm) params.append('search', searchTerm);
+                
+                // Redirection
+                window.location.search = params.toString();
+            });
+            
+            
+            // Gestion de la réinitialisation des filtres
+            const resetFilters = document.getElementById('reset-filters');
+            if (resetFilters) {
+                resetFilters.addEventListener('click', function() {
+                    // Conserver uniquement le terme de recherche s'il existe
+                    const searchTerm = document.getElementById('search-input').value;
+                    if (searchTerm) {
+                        window.location.href = window.location.pathname + '?search=' + encodeURIComponent(searchTerm);
+                    } else {
+                        window.location.href = window.location.pathname;
+                    }
+                });
+            }
+            
+           // Gestion de la recherche
+const searchInput = document.getElementById('search-input');
+const searchButton = document.getElementById('search-button');
+const clearSearchButton = document.getElementById('clear-search');
+
+function performSearch() {
+    const url = new URL(window.location);
+    const searchTerm = searchInput.value.trim();
+    
+    if (searchTerm) {
+        url.searchParams.set('search', searchTerm);
+        // Réinitialiser la pagination lors d'une nouvelle recherche
+        url.searchParams.delete('page'); 
+    } else {
+        url.searchParams.delete('search');
+    }
+    
+    window.location.href = url.toString();
+}
+
+// Recherche avec le bouton
+if (searchButton) {
+    searchButton.addEventListener('click', performSearch);
+}
+
+// Recherche avec la touche Enter
+if (searchInput) {
+    searchInput.addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+}
+
+// Effacer la recherche
+if (clearSearchButton) {
+    clearSearchButton.addEventListener('click', function() {
+        searchInput.value = '';
+        performSearch();
+    });
+}
+
+// Afficher/masquer la croix selon le contenu
+if (searchInput) {
+    searchInput.addEventListener('input', function() {
+        if (this.value.trim() && !clearSearchButton) {
+            // Créer le bouton s'il n'existe pas
+            const clearBtn = document.createElement('button');
+            clearBtn.id = 'clear-search';
+            clearBtn.className = 'clear-search-btn';
+            clearBtn.innerHTML = '<i class="fas fa-times"></i>';
+            this.parentNode.insertBefore(clearBtn, searchButton);
+            
+            clearBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                performSearch();
+            });
+        } else if (!this.value.trim() && clearSearchButton) {
+            // Supprimer le bouton si le champ est vide
+            clearSearchButton.remove();
+        }
+    });
+}
+
+            // Chargement infini des produits
+            const loadMoreBtn = document.getElementById('load-more');
+            if (loadMoreBtn) {
+                let page = 2;
+                let isLoading = false;
+                
+                loadMoreBtn.addEventListener('click', async function() {
+                    if (isLoading) return;
+                    
+                    isLoading = true;
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement...';
+                    
+                    try {
+                        // Récupérer les paramètres actuels
+                        const urlParams = new URLSearchParams(window.location.search);
+                        urlParams.set('page', page);
+                        
+                        const response = await fetch(`${window.location.pathname}?${urlParams.toString()}`);
+                        if (!response.ok) throw new Error('Erreur de chargement');
+                        
+                        const data = await response.text();
+                        
+                        // Extraire les produits du HTML retourné
+                        const parser = new DOMParser();
+                        const htmlDoc = parser.parseFromString(data, 'text/html');
+                        const newProducts = htmlDoc.getElementById('produits-grid').innerHTML;
+                        const newCount = htmlDoc.getElementById('produits-count').textContent;
+                        const hasNext = htmlDoc.getElementById('load-more') !== null;
+                        
+                        // Ajouter les nouveaux produits
+                        document.getElementById('produits-grid').insertAdjacentHTML('beforeend', newProducts);
+                        document.getElementById('produits-count').textContent = newCount;
+                        
+                        // Mettre à jour l'état du bouton
+                        if (!hasNext) {
+                            this.style.display = 'none';
+                        }
+                        
+                        page++;
+                    } catch (error) {
+                        console.error('Erreur:', error);
+                        this.innerHTML = 'Erreur de chargement';
+                        setTimeout(() => {
+                            this.innerHTML = 'Voir plus de produits <i class="fas fa-arrow-down"></i>';
+                            this.disabled = false;
+                        }, 2000);
+                    } finally {
+                        isLoading = false;
+                        this.disabled = false;
+                        this.innerHTML = 'Voir plus de produits <i class="fas fa-arrow-down"></i>';
+                    }
+                });
+            }
+        });
+        
+    </script>
+</body>
+</html>

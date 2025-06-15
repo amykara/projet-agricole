@@ -1,0 +1,254 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À propos - AgriConnect</title>
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/additional-styles.css' %}">
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- En-tête -->
+{% if user.is_authenticated %}
+        {% include "Agri_Connect_CI/header_footer/header_logged_in.html" %}
+    {% else %}
+        {% include "Agri_Connect_CI/header_footer/header.html" %}
+    {% endif %}
+    <!-- Bannière À propos -->
+    <div class="page-banner about-banner">
+        <div class="container">
+            <div class="page-banner-content">
+                <h1>À propos d'AgriConnect</h1>
+                <p>Découvrez notre mission et comment nous transformons l'agriculture locale</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notre Histoire -->
+    <section class="about-section">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1590682680695-43b964a3ae17?q=80&w=600&auto=format&fit=crop" alt="Histoire d'AgriConnect">
+                </div>
+                <div class="about-content">
+                    <div class="section-subtitle">Notre Histoire</div>
+                    <h2>Comment AgriConnect a commencé</h2>
+                    <p>AgriConnect est née d'un constat simple : les producteurs locaux peinent à vendre leurs produits à un prix juste, tandis que les consommateurs cherchent à acheter des produits frais et locaux. La plateforme a été fondée en 2025 par un groupe d'entrepreneurs passionnés par l'agriculture durable.</p>
+                    <p>Depuis, notre mission est de créer un écosystème où producteurs et acheteurs peuvent se rencontrer directement, sans intermédiaire, pour des échanges plus transparents et équitables.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notre Mission -->
+    <section class="about-section mission-section">
+        <div class="container">
+            <div class="about-grid reversed">
+                <div class="about-content">
+                    <div class="section-subtitle">Notre Mission</div>
+                    <h2>Transformer l'agriculture locale</h2>
+                    <p>Nous créons des liens directs entre producteurs et consommateurs pour favoriser une agriculture plus durable et des échanges économiques plus justes.</p>
+                    <ul class="mission-list">
+                        <li><i class="fas fa-check-circle"></i> Permettre aux producteurs de vendre à un prix équitable</li>
+                        <li><i class="fas fa-check-circle"></i> Offrir aux consommateurs des produits frais et locaux</li>
+                        <li><i class="fas fa-check-circle"></i> Réduire l'empreinte carbone en favorisant les circuits courts</li>
+                        <li><i class="fas fa-check-circle"></i> Soutenir l'économie locale et l'agriculture durable</li>
+                    </ul>
+                </div>
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1523192193543-6e7296d960e4?q=80&w=600&auto=format&fit=crop" alt="Mission d'AgriConnect">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comment ça marche -->
+    <section class="about-section how-it-works-detail">
+        <div class="container">
+            <div class="section-header">
+                <h2>Comment fonctionne AgriConnect</h2>
+                <p>Une plateforme simple qui connecte producteurs, acheteurs et livreurs</p>
+            </div>
+            
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div class="step-icon"><i class="fas fa-user-plus"></i></div>
+                    <h3>Inscription</h3>
+                    <p>Les producteurs, acheteurs et livreurs s'inscrivent sur la plateforme. Les producteurs et livreurs passent par un processus de vérification.</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div class="step-icon"><i class="fas fa-shopping-basket"></i></div>
+                    <h3>Publication d'annonces</h3>
+                    <p>Les producteurs publient leurs produits avec des détails sur la qualité, le prix et la quantité disponible.</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div class="step-icon"><i class="fas fa-comments"></i></div>
+                    <h3>Mise en relation</h3>
+                    <p>Les acheteurs parcourent le catalogue et contactent directement les producteurs via WhatsApp pour organiser l'achat.</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div class="step-icon"><i class="fas fa-truck"></i></div>
+                    <h3>Livraison optionnelle</h3>
+                    <p>Si nécessaire, un livreur peut être impliqué pour faciliter la transaction entre le producteur et l'acheteur.</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">5</div>
+                    <div class="step-icon"><i class="fas fa-star"></i></div>
+                    <h3>Évaluation</h3>
+                    <p>Après la transaction, les utilisateurs peuvent s'évaluer mutuellement pour maintenir la qualité et la confiance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notre équipe -->
+    <section class="about-section team-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Notre équipe</h2>
+                <p>Des passionnés d'agriculture et de technologie</p>
+            </div>
+            
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-photo">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=300&auto=format&fit=crop" alt="Amadou Diallo">
+                    </div>
+                    <h3>Amadou Diallo</h3>
+                    <p class="member-role">Co-fondateur & CEO</p>
+                    <p class="member-bio">Ingénieur agronome avec 10 ans d'expérience dans le développement agricole en Afrique de l'Ouest.</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-photo">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=300&auto=format&fit=crop" alt="Marie Koné">
+                    </div>
+                    <h3>Marie Koné</h3>
+                    <p class="member-role">Co-fondatrice & CMO</p>
+                    <p class="member-bio">Spécialiste en marketing avec une passion pour l'agriculture durable et les circuits courts.</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-photo">
+                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=300&auto=format&fit=crop" alt="Paul Kouassi">
+                    </div>
+                    <h3>Paul Kouassi</h3>
+                    <p class="member-role">CTO</p>
+                    <p class="member-bio">Développeur et ingénieur en informatique spécialisé dans les solutions technologiques pour le développement rural.</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-photo">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=300&auto=format&fit=crop" alt="Awa Touré">
+                    </div>
+                    <h3>Awa Touré</h3>
+                    <p class="member-role">Responsable des Opérations</p>
+                    <p class="member-bio">Experte en logistique avec une forte expérience dans la gestion de chaînes d'approvisionnement agricoles.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rejoindre l'aventure -->
+    <section class="cta-section">
+        <div class="container cta-content">
+            <div class="cta-text">
+                <h2>Rejoignez l'aventure AgriConnect</h2>
+                <p>Que vous soyez producteur, acheteur ou livreur, devenez membre de notre communauté et participez à la transformation de l'agriculture locale.</p>
+                <div class="cta-buttons">
+                    <a href="register.html" class="btn btn-light">Créer un compte</a>
+                    <a href="register-producer.html" class="btn btn-outline-light">Devenir producteur</a>
+                </div>
+            </div>
+            <div class="img-grid">
+                <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?q=80&w=300&auto=format&fit=crop" alt="Agriculture" />
+                <img src="https://images.unsplash.com/photo-1589923188900-85dae523342b?q=80&w=300&auto=format&fit=crop" alt="Légumes" />
+                <img src="https://images.unsplash.com/photo-1615397349754-cfa2066a298e?q=80&w=300&auto=format&fit=crop" alt="Marché" />
+                <img src="https://images.unsplash.com/photo-1533062618053-d51e617307ec?q=80&w=300&auto=format&fit=crop" alt="Fruits" />
+            </div>
+        </div>
+    </section>
+
+    <!-- Pied de page -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-logo">
+                <div class="logo">
+                    <div class="logo-icon"><i class="fas fa-leaf"></i></div>
+                    <div class="logo-text">AgriConnect</div>
+                </div>
+                <p>AgriConnect connecte les producteurs locaux, les acheteurs et les livreurs pour favoriser une agriculture de proximité et des échanges plus directs et justes.</p>
+                <a href="about.html" class="footer-link">En savoir plus →</a>
+            </div>
+            
+            <div class="footer-links">
+                <h3>Liens utiles</h3>
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="catalog.html">Catalogue</a></li>
+                    <li><a href="about.html">À propos</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-links">
+                <h3>S'inscrire</h3>
+                <ul>
+                    <li><a href="register.html">Devenir acheteur</a></li>
+                    <li><a href="register-producer.html">Devenir producteur</a></li>
+                    <li><a href="register-producer.html">Devenir livreur</a></li>
+                    <li><a href="login.html">Se connecter</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-contact">
+                <h3>Contact</h3>
+                <ul>
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>123 Rue de l'Agriculture<br>75000 Paris, France</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-phone"></i>
+                        <span>+33 1 23 45 67 89</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <span>contact@AgriConnect.fr</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>© <span id="current-year">2023</span> AgriConnect. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Toast de notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i class="fas toast-icon"></i>
+            <span class="toast-message">Notification</span>
+        </div>
+        <button class="toast-close"><i class="fas fa-times"></i></button>
+    </div>
+    
+    <script src="{% static 'Agri_Connect_CI/js/main.js' %}"></script>
+</body>
+</html>

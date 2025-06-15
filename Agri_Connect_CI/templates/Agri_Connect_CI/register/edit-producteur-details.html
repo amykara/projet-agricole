@@ -1,0 +1,448 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulaire Producteur | AgriConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --primary: #2E7D32;
+      --primary-dark: #1B5E20;
+      --primary-light: #C8E6C9;
+      --secondary: #5D4037;
+      --secondary-light: #D7CCC8;
+      --accent: #FFA000;
+      --text: #263238;
+      --text-light: #546E7A;
+      --background: #F5F5F6;
+      --white: #FFFFFF;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--text);
+      background-color: var(--background);
+      line-height: 1.6;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: var(--white);
+      padding: 2rem;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+    }
+
+    h1 {
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--secondary);
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .btn {
+      background-color: var(--primary);
+      color: var(--white);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .btn:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .preview-btn {
+      background-color: var(--secondary-light);
+      color: var(--secondary);
+    }
+
+    .preview-btn:hover {
+      background-color: var(--secondary);
+      color: var(--white);
+    }
+
+    /* Style pour l'upload de photo en cercle */
+    .photo-upload-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .photo-circle {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: var(--primary-light);
+      border: 3px dashed var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .photo-circle:hover {
+      border-color: var(--primary-dark);
+      transform: scale(1.02);
+    }
+
+    .photo-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .photo-circle .placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--primary-dark);
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .photo-circle .placeholder i {
+      margin-bottom: 0.5rem;
+    }
+
+    .photo-upload-input {
+      display: none;
+    }
+
+    .photo-instructions {
+      font-size: 0.875rem;
+      color: var(--text-light);
+      text-align: center;
+    }
+
+    /* Style pour les catégories */
+    .category-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .category-checkbox {
+      display: none;
+    }
+
+    .category-label {
+      display: block;
+      padding: 0.5rem;
+      background-color: var(--background);
+      border-radius: var(--radius-sm);
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .category-checkbox:checked + .category-label {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>
+      <i data-lucide="user-plus" width="32" height="32"></i>
+      Formulaire Producteur
+    </h1>
+
+    <form id="producer-form">
+      <!-- Photo de profil en cercle -->
+      <div class="form-group">
+        <label>Photo de profil</label>
+        <div class="photo-upload-container">
+          <div class="photo-circle" id="photo-circle">
+            <img id="photo-preview" alt="Aperçu de la photo">
+            <div class="placeholder">
+              <i data-lucide="camera" width="32" height="32"></i>
+              <span>Ajouter une photo</span>
+            </div>
+          </div>
+          <input type="file" id="photo-upload" class="photo-upload-input" accept="image/*">
+          <p class="photo-instructions">Cliquez sur le cercle pour télécharger une photo</p>
+        </div>
+      </div>
+
+      <!-- Informations de base -->
+      <div class="form-group">
+        <label for="nom">Nom du producteur</label>
+        <input type="text" id="nom" name="nom" required placeholder="Jean Dupont">
+      </div>
+
+      <div class="form-group">
+        <label for="type">Type de producteur</label>
+        <select id="type" name="type" required>
+          <option value="individuel">Producteur individuel</option>
+          <option value="entreprise">Entreprise / Coopérative</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description courte</label>
+        <textarea id="description" name="description" required placeholder="Une brève description qui apparaîtra dans l'en-tête du profil"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="descriptionLong">Description détaillée</label>
+        <textarea id="descriptionLong" name="descriptionLong" required placeholder="Une description plus détaillée qui apparaîtra dans la section 'À propos'"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="localisation">Localisation</label>
+        <input type="text" id="localisation" name="localisation" required placeholder="Abidjan, Côte d'Ivoire">
+      </div>
+
+      <!-- Contact -->
+      <div class="form-group">
+        <label for="contactTel">Téléphone</label>
+        <input type="tel" id="contactTel" name="contactTel" required placeholder="+225 07 12 34 56 78">
+      </div>
+
+      <div class="form-group">
+        <label for="contactEmail">Email</label>
+        <input type="email" id="contactEmail" name="contactEmail" required placeholder="jean.dupont@example.com">
+      </div>
+
+      <!-- Catégories de produits -->
+      <div class="form-group">
+        <label>Catégories de produits</label>
+        <div class="category-selector">
+          <input type="checkbox" id="category-legumes" name="produits" value="Légumes" class="category-checkbox">
+          <label for="category-legumes" class="category-label">Légumes</label>
+          
+          <input type="checkbox" id="category-fruits" name="produits" value="Fruits" class="category-checkbox">
+          <label for="category-fruits" class="category-label">Fruits</label>
+          
+          <input type="checkbox" id="category-cereales" name="produits" value="Céréales" class="category-checkbox">
+          <label for="category-cereales" class="category-label">Céréales</label>
+          
+          <input type="checkbox" id="category-tubercules" name="produits" value="Tubercules" class="category-checkbox">
+          <label for="category-tubercules" class="category-label">Tubercules</label>
+          
+          <input type="checkbox" id="category-laitiers" name="produits" value="Produits laitiers" class="category-checkbox">
+          <label for="category-laitiers" class="category-label">Laitiers</label>
+          
+          <input type="checkbox" id="category-viandes" name="produits" value="Viandes" class="category-checkbox">
+          <label for="category-viandes" class="category-label">Viandes</label>
+          
+          <input type="checkbox" id="category-volailles" name="produits" value="Volailles" class="category-checkbox">
+          <label for="category-volailles" class="category-label">Volailles</label>
+          
+          <input type="checkbox" id="category-poissons" name="produits" value="Poissons" class="category-checkbox">
+          <label for="category-poissons" class="category-label">Poissons</label>
+          
+          <input type="checkbox" id="category-oeufs" name="produits" value="Œufs" class="category-checkbox">
+          <label for="category-oeufs" class="category-label">Œufs</label>
+          
+          <input type="checkbox" id="category-miel" name="produits" value="Miel" class="category-checkbox">
+          <label for="category-miel" class="category-label">Miel</label>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn preview-btn" id="preview-btn">
+          <i data-lucide="eye"></i> Prévisualiser
+        </button>
+        <button type="submit" class="btn">
+          <i data-lucide="save"></i> Enregistrer
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Initialiser les icônes Lucide
+    lucide.createIcons();
+
+    // Gestion de l'upload de photo en cercle
+    const photoCircle = document.getElementById('photo-circle');
+    const photoUpload = document.getElementById('photo-upload');
+    const photoPreview = document.getElementById('photo-preview');
+    const photoPlaceholder = document.querySelector('.photo-circle .placeholder');
+
+    photoCircle.addEventListener('click', () => {
+      photoUpload.click();
+    });
+
+    photoUpload.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          photoPreview.src = event.target.result;
+          photoPreview.style.display = 'block';
+          photoPlaceholder.style.display = 'none';
+          
+          // Appliquer un effet de zoom léger pour confirmer la sélection
+          photoCircle.style.transform = 'scale(1.05)';
+          setTimeout(() => {
+            photoCircle.style.transform = 'scale(1)';
+          }, 200);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Prévisualisation
+    const previewBtn = document.getElementById('preview-btn');
+    previewBtn.addEventListener('click', () => {
+      const formData = getFormData();
+      
+      // Stocker les données dans localStorage
+      localStorage.setItem('producerPreviewData', JSON.stringify(formData));
+      
+      // Ouvrir la prévisualisation dans un nouvel onglet
+      window.open('details.html?preview=true', '_blank');
+    });
+
+    function getFormData() {
+      const form = document.getElementById('producer-form');
+      const formData = new FormData(form);
+      const data = {};
+      
+      // Récupérer les valeurs du formulaire
+      for (const [key, value] of formData.entries()) {
+        if (key === 'produits') {
+          if (!data.produits) data.produits = [];
+          data.produits.push(value);
+        } else {
+          data[key] = value;
+        }
+      }
+      
+      // Si un seul produit est sélectionné, le convertir en tableau
+      if (data.produits && !Array.isArray(data.produits)) {
+        data.produits = [data.produits];
+      }
+      
+      // Ajouter la photo si elle existe
+      if (photoUpload.files[0]) {
+        data.photoFile = photoUpload.files[0].name;
+        data.photoPreview = photoPreview.src;
+      }
+      
+      // Ajouter un ID et une date d'activité
+      data.id = Date.now();
+      data.derniereActivite = new Date().toISOString().split('T')[0];
+      
+      return data;
+    }
+
+    // Soumission du formulaire
+    const producerForm = document.getElementById('producer-form');
+    producerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const formData = getFormData();
+      console.log('Données du formulaire:', formData);
+      
+      // Ici, vous pourriez envoyer les données à un serveur
+      // Pour la photo, vous devrez utiliser FormData pour l'upload réel
+      const uploadFormData = new FormData();
+      if (photoUpload.files[0]) {
+        uploadFormData.append('photo', photoUpload.files[0]);
+      }
+      
+      alert('Producteur enregistré avec succès!');
+      
+      // Réinitialiser le formulaire
+      producerForm.reset();
+      photoPreview.style.display = 'none';
+      photoPlaceholder.style.display = 'flex';
+    });
+
+    // Exemple de données pré-remplies pour le test
+    function fillSampleData() {
+      document.getElementById('nom').value = 'Jean Dupont';
+      document.getElementById('type').value = 'individuel';
+      document.getElementById('description').value = 'Producteur passionné depuis 15 ans, spécialisé dans les cultures maraîchères biologiques.';
+      document.getElementById('descriptionLong').value = 'Producteur passionné depuis 15 ans, spécialisé dans les cultures maraîchères biologiques. Je m\'engage à fournir des produits de qualité tout en respectant l\'environnement. Mes méthodes de production sont durables et respectueuses de la biodiversité. Je propose des paniers de légumes de saison chaque semaine avec livraison possible dans la région.';
+      document.getElementById('localisation').value = 'Abidjan, Côte d\'Ivoire';
+      document.getElementById('contactTel').value = '+225 07 12 34 56 78';
+      document.getElementById('contactEmail').value = 'jean.dupont@example.com';
+      
+      // Sélectionner des catégories par défaut
+      document.getElementById('category-legumes').checked = true;
+      document.getElementById('category-fruits').checked = true;
+    }
+
+    // Décommenter pour pré-remplir avec des données d'exemple
+    // fillSampleData();
+  </script>
+</body>
+</html>

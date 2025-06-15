@@ -1,0 +1,59 @@
+{% load static %}
+<!-- Pied de page -->
+<footer class="footer">
+    <div class="container footer-content">
+        <div class="footer-logo">
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-leaf"></i></div>
+                <div class="logo-text">AgriConnect</div>
+            </div>
+            <p>AgriConnect connecte les producteurs locaux, les acheteurs et les livreurs pour favoriser une agriculture de proximité et des échanges plus directs et justes.</p>
+            <a href="{% url 'page' page_name='about' %}" class="footer-link">En savoir plus →</a>
+        </div>
+        
+        <div class="footer-links">
+            <h3>Liens utiles</h3>
+            <ul>
+                <li><a href="{% url 'home' %}">Accueil</a></li>
+                <li><a href="{% url 'page' page_name='catalog' %}">Catalogue</a></li>
+                <li><a href="{% url 'page' page_name='about' %}">À propos</a></li>
+                <li><a href="{% url 'page' page_name='faq' %}">FAQ</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-links">
+            <h3>S'inscrire</h3>
+            <ul>
+                <li><a href="{% url 'inscription' %}">Devenir acheteur</a></li>
+                <li><a href="{% url 'inscription' %}">Devenir producteur</a></li>
+                <li><a href="{% url 'inscription' %}">Devenir livreur</a></li>
+                <li><a href="{% url 'connexion' %}">Se connecter</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-contact">
+            <h3>Contact</h3>
+            <ul>
+                <li>
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>123 Rue du commerce<br>75000 Abidjan, Côte d'Ivoire</span>
+                </li>
+                <li>
+                    <i class="fas fa-phone"></i>
+                    <span>+225 0701850708</span>
+                </li>
+                <li>
+                    <i class="fas fa-envelope"></i>
+                    <span>contact@AgriConnect.fr</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="footer-divider"></div>
+        <div class="footer-bottom">
+            <p>© <span id="current-year">{{ current_year }}</span> AgriConnect. Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>

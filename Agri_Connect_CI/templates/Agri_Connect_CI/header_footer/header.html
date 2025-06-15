@@ -1,0 +1,44 @@
+{% load static %}
+
+<header class="header">
+    <div class="container navbar">
+        <div class="logo">
+            <a href="{% url 'home' %}">
+                <div class="logo-icon"><i class="fas fa-leaf"></i></div>
+                <div class="logo-text">AgriConnect</div>
+            </a>
+        </div>
+        
+     <nav class="nav-desktop">
+    <ul>
+        <li><a href="{% url 'home' %}" class="nav-link {% if request.path == '/' %}active{% endif %}">Accueil</a></li>
+        <li><a href="{% url 'page' 'catalog' %}" class="nav-link {% if 'catalog' in request.path %}active{% endif %}">Catalogue</a></li>
+        <li><a href="{% url 'page' 'annonces' %}" class="nav-link {% if 'annonces' in request.path %}active{% endif %}">Annonces</a></li>
+        <li><a href="{% url 'page' 'livreur' %}" class="nav-link {% if 'livreur' in request.path %}active{% endif %}">Livreurs</a></li>
+        <li><a href="{% url 'page' 'about' %}" class="nav-link {% if 'about' in request.path %}active{% endif %}">À propos</a></li>
+    </ul>
+</nav>
+        
+        <div class="auth-buttons">
+            <a href="{% url 'connexion' %}" class="btn btn-outline">Connexion</a>
+            <a href="{% url 'inscription' %}" class="btn btn-primary">Inscription</a>
+        </div>
+        
+        <button class="mobile-menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    
+    <div class="nav-mobile">
+        <ul>
+            <li><a href="{% url 'home' %}" class="active">Accueil</a></li>
+            <li><a href="{% url 'page' page_name='catalog' %}">Catalogue</a></li>
+            <li><a href="{% url 'page' page_name='about' %}">À propos</a></li>
+            <li><a href="{% url 'page' page_name='faq' %}">FAQ</a></li>
+            <div class="mobile-auth">
+                <li><a href="{% url 'connexion' %}">Connexion</a></li>
+                <li><a href="{% url 'inscription' %}" class="highlight">Inscription</a></li>
+            </div>
+        </ul>
+    </div>
+</header>

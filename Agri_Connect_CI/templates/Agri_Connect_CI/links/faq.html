@@ -1,0 +1,213 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - AgriMarket</title>
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/additional-styles.css' %}">
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/faq-style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- En-tête -->
+{% if user.is_authenticated %}
+        {% include "Agri_Connect_CI/header_footer/header_logged_in.html" %}
+    {% else %}
+        {% include "Agri_Connect_CI/header_footer/header.html" %}
+    {% endif %}
+    <!-- Bannière FAQ -->
+    <div class="page-banner faq-banner">
+        <div class="container">
+            <div class="page-banner-content">
+                <h1>Questions fréquentes</h1>
+                <p>Trouvez des réponses à vos questions sur AgriMarket</p>
+            </div>
+        </div>
+    </div>
+
+  <!-- Section FAQ -->
+<section class="faq-section">
+    <div class="container">
+        <div class="faq-container">
+            <!-- Onglets FAQ -->
+            <div class="faq-tabs">
+                <button class="faq-tab active" data-target="general">Questions générales</button>
+                <button class="faq-tab" data-target="buyers">Pour les acheteurs</button>
+                <button class="faq-tab" data-target="producers">Pour les producteurs</button>
+                <button class="faq-tab" data-target="delivery">Pour les livreurs</button>
+            </div>
+            
+            <!-- Contenus des onglets -->
+            <div class="faq-content">
+                <!-- Questions générales -->
+                <div class="faq-tab-content active" id="general">
+                    <div class="accordion">
+                        {% for faq in faqs.general %}
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <h3>{{ faq.question }}</h3>
+                                <span class="accordion-icon"><i class="fas fa-plus"></i></span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>{{ faq.reponse }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Pour les acheteurs -->
+                <div class="faq-tab-content" id="buyers">
+                    <div class="accordion">
+                        {% for faq in faqs.acheteur %}
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <h3>{{ faq.question }}</h3>
+                                <span class="accordion-icon"><i class="fas fa-plus"></i></span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>{{ faq.reponse }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Pour les producteurs -->
+                <div class="faq-tab-content" id="producers">
+                    <div class="accordion">
+                        {% for faq in faqs.producteur %}
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <h3>{{ faq.question }}</h3>
+                                <span class="accordion-icon"><i class="fas fa-plus"></i></span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>{{ faq.reponse }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Pour les livreurs -->
+                <div class="faq-tab-content" id="delivery">
+                    <div class="accordion">
+                        {% for faq in faqs.livreur %}
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <h3>{{ faq.question }}</h3>
+                                <span class="accordion-icon"><i class="fas fa-plus"></i></span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>{{ faq.reponse }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Section contact -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h2>Besoin d'aide supplémentaire ?</h2>
+                    <p>Si vous ne trouvez pas la réponse à votre question, n'hésitez pas à nous contacter directement.</p>
+                    
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h3>Email</h3>
+                                <p>contact@agrimarket.fr</p>
+                                <p>support@agrimarket.fr</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h3>Téléphone</h3>
+                                <p>+33 1 23 45 67 89</p>
+                                <p>Lun-Ven, 9h-18h</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h3>WhatsApp</h3>
+                                <p>+33 6 12 34 56 78</p>
+                                <a href="https://wa.me/33612345678" class="whatsapp-link">Envoyer un message <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form-container">
+                    <h2>Envoyez-nous un message</h2>
+                    <form id="contact-form" class="contact-form">
+                        <div class="form-group">
+                            <label for="name">Nom complet</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Sujet</label>
+                            <select id="subject" name="subject" required>
+                                <option value="">Choisir un sujet</option>
+                                <option value="general">Question générale</option>
+                                <option value="buyer">Question acheteur</option>
+                                <option value="producer">Question producteur</option>
+                                <option value="delivery">Question livreur</option>
+                                <option value="other">Autre</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Envoyer le message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pied de page -->
+        {% include 'Agri_Connect_CI/header_footer/footer.html' %}
+
+    
+    <!-- Toast de notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i class="fas toast-icon"></i>
+            <span class="toast-message">Notification</span>
+        </div>
+        <button class="toast-close"><i class="fas fa-times"></i></button>
+    </div>
+    
+    <script src="{% static 'Agri_Connect_CI/js/main.js' %}"></script>
+    <script src="{% static 'Agri_Connect_CI/js/faq.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,1061 @@
+{% load custom_filters %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ produit.nom }} - Détail | AgriMarket</title>
+     <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Palette de couleurs agricoles premium */
+            --primary: #2E7D32; /* Vert foncé */
+            --primary-light: #4CAF50; /* Vert clair */
+            --secondary: #F57F17; /* Orange */
+            --accent: #FFC107; /* Jaune doré */
+            --dark: #263238; /* Noir bleuté */
+            --light: #F5F5F6; /* Gris très clair */
+            --white: #FFFFFF;
+            --text: #37474F; /* Gris foncé */
+            --text-light: #78909C; /* Gris moyen */
+            
+            /* Effets */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.16);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text);
+            background-color: var(--light);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+        }
+        
+        /* Header */
+        .header {
+            background-color: var(--white);
+            box-shadow: var(--shadow-sm);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        /* Boutons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 15px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: white;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .btn-whatsapp:hover {
+            background-color: #128C7E;
+        }
+        
+        /* Layout principal */
+        .annonce-detail {
+            padding: 40px 0 60px;
+        }
+        
+        .annonce-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        /* Sidebar fixe */
+        .sidebar {
+            position: sticky;
+            top: 100px; /* Ajustez selon la hauteur de votre header */
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+        
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: rgba(46,125,50,0.3);
+            border-radius: 3px;
+        }
+        
+        /* Carte principale */
+        .card {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            margin-bottom: 0;
+        }
+        
+        .card-content {
+            padding: 20px;
+        }
+        
+        /* Galerie d'images optimisée */
+        .gallery-container {
+            position: relative;
+        }
+        
+        .main-image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px 12px 0 0;
+            background-color: #f8f9fa;
+        }
+        
+        .main-image {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+            padding: 20px;
+            transition: transform 0.5s ease;
+        }
+        
+        .thumbnail-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 15px;
+            background-color: var(--white);
+        }
+        
+        .thumbnail {
+            height: 80px;
+            width: 100%;
+            object-fit: contain;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            padding: 5px;
+        }
+        
+        .thumbnail:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+        
+        .thumbnail.active {
+            border-color: var(--primary);
+        }
+        
+        /* Contenu de l'annonce */
+        .annonce-header {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 25px;
+        }
+        
+        .annonce-title {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--dark);
+            line-height: 1.3;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 10px;
+        }
+        
+        .badge-vente {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .annonce-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+        
+        .annonce-meta i {
+            margin-right: 5px;
+            color: var(--primary);
+        }
+        
+        .price-container {
+            background: linear-gradient(135deg, rgba(46,125,50,0.1) 0%, rgba(76,175,80,0.1) 100%);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .annonce-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .annonce-price-unit {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .section-title {
+            font-size: 22px;
+            margin: 25px 0 15px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary);
+            border-radius: 3px;
+        }
+        
+        .annonce-description {
+            color: var(--text);
+            white-space: pre-line;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+        
+        .caracteristiques-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .caracteristique-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background-color: rgba(46,125,50,0.05);
+            border-radius: 8px;
+        }
+        
+        .caracteristique-icon {
+            color: var(--primary);
+            font-size: 18px;
+            min-width: 25px;
+        }
+        
+        /* Vendeur */
+        .vendeur-card {
+            position: relative;
+            overflow: visible;
+            margin-bottom: 30px;
+        }
+        
+        .vendeur-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .vendeur-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--white);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .vendeur-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .vendeur-avatar-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary);
+            color: var(--white);
+            font-weight: 700;
+            font-size: 24px;
+        }
+        
+        .vendeur-info {
+            flex: 1;
+        }
+        
+        .vendeur-name {
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 3px;
+        }
+        
+        .vendeur-role {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .rating-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .rating-stars {
+            color: var(--accent);
+        }
+        
+        .rating-count {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+        
+        .contact-item:hover {
+            background-color: rgba(46,125,50,0.05);
+        }
+        
+        .contact-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(46,125,50,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+        
+        /* Favoris */
+        .favori-btn {
+            width: 100%;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .favori-btn i {
+            transition: var(--transition);
+        }
+        
+        .favori-btn:hover i {
+            transform: scale(1.2);
+            color: #ff4081;
+        }
+        
+        /* Annonces similaires */
+        .similar-products {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .similar-product {
+            display: flex;
+            gap: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            transition: var(--transition);
+            background-color: var(--white);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .similar-product:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .similar-product-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .similar-product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: var(--transition);
+            padding: 5px;
+        }
+        
+        .similar-product:hover .similar-product-image img {
+            transform: scale(1.1);
+        }
+        
+        .similar-product-info {
+            flex: 1;
+        }
+        
+        .similar-product-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .similar-product-price {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        /* Avis */
+        .reviews-container {
+            margin-top: 40px;
+        }
+        
+        .review-item {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .review-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .review-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 12px;
+        }
+        
+        .review-author {
+            font-weight: 500;
+        }
+        
+        .review-date {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+        
+        .review-content {
+            margin-top: 10px;
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        /* Formulaire d'avis */
+        .review-form {
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-top: 30px;
+        }
+        
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+        
+        .star-rating input {
+            display: none;
+        }
+        
+        .star-rating label {
+            font-size: 24px;
+            color: #ddd;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-right: 5px;
+        }
+        
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: var(--accent);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46,125,50,0.2);
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Animation coeur */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        
+        .favori-btn.animate i {
+            animation: pulse 0.5s ease-in-out;
+        }
+        
+        /* Responsive */
+        @media (min-width: 768px) {
+            .annonce-grid {
+                grid-template-columns: 2fr 1fr;
+            }
+            
+            .caracteristiques-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .annonce-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+            
+            .price-container {
+                margin: 0;
+                width: auto;
+                min-width: 200px;
+                justify-content: center;
+                flex-direction: column;
+            }
+            
+            .annonce-price {
+                font-size: 32px;
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .main-image {
+                max-height: 350px;
+                padding: 30px;
+            }
+            
+            .thumbnail {
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="annonce-detail">
+        <div class="container">
+            <!-- Bouton retour -->
+            <div style="margin-bottom: 25px;">
+                <a href="{% url 'home' %}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour aux produits
+                </a>
+            </div>
+            
+            <div class="annonce-grid">
+                <!-- Contenu principal -->
+                <div>
+                    <div class="card">
+                        <!-- Galerie d'images optimisée -->
+                        <div class="gallery-container">
+                            <div class="main-image-container">
+                                <img id="mainImage" src="{{ images.0.url_image.url }}" 
+                                     alt="{{ annonce.titre }}" class="main-image">
+                            </div>
+                            <div class="thumbnail-container">
+                                {% for image in images %}
+                                <img src="{{ image.url_image.url }}" 
+                                     alt="{{ annonce.titre }}" 
+                                     class="thumbnail {% if forloop.first %}active{% endif %}"
+                                     onclick="changeMainImage('{{ image.url_image.url }}', this)">
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Contenu -->
+                        <div class="card-content">
+                            <!-- En-tête -->
+                            <div class="annonce-header">
+                                <div>
+                                    <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px;">
+                                        <h1 class="annonce-title">{{ produit.nom }}</h1>
+                                        <span class="badge badge-vente">{{ annonce.type_annonce.nom }}</span>
+                                    </div>
+                                    
+                                    <div class="annonce-meta">
+                                        <div>
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <span>{{ annonce.zone.ville }}</span>
+                                        </div>
+                                        <div>
+                                            <i class="far fa-calendar-alt"></i>
+                                            <span>{{ annonce.date_annonce|date:"d/m/Y" }}</span>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-tag"></i>
+                                            <span>{{ produit.categorie.nom }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="price-container">
+                                    <div class="annonce-price">{{ produit.prix_unitaire }} {{ produit.devise.nom }}</div>
+                                    <div class="annonce-price-unit">/{{ produit.unite.abbr }}</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Description -->
+                            <div>
+                                <h2 class="section-title">Description</h2>
+                                <p class="annonce-description">
+                                    {{ annonce.description }}
+                                </p>
+                            </div>
+                            
+                            <!-- Caractéristiques -->
+                            <div>
+                                <h2 class="section-title">Caractéristiques</h2>
+                                <div class="caracteristiques-grid">
+                                    <div class="caracteristique-item">
+                                        <div class="caracteristique-icon">
+                                            <i class="fas fa-weight"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 500;">Unité</div>
+                                            <div>{{ produit.unite.abbr }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="caracteristique-item">
+                                        <div class="caracteristique-icon">
+                                            <i class="fas fa-box"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 500;">Conditionnement</div>
+                                            <div>{{ produit.conditionnement|default:"Standard" }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="caracteristique-item">
+                                        <div class="caracteristique-icon">
+                                            <i class="fas fa-truck"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 500;">Livraison</div>
+                                            <div>{% if produit.livraison_disponible %}Disponible{% else %}Non disponible{% endif %}</div>
+                                        </div>
+                                    </div>
+                                    <div class="caracteristique-item">
+                                        <div class="caracteristique-icon">
+                                            <i class="fas fa-certificate"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 500;">Certification</div>
+                                            <div>{{ produit.certification|default:"Non certifié" }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section Avis -->
+                    <div class="reviews-container">
+                        <h2 class="section-title">Avis des clients</h2>
+                        
+                        {% if notations %}
+                            {% for notation in notations %}
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="review-avatar">
+                                        {{ notation.evaluateur.full_name|slice:":1"|upper }}
+                                    </div>
+                                    <div>
+                                        <div class="review-author">{{ notation.evaluateur.full_name }}</div>
+                                        <div class="review-date">{{ notation.date_creation|date:"d/m/Y" }}</div>
+                                    </div>
+                                </div>
+                                <div class="rating-container">
+                                    {% for i in note_etoiles %}
+                                        <i class="fas fa-star {% if i <= notation.note %}star-filled{% else %}star-empty{% endif %}"></i>
+                                    {% endfor %}
+                                </div>
+                                <div class="review-content">
+                                    {{ notation.commentaire }}
+                                </div>
+                                
+                                {% if notation.evaluateur == request.user %}
+                                <div style="margin-top: 15px;">
+                                    <form method="post" action="{% url 'supprimer_notation' notation.id %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="annonce_id" value="{{ annonce.id }}">
+                                        <button type="submit" style="color: #e53935; background: none; border: none; cursor: pointer;">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p style="text-align: center; color: var(--text-light); padding: 30px 0;">
+                                Aucun avis pour le moment. Soyez le premier à noter ce producteur!
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Formulaire d'avis -->
+                    {% if user_connected %}
+                    <div class="review-form">
+                        <h3 style="margin-bottom: 20px; font-size: 20px;">
+                            {% if note_existante %}Modifier votre avis{% else %}Donnez votre avis{% endif %}
+                        </h3>
+                        
+                        <form method="post" action="{% url 'noter_producteur' annonce.auteur.producteur.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="annonce_id" value="{{ annonce.id }}">
+                            
+                            <div class="form-group">
+                                <div class="star-rating">
+                                    {% for i in "54321" %}
+                                        <input type="radio" id="star{{i}}" name="note" value="{{i}}" 
+                                               {% if note_existante and note_existante.note == i|add:0 %}checked{% endif %} required>
+                                        <label for="star{{i}}"><i class="fas fa-star"></i></label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <textarea name="commentaire" id="commentaire" class="form-control" 
+                                          placeholder="Décrivez votre expérience avec ce producteur...">{% if note_existante %}{{ note_existante.commentaire }}{% endif %}</textarea>
+                            </div>
+                            
+                            <div style="display: flex; gap: 15px;">
+                                <button type="submit" class="btn btn-primary">
+                                    {% if note_existante %}Mettre à jour{% else %}Publier{% endif %}
+                                </button>
+                                
+                                {% if note_existante %}
+                                <a href="{% url 'supprimer_notation' note_existante.id %}?annonce_id={{ annonce.id }}" 
+                                   class="btn btn-outline">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </a>
+                                {% endif %}
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Sidebar fixe -->
+                <div class="sidebar">
+                    <!-- Vendeur -->
+                    <div class="card vendeur-card">
+                        <div class="card-content">
+                            <div class="vendeur-header">
+                                <div class="vendeur-avatar">
+                                    {% if annonce.auteur.photo_profil %}
+                                        <img src="{{ annonce.auteur.photo_profil.url }}" alt="{{ annonce.auteur.full_name }}">
+                                    {% else %}
+                                        <div class="vendeur-avatar-text">
+                                            {{ annonce.auteur.full_name|slice:":1"|upper }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="vendeur-info">
+                                    <div class="vendeur-name">{{ annonce.auteur.full_name }}</div>
+                                    <div class="vendeur-role">Producteur</div>
+                                </div>
+                            </div>
+                            
+                            <div class="rating-container">
+                                <div class="rating-stars">
+                                    {% for i in note_etoiles %}
+                                        <i class="fas fa-star {% if i <= note_moyenne %}star-filled{% else %}star-empty{% endif %}"></i>
+                                    {% endfor %}
+                                </div>
+                                <div class="rating-count">
+                                    {{ note_moyenne|floatformat:1 }} ({{ nb_avis }} avis)
+                                </div>
+                            </div>
+                            
+                            <!-- Bouton favori -->
+                            <button onclick="toggleFavori(this)" 
+                                    class="btn favori-btn {% if est_favori %}btn-primary{% else %}btn-outline{% endif %}"
+                                    data-annonce-id="{{ annonce.id }}"
+                                    data-is-connected="{% if request.user.is_authenticated %}true{% else %}false{% endif %}"
+                                    data-login-url="{% url 'connexion' %}?next={% url 'annonce_detail' annonce.id %}">
+                                <i class="fas fa-heart"></i>
+                                {% if est_favori %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}
+                            </button>
+                            
+                            <!-- Contacts -->
+                            <div class="contact-list">
+                                {% with annonce.auteur.contact_set.all as contacts %}
+                                    {% for contact in contacts %}
+                                    <div class="contact-item">
+                                        <div class="contact-icon">
+                                            <i class="fas fa-{{ contact.type_contact.nom|lower }}"></i>
+                                        </div>
+                                        <div>{{ contact.valeur }}</div>
+                                    </div>
+                                    {% endfor %}
+                                {% endwith %}
+                            </div>
+                            
+                            <!-- Bouton WhatsApp -->
+                            {% if request.user.is_authenticated %}
+                                {% with annonce.auteur.contact_set.first as contact %}
+                                {% if contact %}
+                                    <a href="{% url 'contacter_whatsapp' annonce.id %}" class="btn btn-whatsapp">
+                                        <i class="fab fa-whatsapp"></i> Contacter via WhatsApp
+                                    </a>
+                                {% endif %}
+                                {% endwith %}
+                            {% else %}
+                                <a href="{% url 'connexion' %}?next={% url 'annonce_detail' annonce.id %}" 
+                                class="btn btn-whatsapp" title="Connectez-vous pour contacter">
+                                    <i class="fab fa-whatsapp"></i> Contacter via WhatsApp
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Annonces similaires -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Produits similaires</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="similar-products">
+                                {% for similaire in annonces_similaires %}
+                                <a href="{% url 'annonce_detail' similaire.id %}" class="similar-product">
+                                    <div class="similar-product-image">
+                                        {% with similaire.annonceimage_set.first as image %}
+                                        <img src="{{ image.url_image.url }}" alt="{{ similaire.titre }}">
+                                        {% endwith %}
+                                    </div>
+                                    <div class="similar-product-info">
+                                        <h4 class="similar-product-title">{{ similaire.titre }}</h4>
+                                        <div class="similar-product-price">
+                                            {{ similaire.annonceproduit_set.first.prix_unitaire }} 
+                                            {{ similaire.annonceproduit_set.first.devise.code }}
+                                        </div>
+                                    </div>
+                                </a>
+                                {% empty %}
+                                <p style="text-align: center; color: var(--text-light); padding: 15px 0;">
+                                    Aucun produit similaire trouvé
+                                </p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+       {% include 'Agri_Connect_CI/header_footer/footer.html' %}
+
+    <script>
+        // Galerie d'images
+        function changeMainImage(newSrc, clickedThumb) {
+            const mainImg = document.getElementById('mainImage');
+            mainImg.style.opacity = '0';
+            
+            setTimeout(() => {
+                mainImg.src = newSrc;
+                mainImg.style.opacity = '1';
+                
+                // Retirer la classe active de toutes les thumbnails
+                document.querySelectorAll('.thumbnail').forEach(thumb => {
+                    thumb.classList.remove('active');
+                });
+                
+                // Ajouter la classe active à la thumbnail cliquée
+                clickedThumb.classList.add('active');
+            }, 200);
+        }
+        
+        // Favoris
+        async function toggleFavori(button) {
+            const annonceId = button.dataset.annonceId;
+            const isConnected = button.dataset.isConnected === 'true';
+            const loginUrl = button.dataset.loginUrl;
+        
+            if (!isConnected) {
+                window.location.href = loginUrl;
+                return;
+            }
+        
+            try {
+                // Ajouter l'animation
+                button.classList.add('animate');
+                
+                const response = await fetch(`/favoris/toggle/${annonceId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin'
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'added') {
+                    button.innerHTML = '<i class="fas fa-heart"></i> Retirer des favoris';
+                    button.classList.remove('btn-outline');
+                    button.classList.add('btn-primary');
+                } else if (data.status === 'removed') {
+                    button.innerHTML = '<i class="fas fa-heart"></i> Ajouter aux favoris';
+                    button.classList.remove('btn-primary');
+                    button.classList.add('btn-outline');
+                }
+                
+                // Retirer l'animation après 0.5s
+                setTimeout(() => {
+                    button.classList.remove('animate');
+                }, 500);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // Zoom sur l'image principale
+        document.getElementById('mainImage').addEventListener('click', function() {
+            this.classList.toggle('zoomed');
+        });
+    </script>
+</body>
+</html>

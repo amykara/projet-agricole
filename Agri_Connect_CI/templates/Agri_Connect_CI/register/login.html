@@ -1,0 +1,249 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - AgriMarket</title>
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .auth-form-container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+            background-color: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+        
+        .form-group label {
+            font-weight: 500;
+            font-size: var(--font-size-sm);
+        }
+        
+        .form-group input {
+            padding: var(--space-md);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius-md);
+            font-size: var(--font-size-base);
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+        
+        .auth-section {
+            padding: var(--space-xxl) 0;
+            background-color: var(--color-bg-light);
+            min-height: calc(100vh - 70px - 470px); /* Hauteur header et footer */
+            display: flex;
+            align-items: center;
+        }
+        
+        .auth-options {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+        
+        .role-selector {
+            margin-top: var(--space-md);
+            margin-bottom: var(--space-sm);
+        }
+        
+        .role-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-md);
+        }
+        
+        .role-option {
+            border: 2px solid var(--color-border);
+            border-radius: var(--border-radius-md);
+            padding: var(--space-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .role-option:hover {
+            border-color: var(--color-primary-light);
+        }
+        
+        .role-option.selected {
+            border-color: var(--color-primary);
+            background-color: var(--color-primary-bg);
+        }
+        
+        .role-option i {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+        
+        .role-option span {
+            font-weight: 500;
+            font-size: var(--font-size-sm);
+        }
+        
+        .auth-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--space-lg);
+        }
+        
+        .auth-links {
+            display: flex;
+            gap: var(--space-md);
+        }
+        
+        .auth-links a {
+            font-size: var(--font-size-sm);
+        }
+    </style>
+</head>
+<body>
+  
+ {% include "Agri_Connect_CI/header_footer/header.html" %}
+
+    <!-- Section de connexion -->
+<!-- Section de connexion -->
+<section class="auth-section">
+    <div class="container">
+        <div class="auth-form-container">
+            <h2>Connexion</h2>
+            <p>Connectez-vous pour accéder à votre espace personnel.</p>
+            
+            <form class="auth-form" method="post" action="{% url 'connexion' %}" id="login-form">
+                {% csrf_token %}
+                
+                <!-- Champ nom d'utilisateur -->
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">Nom d'utilisateur</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                    <div class="error-message">
+                        {{ form.username.errors.0 }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Champ mot de passe -->
+                <div class="form-group">
+                    <label for="{{ form.password.id_for_label }}">Mot de passe</label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                    <div class="error-message">
+                        {{ form.password.errors.0 }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Se connecter</button>
+                
+                <div class="auth-footer">
+                    <div class="auth-links">
+                        <a href="">Mot de passe oublié ?</a>
+                    </div>
+                    <div class="auth-links">
+                        <span>Pas encore inscrit ?</span>
+                        <a href="{% url 'inscription' %}">S'inscrire</a>
+                    </div>
+                </div>
+            </form>
+            
+            {% if form.non_field_errors %}
+            <div class="error-message" style="margin-top: 1rem;">
+                {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+   <!-- Pied de page -->
+      {% include 'Agri_Connect_CI/header_footer/footer.html' %}
+    
+    <!-- Toast de notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i class="fas toast-icon"></i>
+            <span class="toast-message">Notification</span>
+        </div>
+        <button class="toast-close"><i class="fas fa-times"></i></button>
+    </div>
+    
+    <script src="{% static 'Agri_Connect_CI/js/main.js' %}"></script>
+    <script>
+       document.addEventListener('DOMContentLoaded', function() {
+    // Gestion de la soumission du formulaire
+    const loginForm = document.getElementById('login-form');
+    
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            // Validation côté client optionnelle
+            const username = document.getElementById('id_username').value;
+            const password = document.getElementById('id_password').value;
+            
+            if (!username || !password) {
+                e.preventDefault();
+                showToast('Veuillez remplir tous les champs', 'error');
+            }
+        });
+    }
+    
+    // Fonction pour afficher les notifications toast
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        if (!toast) return;
+        
+        const icon = toast.querySelector('.toast-icon');
+        const messageEl = toast.querySelector('.toast-message');
+        
+        messageEl.textContent = message;
+        toast.className = 'toast show';
+        
+        if (type === 'success') {
+            toast.classList.add('toast-success');
+            icon.className = 'fas fa-check-circle toast-icon';
+        } else {
+            toast.classList.add('toast-error');
+            icon.className = 'fas fa-exclamation-circle toast-icon';
+        }
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 5000);
+    }
+    
+    // Fermeture manuelle du toast
+    const toastClose = document.querySelector('.toast-close');
+    if (toastClose) {
+        toastClose.addEventListener('click', function() {
+            document.getElementById('toast').classList.remove('show');
+        });
+    }
+});
+    </script>
+</body>
+</html>

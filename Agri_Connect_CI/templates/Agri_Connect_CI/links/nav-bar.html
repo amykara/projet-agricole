@@ -1,0 +1,722 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produits Agricoles - AgriMarket</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* === HEADER & NAVIGATION === */
+.header {
+    background-color: var(--color-bg);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 70px;
+    display: flex;
+    align-items: center;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--color-text);
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.logo-text {
+    font-family: var(--font-family-heading);
+    font-weight: 700;
+    font-size: var(--font-size-xl);
+}
+
+.nav-desktop ul {
+    display: flex;
+    gap: var(--space-lg);
+}
+
+.nav-desktop a {
+    color: var(--color-text);
+    font-weight: 500;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--border-radius-md);
+    transition: all var(--transition-fast);
+}
+
+.nav-desktop a:hover, 
+.nav-desktop a.active {
+    color: var(--color-primary);
+    background-color: var(--color-primary-bg);
+}
+
+.auth-buttons {
+    display: flex;
+    gap: var(--space-md);
+}
+
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-size-xl);
+    color: var(--color-text);
+}
+
+.nav-mobile {
+    display: none;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background-color: var(--color-bg);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-md);
+    z-index: 90;
+}
+
+.nav-mobile ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.nav-mobile a {
+    color: var(--color-text);
+    font-weight: 500;
+    display: block;
+    padding: var(--space-md);
+    border-radius: var(--border-radius-md);
+}
+
+.nav-mobile a:hover, 
+.nav-mobile a.active {
+    color: var(--color-primary);
+    background-color: var(--color-primary-bg);
+}
+
+.nav-mobile a.highlight {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.nav-mobile a.highlight:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.mobile-auth {
+    margin-top: var(--space-sm);
+}
+
+/* === RESPONSIVE === */
+@media screen and (max-width: 1024px) {
+    :root {
+        --font-size-hero: 2.5rem;
+        --font-size-xxxl: 1.75rem;
+        --space-xxl: 2.5rem;
+    }
+    
+    
+}
+
+@media screen and (max-width: 768px) {
+    .nav-desktop, .auth-buttons {
+        display: none;
+    }
+    
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+   
+    
+    .section-header-flex {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+}
+
+
+/* === VARIABLES === */
+:root {
+    /* Couleurs principales */
+    --color-primary: #43a047;
+    --color-primary-dark: #2e7d32;
+    --color-primary-light: #66bb6a;
+    --color-primary-bg: #e8f5e9;
+    
+    /* Couleurs secondaires (tons terreux) */
+    --color-earth: #8d6e63;
+    --color-earth-dark: #5d4037;
+    --color-earth-light: #a1887f;
+    --color-earth-bg: #efebe9;
+    
+    /* Neutres */
+    --color-text: #263238;
+    --color-text-light: #546e7a;
+    --color-text-white: #ffffff;
+    --color-bg: #ffffff;
+    --color-bg-light: #f5f5f5;
+    --color-border: #e0e0e0;
+    
+    /* États */
+    --color-success: #4caf50;
+    --color-warning: #ff9800;
+    --color-danger: #f44336;
+    
+    /* Espacements */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-xxl: 3rem;
+    
+    /* Typographie */
+    --font-family-base: 'Inter', sans-serif;
+    --font-family-heading: 'Montserrat', sans-serif;
+    --font-size-base: 1rem;
+    --font-size-sm: 0.875rem;
+    --font-size-xs: 0.75rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-xxl: 1.5rem;
+    --font-size-xxxl: 2rem;
+    --font-size-hero: 3rem;
+    
+    /* Arrondis */
+    --border-radius-sm: 0.25rem;
+    --border-radius-md: 0.5rem;
+    --border-radius-lg: 0.75rem;
+    --border-radius-xl: 1rem;
+    --border-radius-full: 9999px;
+    
+    /* Ombres */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 10px 15px rgba(0, 0, 0, 0.1);
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.4s ease;
+    
+    /* Conteneur */
+    --container-width: 1200px;
+    --container-padding: 1rem;
+}
+
+/* === RESET & BASE === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-family-heading);
+    font-weight: 700;
+    margin-bottom: var(--space-md);
+}
+
+p {
+    margin-bottom: var(--space-md);
+}
+
+ul, ol {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: var(--color-primary);
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--color-primary-dark);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* === LAYOUT === */
+.container {
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+}
+
+.section-header h2 {
+    font-size: var(--font-size-xxxl);
+    margin-bottom: var(--space-sm);
+    color: var(--color-text);
+}
+
+.section-header p {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-light);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.section-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-xl);
+}
+
+.section-header-flex h2 {
+    font-size: var(--font-size-xxxl);
+    margin-bottom: var(--space-xs);
+}
+
+.section-header-flex p {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-light);
+    margin-top: 0;
+}
+
+/* === BOUTONS === */
+.btn {
+    display: inline-block;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-md);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 2px solid transparent;
+    font-size: var(--font-size-base);
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-dark);
+    color: white;
+}
+
+.btn-light {
+    background-color: white;
+    color: var(--color-primary-dark);
+}
+
+.btn-light:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 2px solid var(--color-border);
+    color: var(--color-text);
+}
+
+.btn-outline:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.btn-outline-light {
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* === HEADER & NAVIGATION === */
+.header {
+    background-color: var(--color-bg);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 70px;
+    display: flex;
+    align-items: center;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--color-text);
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.logo-text {
+    font-family: var(--font-family-heading);
+    font-weight: 700;
+    font-size: var(--font-size-xl);
+}
+
+.nav-desktop ul {
+    display: flex;
+    gap: var(--space-lg);
+}
+
+.nav-desktop a {
+    color: var(--color-text);
+    font-weight: 500;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--border-radius-md);
+    transition: all var(--transition-fast);
+}
+
+.nav-desktop a:hover, 
+.nav-desktop a.active {
+    color: var(--color-primary);
+    background-color: var(--color-primary-bg);
+}
+
+.auth-buttons {
+    display: flex;
+    gap: var(--space-md);
+}
+
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-size-xl);
+    color: var(--color-text);
+}
+
+.nav-mobile {
+    display: none;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background-color: var(--color-bg);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-md);
+    z-index: 90;
+}
+
+.nav-mobile ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.nav-mobile a {
+    color: var(--color-text);
+    font-weight: 500;
+    display: block;
+    padding: var(--space-md);
+    border-radius: var(--border-radius-md);
+}
+
+.nav-mobile a:hover, 
+.nav-mobile a.active {
+    color: var(--color-primary);
+    background-color: var(--color-primary-bg);
+}
+
+.nav-mobile a.highlight {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.nav-mobile a.highlight:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.mobile-auth {
+    margin-top: var(--space-sm);
+}
+
+/* === FOOTER === */
+.footer {
+    background-color: #1E1E1E;
+    color: #A0A0A0;
+    padding: var(--space-xxl) 0 var(--space-lg);
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-xxl);
+    margin-bottom: var(--space-xxl);
+}
+
+.footer-logo .logo {
+    margin-bottom: var(--space-lg);
+}
+
+.footer-logo .logo-text {
+    color: white;
+}
+
+.footer-logo p {
+    margin-bottom: var(--space-lg);
+    line-height: 1.6;
+}
+
+.footer-link {
+    color: var(--color-primary-light);
+    font-size: var(--font-size-sm);
+}
+
+.footer h3 {
+    color: white;
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.footer-links ul li {
+    margin-bottom: var(--space-md);
+}
+
+.footer-links a {
+    color: #A0A0A0;
+    font-size: var(--font-size-base);
+    transition: color var(--transition-fast);
+}
+
+.footer-links a:hover {
+    color: white;
+}
+
+.footer-contact ul li {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+    align-items: flex-start;
+}
+
+.footer-contact i {
+    color: var(--color-primary-light);
+}
+
+.footer-divider {
+    height: 1px;
+    background-color: #333;
+    margin-bottom: var(--space-lg);
+}
+
+.footer-bottom {
+    text-align: center;
+    color: #666;
+    font-size: var(--font-size-sm);
+}
+
+@media screen and (max-width: 768px) {
+    .nav-desktop, .auth-buttons {
+        display: none;
+    }
+    
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+    .hero-content, .cta-content {
+        grid-template-columns: 1fr;
+        gap: var(--space-xl);
+    }
+    
+    .hero-image {
+        display: none;
+    }
+    
+    .product-card {
+        width: calc(100% - var(--space-lg));
+    }
+    
+    .section-header-flex {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+}
+
+
+
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+      <header class="header">
+        <div class="container navbar">
+            <div class="logo">
+                <a href="index.html">
+                    <div class="logo-icon"><i class="fas fa-leaf"></i></div>
+                    <div class="logo-text">AgriConnect</div>
+                </a>
+            </div>
+            
+            <nav class="nav-desktop">
+                <ul>
+                    <li><a href="catalog.html">Catalogue</a></li>
+                     <li><a href="annonces.html">Annoces</a></li>
+                     <li><a href="livreur.html">Livreurs</a></li>
+                    <li><a href="about.html">À propos</a></li>
+
+                </ul>
+            </nav>
+            
+            <div class="auth-buttons">
+                <a href="../register/login.html" class="btn btn-outline">Connexion</a>
+                <a href="../register/register.html" class="btn btn-primary">Inscription</a>
+            </div>
+            
+            <button class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <div class="nav-mobile">
+            <ul>
+                <li><a href="index.html" class="active">Accueil</a></li>
+                <li><a href="catalog.html">Catalogue</a></li>
+                <li><a href="about.html">À propos</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <div class="mobile-auth">
+                    <li><a href="../register/login.html">Connexion</a></li>
+                    <li><a href="../register/register.html" class="highlight">Inscription</a></li>
+                </div>
+            </ul>
+        </div>
+    </header>
+
+ 
+    <!-- Footer -->
+     <!-- Pied de page -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-logo">
+                <div class="logo">
+                    <div class="logo-icon"><i class="fas fa-leaf"></i></div>
+                    <div class="logo-text">AgriConnect</div>
+                </div>
+                <p>AgriConnect connecte les producteurs locaux, les acheteurs et les livreurs pour favoriser une agriculture de proximité et des échanges plus directs et justes.</p>
+                <a href="about.html" class="footer-link">En savoir plus →</a>
+            </div>
+            
+            <div class="footer-links">
+                <h3>Liens utiles</h3>
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="catalog.html">Catalogue</a></li>
+                    <li><a href="about.html">À propos</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-links">
+                <h3>S'inscrire</h3>
+                <ul>
+                    <li><a href="../autres/tableau de bord-acheteur.html">Devenir acheteur</a></li>
+                    <li><a href="../autres/tableau-de-bord-producteur.html">Devenir producteur</a></li>
+                    <li><a href="../register/register-livreur.html">Devenir livreur</a></li>
+                    <li><a href="../register/login.html">Se connecter</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-contact">
+                <h3>Contact</h3>
+                <ul>
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>123 Rue de l'Agriculture<br>75000 Paris, France</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-phone"></i>
+                        <span>+33 1 23 45 67 89</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <span>contact@AgriConnect.fr</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>© <span id="current-year">2023</span> AgriConnect. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+ <script src="{% static 'Agri_Connect_CI/js/main.js' %}"></script>
+
+</body>
+</html>

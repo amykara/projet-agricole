@@ -1,0 +1,517 @@
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trouvez un Livreur Agricole</title>
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/styles.css' %}">
+     <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/index_connexion.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --agri-green: #2A7D4F;
+            --agri-green-dark: #1E5E3A;
+            --agri-green-light: #4CAF50;
+            --agri-brown: #8B5E34;
+            --agri-brown-dark: #6B4B2A;
+            --agri-brown-light: #A67C52;
+            --agri-yellow: #F9BB47;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .bg-agri-gradient {
+           background-color: #4CAF50;
+        }
+        
+        .bg-agri-gradient h1 {
+          color: white;
+        }
+        .bg-agri-gradient p {
+          color: white;
+        }
+        .text-agri-green { color: var(--agri-green); }
+        .bg-agri-green { background-color: var(--agri-green); }
+        .hover\:bg-agri-green-dark:hover { background-color: var(--agri-green-dark); }
+        .border-agri-green { border-color: var(--agri-green); }
+        
+        .text-agri-brown { color: var(--agri-brown); }
+        .bg-agri-brown { background-color: var(--agri-brown); }
+        .hover\:bg-agri-brown-dark:hover { background-color: var(--agri-brown-dark); }
+        .border-agri-brown { border-color: var(--agri-brown); }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .card-image-hover:hover {
+            transform: scale(1.05);
+        }
+        
+        .transition-all-smooth {
+            transition: all 0.3s ease;
+        }
+        
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            background-color: #f0fdf4;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            color: #166534;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .filter-chip button {
+            margin-left: 0.25rem;
+            color: #166534;
+            opacity: 0.5;
+        }
+        
+        .filter-chip button:hover {
+            opacity: 1;
+        }
+        
+        .filter-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .filter-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+            z-index: 1;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .filter-dropdown:hover .filter-dropdown-content {
+            display: block;
+        }
+        
+        .filter-option {
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .filter-option:hover {
+            background-color: #f0fdf4;
+        }
+        
+        .filter-option input {
+            margin-right: 0.5rem;
+        }
+        
+        .whatsapp-btn {
+            background-color: #25D366;
+        }
+        
+        .whatsapp-btn:hover {
+            background-color: #128C7E;
+        }
+       
+    .profile-image-container {
+        height: 192px; /* h-48 en Tailwind (12rem) */
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+        background-color: #f3f4f6; /* Fond gris clair si pas d'image */
+    }
+    
+    .profile-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        transition: transform 0.3s ease;
+    }
+    
+    .default-profile-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #9ca3af; /* Couleur grise */
+        font-size: 3rem; /* Taille de l'icône */
+    }
+
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    
+    <!-- En-tête -->
+{% if user.is_authenticated %}
+        {% include "Agri_Connect_CI/header_footer/header_logged_in.html" %}
+    {% else %}
+        {% include "Agri_Connect_CI/header_footer/header.html" %}
+    {% endif %}
+    <main class="flex-grow">
+        <!-- En-tête -->
+        <div class="bg-agri-gradient py-12">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">
+                    Trouvez un Livreur Agricole
+                </h1>
+                <p class="text-white max-w-2xl mx-auto">
+                    Connectez-vous avec des transporteurs spécialisés dans le transport de produits 
+                    agricoles partout en Côte d'Ivoire.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Barre de filtres améliorée -->
+        <div class="container mx-auto px-4 py-6">
+            <form id="filtres-form" method="get" action="{% url 'page' 'livreur' %}">
+                <div class="filters-container mb-6 bg-white p-4 rounded-lg shadow-sm">
+                    <div class="filters flex flex-col md:flex-row gap-4">
+                        <!-- Type de véhicule -->
+                        <div class="filter-group flex-1">
+                            <label class="filter-label block text-sm font-medium text-gray-700 mb-1">Type de véhicule</label>
+                            <select class="filter-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-agri-green focus:border-agri-green" 
+                                    name="type_vehicule" id="filter-vehicle-type">
+                                <option value="all">Tous types</option>
+                                {% for type in types_vehicule %}
+                                <option value="{{ type }}" {% if type in filtres_actifs.type_vehicule %}selected{% endif %}>{{ type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Localisation -->
+                        <div class="filter-group flex-1">
+                            <label class="filter-label block text-sm font-medium text-gray-700 mb-1">Zone de couverture</label>
+                            <select class="filter-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-agri-green focus:border-agri-green" 
+                                    name="zones" id="filter-location">
+                                <option value="all">Toutes zones</option>
+                                {% for zone in zones_couverture %}
+                                <option value="{{ zone.id }}" {% if zone.id|stringformat:"s" in filtres_actifs.zones %}selected{% endif %}>
+                                    {{ zone.ville }} - {{ zone.quartier }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Capacité -->
+                        <div class="filter-group flex-1">
+                            <label class="filter-label block text-sm font-medium text-gray-700 mb-1">Capacité</label>
+                            <select class="filter-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-agri-green focus:border-agri-green" 
+                            name="capacites" id="filter-capacity">
+                        <option value="all">Toutes capacités</option>
+                        {% for cap in capacites %}
+                        <option value="{{ cap.id }}" {% if cap.id|stringformat:"s" in filtres_actifs.capacites %}selected{% endif %}>
+                            {{ cap }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                        </div>
+                        
+                        <!-- Disponibilité -->
+                        <div class="filter-group flex items-end">
+                            <div class="flex items-center h-10 mt-1">
+                                <input type="checkbox" id="disponible" name="disponible" 
+                                    {% if filtres_actifs.disponible %}checked{% endif %} 
+                                    class="h-4 w-4 text-agri-green focus:ring-agri-green border-gray-300 rounded">
+                                <label for="disponible" class="ml-2 block text-sm text-gray-700">Disponible maintenant</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtres actifs -->
+                <div id="active-filters" class="flex flex-wrap gap-2 mb-4">
+                    {% for type in filtres_actifs.type_vehicule %}
+                        <div class="active-filter bg-gray-100 px-3 py-1 rounded-full text-sm flex items-center">
+                            {{ type }}
+                            <button type="button" class="ml-1 text-gray-500 hover:text-gray-700 remove-filter" 
+                                    data-type="type_vehicule" data-value="{{ type }}">
+                                ×
+                            </button>
+                        </div>
+                    {% endfor %}
+                    
+                    {% for zone_id in filtres_actifs.zones %}
+                        {% with zone=zones_dict|get_item:zone_id %}
+                        <div class="active-filter bg-gray-100 px-3 py-1 rounded-full text-sm flex items-center">
+                            {{ zone.ville }}
+                            <button type="button" class="ml-1 text-gray-500 hover:text-gray-700 remove-filter" 
+                                    data-type="zones" data-value="{{ zone_id }}">
+                                ×
+                            </button>
+                        </div>
+                        {% endwith %}
+                    {% endfor %}
+                    
+                    {% for cap in filtres_actifs.capacites %}
+                        <div class="active-filter bg-gray-100 px-3 py-1 rounded-full text-sm flex items-center">
+                            {{ cap }} kg
+                            <button type="button" class="ml-1 text-gray-500 hover:text-gray-700 remove-filter" 
+                                    data-type="capacites" data-value="{{ cap }}">
+                                ×
+                            </button>
+                        </div>
+                    {% endfor %}
+                    
+                    {% if filtres_actifs.disponible %}
+                        <div class="active-filter bg-gray-100 px-3 py-1 rounded-full text-sm flex items-center">
+                            Disponible
+                            <button type="button" class="ml-1 text-gray-500 hover:text-gray-700 remove-filter" 
+                                    data-type="disponible" data-value="on">
+                                ×
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Onglets et tri -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-gray-200">
+                   
+                    
+                    <!-- Tri -->
+                    <div class="flex items-center">
+                        <label class="text-sm text-gray-600 mr-2">Trier par :</label>
+                        <select name="tri" class="filter-select px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-agri-green focus:border-agri-green text-sm">
+                            <option value="note_desc" {% if tri_actif == 'note_desc' %}selected{% endif %}>Note (décroissant)</option>
+                            <option value="tarif_asc" {% if tri_actif == 'tarif_asc' %}selected{% endif %}>Tarif (croissant)</option>
+                            <option value="tarif_desc" {% if tri_actif == 'tarif_desc' %}selected{% endif %}>Tarif (décroissant)</option>
+                            <option value="activite_desc" {% if tri_actif == 'activite_desc' %}selected{% endif %}>Dernière activité</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <hr class="mb-6 border-gray-200">
+                
+                <!-- Résultats -->
+                <div>
+                    
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="livreurs-container">
+    {% for livreur in livreurs %}
+    <div class="bg-white rounded-lg shadow-md overflow-hidden transition-all-smooth card-hover">
+       
+        <div class="h-48 w-full overflow-hidden flex items-center justify-center bg-gray-100">
+            {% if livreur.utilisateur.photo_profil %}
+                <img src="{{ livreur.utilisateur.photo_profil.url }}" 
+                    alt="{{ livreur.utilisateur.full_name }}" 
+                    class="max-w-full max-h-full object-contain transition-all-smooth card-image-hover"/>
+            {% else %}
+                <img src="{% static 'images/default-profile.jpg' %}" 
+                    alt="{{ livreur.utilisateur.full_name }}" 
+                    class="max-w-full max-h-full object-contain transition-all-smooth card-image-hover"/>
+            {% endif %}
+        </div>
+        
+        
+        <div class="p-4 border-b border-gray-100">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-semibold">{{ livreur.utilisateur.full_name }}</h3>
+                <span class="px-2 py-1 text-xs rounded-full 
+                    {% if livreur.etat.nom == 'Disponible' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                    {{ livreur.etat.nom }}
+                </span>
+            </div>
+            <div class="flex items-center gap-2 mt-1 text-sm text-gray-600">
+                <div class="bg-green-100/50 p-1.5 rounded-full">
+                    <i class="fas fa-{{ livreur.type_livreur.nom|lower }} text-green-600"></i>
+                </div>
+                <span class="capitalize">{{ livreur.type_livreur.nom }}</span> • 
+                <span>{{ livreur.vehicule_set.first.capacite }}</span>
+            </div>
+        </div>
+        
+        <div class="p-4">
+            <div class="mb-3 line-clamp-2 text-gray-600 text-sm">
+                {{ livreur.description|default:"Aucune description fournie" }}
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2 mb-3 text-sm">
+                <div class="flex items-center gap-1">
+                    <i class="fas fa-map-marker-alt text-green-600 text-sm"></i>
+                    <span class="truncate">
+                        {% for zone in livreur.livreurzone_set.all|slice:":3" %}
+                            {{ zone.zone.ville }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <i class="fas fa-calendar-alt text-green-600 text-sm"></i>
+                    <span>Actif le {{ livreur.utilisateur.derniere_connexion|date:"d M Y" }}</span>
+                </div>
+            </div>
+            
+            <div class="flex justify-between items-center mt-3">
+                <div class="flex items-center gap-1">
+                    <div class="flex">
+                        {% with note=livreur.note_moyenne|default:0 %}
+                            {% for i in "12345" %}
+                                {% if i|add:0 <= note|add:0 %}
+                                    <i class="fas fa-star text-yellow-500"></i>
+                                {% else %}
+                                    <i class="fas fa-star text-gray-300"></i>
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                    </div>
+                    <span class="text-sm text-gray-600">({{ livreur.nb_avis|default:0 }})</span>
+                </div>
+                <div class="font-semibold text-green-800">
+                    {{ livreur.tarif.valeur }} {{ livreur.tarif.devise.code }}
+                    <span class="text-xs text-gray-500 ml-1">+ {{ livreur.tarif.type_tarif }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-4 pt-2 flex gap-2">
+            <a href="{% url 'livreur_detail' livreur.id %}" class="w-1/2 px-4 py-2 border border-green-600 rounded-md text-green-600 hover:bg-green-600 hover:text-white transition-all-smooth text-center">
+                <i class="fas fa-info-circle mr-1"></i> Détails
+            </a>
+        
+            {% if livreur.contact_whatsapp %}
+                {% if request.user.is_authenticated %}
+                    <a href="https://wa.me/{{ livreur.contact_whatsapp.valeur }}" class="w-1/2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-all-smooth text-center" target="_blank">
+                        <i class="fab fa-whatsapp mr-1"></i> WhatsApp
+                    </a>
+                {% else %}
+                    <a href="{% url 'connexion' %}?next={% url 'page' 'livreur' %}" class="w-1/2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-all-smooth text-center">
+                        <i class="fab fa-whatsapp mr-1"></i> WhatsApp
+                    </a>
+                {% endif %}
+            {% else %}
+                <button class="w-1/2 px-4 py-2 rounded-md bg-gray-400 text-white cursor-not-allowed" disabled>
+                    WhatsApp non dispo
+                </button>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-span-3 text-center py-10">
+        <p class="text-gray-500">Aucun livreur ne correspond à vos critères de recherche.</p>
+        <button type="button" onclick="document.getElementById('filtres-form').reset(); document.getElementById('filtres-form').submit();" 
+            class="mt-4 px-4 py-2 bg-agri-green text-white rounded-md hover:bg-agri-green-dark">
+            Réinitialiser les filtres
+        </button>
+    </div>
+    {% endfor %}
+</div>
+                    
+                    {% if livreurs.has_next %}
+                    <div class="flex justify-center mt-10">
+                        <button type="button" class="px-4 py-2 border border-agri-brown rounded-md text-agri-brown hover:bg-agri-brown hover:text-white flex items-center gap-2 transition-all-smooth">
+                            Voir plus de livreurs
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </main>
+
+   <!-- Pied de page -->
+   {% include 'Agri_Connect_CI/header_footer/footer.html' %}
+
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Gestion des changements de filtre
+    document.querySelectorAll('.filter-select').forEach(select => {
+        select.addEventListener('change', function() {
+            // Si "Tous" est sélectionné, on supprime le paramètre
+            if (this.value === 'all') {
+                const url = new URL(window.location.href);
+                url.searchParams.delete(this.name);
+                window.location.href = url.toString();
+            } else {
+                document.getElementById('filtres-form').submit();
+            }
+        });
+    });
+    
+    // Gestion des onglets
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tab = this.dataset.tab;
+            const url = new URL(window.location.href);
+            
+            if (tab === 'all') {
+                url.searchParams.delete('tab');
+            } else {
+                url.searchParams.set('tab', tab);
+            }
+            
+            // Pour l'onglet "Disponibles", on coche aussi la case disponible
+            if (tab === 'available') {
+                url.searchParams.set('disponible', 'on');
+            }
+            
+            window.location.href = url.toString();
+        });
+    });
+    
+    // Gestion de la suppression des filtres actifs
+    document.querySelectorAll('.remove-filter').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const type = this.dataset.type;
+            const value = this.dataset.value;
+            
+            // Créer une nouvelle URL sans ce filtre
+            const url = new URL(window.location.href);
+            if (type === 'disponible') {
+                url.searchParams.delete('disponible');
+            } else {
+                const params = url.searchParams.getAll(type);
+                url.searchParams.delete(type);
+                params.forEach(param => {
+                    if (param !== value) {
+                        url.searchParams.append(type, param);
+                    }
+                });
+            }
+            
+            window.location.href = url.toString();
+        });
+    });
+    
+    // Gestion du tri
+    document.querySelector('select[name="tri"]').addEventListener('change', function() {
+        document.getElementById('filtres-form').submit();
+    });
+});
+</script>
+</body>
+
+</html>
+{% endblock %}

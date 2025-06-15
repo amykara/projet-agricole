@@ -1,0 +1,1394 @@
+{% load static %}
+{% load custom_filters %}
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Producteur - AgriConnect</title>
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/autres/css/tab-bordprod.css' %}">
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/footer.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --agri-primary: #4CAF50;
+            --agri-primary-dark: #388E3C;
+            --agri-primary-light: #C8E6C9;
+            --agri-secondary: #FFC107;
+            --agri-accent: #2196F3;
+            --agri-danger: #F44336;
+            --agri-warning: #FF9800;
+            --agri-success: #8BC34A;
+            --agri-gray-100: #f5f5f5;
+            --agri-gray-200: #eeeeee;
+            --agri-gray-300: #e0e0e0;
+            --agri-gray-400: #bdbdbd;
+            --agri-gray-500: #9e9e9e;
+            --agri-gray-600: #757575;
+            --agri-gray-700: #616161;
+            --agri-gray-800: #424242;
+            --agri-gray-900: #212121;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+        
+        /* Base Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--agri-gray-100);
+            color: var(--agri-gray-800);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+        
+        /* Header */
+        .navbar {
+            background-color: white;
+            box-shadow: var(--shadow-sm);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: var(--agri-primary-dark);
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            color: var(--agri-primary);
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+        
+        /* Bouton Burger */
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--agri-gray-800);
+            cursor: pointer;
+            padding: 8px;
+            margin-right: 15px;
+            z-index: 1001;
+        }
+        
+        /* Notification Dropdown */
+        .notification-dropdown {
+            position: relative;
+        }
+        
+        .notification-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .notification-btn:hover {
+            background-color: var(--agri-gray-200);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background-color: var(--agri-danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 50px;
+            width: 350px;
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--agri-gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .dropdown-title {
+            font-weight: 600;
+            color: var(--agri-gray-900);
+        }
+        
+        .dropdown-body {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--agri-gray-200);
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        
+        .notification-item:hover {
+            background-color: var(--agri-gray-100);
+        }
+        
+        .notification-item.unread {
+            background-color: rgba(76, 175, 80, 0.05);
+        }
+        
+        .notification-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: var(--agri-gray-900);
+        }
+        
+        .notification-text {
+            font-size: 0.9rem;
+            color: var(--agri-gray-600);
+            margin-bottom: 5px;
+        }
+        
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--agri-gray-500);
+        }
+        
+        .dropdown-footer {
+            padding: 10px;
+            text-align: center;
+            border-top: 1px solid var(--agri-gray-200);
+        }
+        
+        /* Dashboard Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 40px;
+            margin-top: 30px;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            transition: transform 0.3s ease;
+        }
+            
+        .sidebar-card {
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: 20px;
+            height: calc(100vh - 120px);
+            position: sticky;
+            top: 90px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Overlay pour le menu mobile */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        /* Bouton de fermeture */
+        .sidebar-close {
+            display: none;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .user-profile {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background-color: var(--agri-primary-light);
+            color: var(--agri-primary-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0 auto 15px;
+        }
+        
+        .user-name {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .user-role {
+            color: var(--agri-gray-600);
+            font-size: 0.85rem;
+            display: inline-block;
+            padding: 3px 10px;
+            background-color: var(--agri-gray-100);
+            border-radius: 20px;
+        }
+        
+        .sidebar-nav {
+            flex-grow: 1;
+        }
+        
+        .sidebar-link, .sidebar-links {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 5px;
+            color: var(--agri-gray-700);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .sidebar-link:hover {
+            background-color: var(--agri-gray-100);
+            color: var(--agri-primary-dark);
+        }
+        
+        .sidebar-link.active {
+            background-color: var(--agri-primary-light);
+            color: var(--agri-primary-dark);
+            font-weight: 500;
+        }
+        
+        .sidebar-link i {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .badge {
+            background-color: var(--agri-primary);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+        
+        /* Main Content */
+        .content-area {
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: 30px;
+            margin-bottom: 40px;
+            flex: 1;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: var(--agri-gray-900);
+        }
+        
+        .section-title i {
+            color: var(--agri-primary);
+        }
+        
+        .dashboard-section {
+            margin-bottom: 40px;
+            scroll-margin-top: 100px;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .stat-icon.primary {
+            background-color: var(--agri-primary-light);
+            color: var(--agri-primary);
+        }
+        
+        .stat-icon.secondary {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--agri-secondary);
+        }
+        
+        .stat-icon.accent {
+            background-color: rgba(33, 150, 243, 0.1);
+            color: var(--agri-accent);
+        }
+        
+        .stat-title {
+            font-size: 0.9rem;
+            color: var(--agri-gray-600);
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--agri-gray-900);
+        }
+        
+        .stat-value small {
+            font-size: 1rem;
+            color: var(--agri-gray-600);
+        }
+        
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid var(--agri-gray-200);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--agri-primary-light);
+        }
+        
+        .product-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            border-bottom: 1px solid var(--agri-gray-200);
+        }
+        
+        .product-icon {
+            width: 50px;
+            height: 50px;
+            background-color: var(--agri-primary-light);
+            color: var(--agri-primary-dark);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--agri-gray-900);
+        }
+        
+        .product-details {
+            font-size: 0.85rem;
+            color: var(--agri-gray-600);
+        }
+        
+        .product-body {
+            padding: 15px 20px;
+        }
+        
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        
+        .product-meta:last-child {
+            margin-bottom: 0;
+        }
+        
+        .label {
+            font-size: 0.85rem;
+            color: var(--agri-gray-600);
+        }
+        
+        .value {
+            font-weight: 500;
+            color: var(--agri-gray-800);
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            border-top: 1px solid var(--agri-gray-200);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--agri-gray-300);
+            color: var(--agri-gray-700);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--agri-gray-100);
+            border-color: var(--agri-gray-400);
+        }
+        
+        .btn-primary {
+            background-color: var(--agri-primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--agri-primary-dark);
+        }
+        
+        .btn-edit {
+            background-color: var(--agri-warning);
+            color: white;
+        }
+        
+        .btn-edit:hover {
+            background-color: #F57C00;
+        }
+        
+        .btn-delete {
+            background-color: var(--agri-danger);
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background-color: #D32F2F;
+        }
+        
+        .btn-republish {
+            background-color: var(--agri-success);
+            color: white;
+        }
+        
+        .btn-republish:hover {
+            background-color: #689F38;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background-color: #E8F5E9;
+            color: #2E7D32;
+        }
+        
+        .status-expired {
+            background-color: #FFEBEE;
+            color: #C62828;
+        }
+        
+        .status-pending {
+            background-color: #FFF8E1;
+            color: #F57F17;
+        }
+        
+        /* Connection Cards */
+        .connection-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .connection-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .connection-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--agri-gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--agri-gray-700);
+        }
+        
+        .connection-info {
+            flex-grow: 1;
+        }
+        
+        .connection-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .connection-type {
+            font-size: 0.85rem;
+            color: var(--agri-gray-600);
+            margin-bottom: 5px;
+        }
+        
+        .connection-date {
+            font-size: 0.8rem;
+            color: var(--agri-gray-500);
+        }
+        
+        .connection-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* Notification List */
+        .notification-list {
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 30px;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--agri-gray-300);
+        }
+        
+        .empty-state h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--agri-gray-700);
+        }
+        
+        .empty-state p {
+            color: var(--agri-gray-600);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        /* Load More */
+        .load-more {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        /* Text Alignment */
+        .text-right {
+            text-align: right;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        /* Flex Utilities */
+        .flex {
+            display: flex;
+        }
+        
+        .justify-between {
+            justify-content: space-between;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar-toggle {
+                display: block;
+            }
+            
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 300px;
+                height: 100vh;
+                z-index: 1000;
+                background: white;
+                box-shadow: var(--shadow-lg);
+                transition: left 0.3s ease;
+                overflow-y: auto;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .sidebar-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .sidebar-close {
+                display: block;
+            }
+            
+            .sidebar-card {
+                height: 100%;
+                margin-right: 0;
+                position: relative;
+                box-shadow: none;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .content-area {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .dropdown-menu {
+                width: 280px;
+                right: -20px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-wrap: wrap;
+            }
+            
+            .sidebar {
+                width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+    <!-- Navbar -->
+    <header class="navbar">
+        <button class="sidebar-toggle" aria-label="Menu sidebar">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-times" style="display:none;"></i>
+        </button>
+        <div class="container">
+            <a href="{% url 'home' %}" class="logo">
+                <i data-lucide="leaf" class="logo-icon"></i>
+                <span>AgriConnect</span>
+            </a>
+            
+            <div class="user-actions">
+                <div class="notification-dropdown">
+                    <button class="notification-btn">
+                        <i data-lucide="bell"></i>
+                        <span class="notification-badge">{{ unread_notifications.count }}</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-header">
+                            <span class="dropdown-title">Notifications</span>
+                        </div>
+                        <div class="dropdown-body">
+                            {% for notification in recent_notifications %}
+                            <div class="notification-item {% if not notification.lu %}unread{% endif %}">
+                                <div class="notification-title">{{ notification.titre }}</div>
+                                <div class="notification-text">{{ notification.message }}</div>
+                                <div class="notification-time">{{ notification.date_envoi|timesince }}</div>
+                            </div>
+                            {% empty %}
+                            <div class="notification-item">
+                                <div class="notification-text">Aucune notification</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="dropdown-footer">
+                            <a href="#notifications-section" class="btn btn-sm btn-outline">Voir toutes les notifications</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Overlay pour le menu mobile -->
+    <div class="sidebar-overlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="dashboard-grid">
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <div class="card sidebar-card">
+                        <button class="sidebar-close">&times;</button>
+                        <div class="user-profile">
+                            <div class="user-avatar">
+                                {% if user.photo_profil %}
+                                    <img src="{{ user.photo_profil.url }}" alt="Photo de profil">
+                                {% else %}
+                                    {{ user.full_name|first|upper }}
+                                {% endif %}
+                            </div>
+                            <h3 class="user-name">{{ user.full_name }}</h3>
+                            <span class="user-role">Producteur</span>
+                        </div>
+                        
+                        <div class="sidebar-nav">
+                            <a href="#dashboard-section" class="sidebar-link">
+                                <i data-lucide="home"></i>
+                                <span>Tableau de bord</span>
+                            </a>
+                            <a href="#profile-section" class="sidebar-link">
+                                <i data-lucide="user"></i>
+                                <span>Mon profil</span>
+                            </a>
+                            <a href="#notifications-section" class="sidebar-link">
+                                <i data-lucide="bell"></i>
+                                <span>Notifications</span>
+                                {% if unread_notifications.count > 0 %}
+                                <span class="badge">{{ unread_notifications.count }}</span>
+                                {% endif %}
+                            </a>
+                            <a href="#annonces-section" class="sidebar-link active">
+                                <i data-lucide="file-text"></i>
+                                <span>Mes annonces</span>
+                            </a>
+                            <a href="#produits-section" class="sidebar-link">
+                                <i data-lucide="package"></i>
+                                <span>Mes produits</span>
+                            </a>
+                            <a href="#connections-section" class="sidebar-link">
+                                <i data-lucide="handshake"></i>
+                                <span>Mises en relation</span>
+                                {% if new_connections.count > 0 %}
+                                <span class="badge">{{ new_connections.count }}</span>
+                                {% endif %}
+                            </a>
+                        </div>
+                        
+                        <div class="sidebar-footer">
+                            <a href="{% url 'deconnexion' %}" class="btn btn-outline w-full mt-2">
+                                <i data-lucide="log-out"></i>
+                                Déconnexion
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="content-area">
+                    <!-- Dashboard Section -->
+                    <section id="dashboard-section" class="dashboard-section">
+                        <h2 class="section-title">
+                            <i data-lucide="home"></i>
+                            Tableau de bord
+                        </h2>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon primary">
+                                    <i data-lucide="file-text"></i>
+                                </div>
+                                <div>
+                                    <h3 class="stat-title">Annonces actives</h3>
+                                    <p class="stat-value">{{ stats.annonces_actives }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon secondary">
+                                    <i data-lucide="star"></i>
+                                </div>
+                                <div>
+                                    <h3 class="stat-title">Note moyenne</h3>
+                                    <p class="stat-value">{{ stats.note_moyenne|default:"0" }}<small>/5</small></p>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon accent">
+                                    <i data-lucide="handshake"></i>
+                                </div>
+                                <div>
+                                    <h3 class="stat-title">Mises en relation</h3>
+                                    <p class="stat-value">{{ stats.mises_en_relation }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon primary">
+                                    <i data-lucide="package"></i>
+                                </div>
+                                <div>
+                                    <h3 class="stat-title">Produits enregistrés</h3>
+                                    <p class="stat-value">{{ stats.produits }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                  <!-- Annonces Section -->
+                    <section id="annonces-section" class="dashboard-section">
+                        <h2 class="section-title">
+                            <i data-lucide="file-text"></i>
+                            Mes annonces
+                        </h2>
+                        
+                        <div class="products-grid">
+                            {% for annonce in annonces %}
+                            <div class="product-card">
+                                <div class="product-header">
+                                    <div class="product-image">
+                                        {% with annonce.annonceimage_set.first as image %}
+                                        {% if image %}
+                                        <img src="{{ image.url_image.url }}" alt="{{ annonce.titre }}" style="width:100%; height:auto; max-height:150px; object-fit:cover;">
+                                        {% else %}
+                                        <div style="background:#f5f5f5; height:150px; display:flex; align-items:center; justify-content:center;">
+                                            <i data-lucide="image" style="width:48px; height:48px; color:#ccc;"></i>
+                                        </div>
+                                        {% endif %}
+                                        {% endwith %}
+                                    </div>
+                                </div>
+                                <div class="product-body">
+                                    <h4 class="product-name">{{ annonce.titre }}</h4>
+                                    
+                                    <div class="product-meta">
+                                        <span class="label">Statut</span>
+                                        <span class="value">
+                                            <span class="status-badge status-{{ annonce.statut }}">
+                                                {{ annonce.get_statut_display }}
+                                            </span>
+                                        </span>
+                                    </div>
+                                    
+                                    {% with produit=annonce.annonceproduit_set.first %}
+                                    {% if produit %}
+                                    <div class="product-meta">
+                                        <span class="label">Produit</span>
+                                        <span class="value">{{ produit.nom_produit }}</span>
+                                    </div>
+                                    
+                                    <div class="product-meta">
+                                        <span class="label">Prix</span>
+                                        <span class="value">{{ produit.prix_unitaire }} {{ produit.devise.code }}/{{ produit.unite.abbr }}</span>
+                                    </div>
+                                    
+                                    <div class="product-meta">
+                                        <span class="label">Quantité</span>
+                                        <span class="value">{{ produit.quantite }} {{ produit.unite.abbr }}</span>
+                                    </div>
+                                    {% endif %}
+                                    {% endwith %}
+                                    
+                                     <span class="status-badge status-{{ annonce.statut }}">
+                                                {{ annonce.get_statut_display }}
+                                            </span>
+                                </div>
+                                <div class="action-buttons">
+                                    <a href="{% url 'annonce_detail' annonce.id %}" class="btn btn-outline btn-sm">
+                                        <i data-lucide="eye"></i> Voir
+                                    </a>
+                                    <a href="" class="btn btn-sm btn-edit">
+                                        <i data-lucide="edit"></i> Éditer
+                                    </a>
+                                    <form method="post" action="" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-delete">
+                                            <i data-lucide="trash-2"></i> 
+                                        </button>
+                                    </form>
+                                    {% if annonce.statut == 'expirée' %}
+                                    <a href="" class="btn btn-sm btn-republish">
+                                        <i data-lucide="refresh-cw"></i> Republier
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="empty-state">
+                                <i data-lucide="file-text"></i>
+                                <h3>Aucune annonce</h3>
+                                <p>Vous n'avez pas encore créé d'annonces.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="text-right mt-4">
+                            <a href="{% url 'create_annonce' %}?tab=autre#annonces-section" class="btn btn-primary">
+                                <i data-lucide="plus"></i> Nouvelle Annonce
+                            </a>
+                            <a href="?all_annonces=1#annonces-section" class="btn btn-outline">
+                                <i data-lucide="list"></i> Voir toutes mes annonces
+                            </a>
+                        </div>
+                    </section>
+                  
+                    
+                    
+                   <!-- Produits Section -->
+                    <section id="produits-section" class="dashboard-section">
+                        <h2 class="section-title">
+                            <i data-lucide="package"></i>
+                            Mes produits
+                        </h2>
+                        
+                        <div class="products-grid">
+                            {% for produit in produits %}
+                            <div class="product-card">
+                                <div class="product-header">
+                                    <div class="product-image">
+                                        {% with produit.annonce.annonceimage_set.first as image %}
+                                        {% if image %}
+                                        <img src="{{ image.url_image.url }}" alt="{{ produit.nom_produit }}" style="width:100%; height:auto; max-height:150px; object-fit:cover;">
+                                        {% else %}
+                                        <div style="background:#f5f5f5; height:150px; display:flex; align-items:center; justify-content:center;">
+                                            <i data-lucide="image" style="width:48px; height:48px; color:#ccc;"></i>
+                                        </div>
+                                        {% endif %}
+                                        {% endwith %}
+                                    </div>
+                                </div>
+                                <div class="product-body">
+                                    <h4 class="product-name">{{ produit.nom_produit }}</h4>
+                                    
+                                    <div class="product-meta">
+                                        <span class="label">Catégorie</span>
+                                        <span class="value">{{ produit.categorie.nom }}</span>
+                                    </div>
+                                    
+                                    <div class="product-meta">
+                                        <span class="label">Prix</span>
+                                        <span class="value">{{ produit.prix_unitaire }} {{ produit.devise.code }}/{{ produit.unite.abbr }}</span>
+                                    </div>
+                                    
+                                   
+                                    
+                                    <div class="product-meta">
+                                        <span class="label">Stock</span>
+                                        <span class="value">{{ produit.stock_total }} {{ produit.unite.abbr }}</span>
+                                    </div>
+                                </div>
+                                <div class="action-buttons">
+                                    <a href="{% url 'annonce_detail' produit.annonce_id %}" class="btn btn-outline btn-sm">
+                                        <i data-lucide="eye"></i> Voir
+                                    </a>
+                                    <a href="" class="btn btn-sm btn-edit">
+                                        <i data-lucide="edit"></i> Éditer
+                                    </a>
+                                    <form method="post" action="" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-delete">
+                                            <i data-lucide="trash-2"></i> 
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="empty-state">
+                                <i data-lucide="package"></i>
+                                <h3>Aucun produit</h3>
+                                <p>Vous n'avez pas encore enregistré de produits.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="flex justify-between mt-4">
+                            <a href="{% url 'create_annonce' %}?tab=produit#produits-section" class="btn btn-primary">
+                                <i data-lucide="plus"></i> Ajouter un produit
+                            </a>
+                            <a href="?all_products=1#produits-section" class="btn btn-outline">
+                                <i data-lucide="list"></i> Voir tous les produits
+                            </a>
+                        </div>
+                    </section>
+                    
+                    <!-- Notifications Section -->
+                    <section id="notifications-section" class="dashboard-section">
+                        <h2 class="section-title">
+                            <i data-lucide="bell"></i>
+                            Mes notifications
+                        </h2>
+                        
+                        <div class="notification-list">
+                            {% for notification in notifications %}
+                            <div class="notification-item {% if not notification.lu %}unread{% endif %}">
+                                <div class="notification-title">{{ notification.titre }}</div>
+                                <div class="notification-text">{{ notification.message }}</div>
+                                <div class="notification-time">{{ notification.date_envoi|timesince }}</div>
+                            </div>
+                            {% empty %}
+                            <div class="empty-state">
+                                <i data-lucide="bell"></i>
+                                <h3>Aucune notification</h3>
+                                <p>Vous n'avez pas encore de notifications.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <a href="?all_notifications=1#notifications-section" class="btn btn-outline">
+                                <i data-lucide="bell"></i> Voir toutes les notifications
+                            </a>
+                        </div>
+                    </section>
+                    
+                    <!-- Connections Section -->
+                    <section id="connections-section" class="dashboard-section">
+                        <h2 class="section-title">
+                            <i data-lucide="handshake"></i>
+                            Mises en relation
+                        </h2>
+                        
+                        <div class="connections-list">
+                            {% for connection in connections %}
+                            <div class="connection-card">
+                                <div class="connection-avatar">
+                                    {{ connection.client.full_name|first|upper }}
+                                </div>
+                                <div class="connection-info">
+                                    <div class="connection-name">{{ connection.client.full_name }}</div>
+                                    <div class="connection-type">
+                                        Acheteur • Intéressé par: 
+                                        {% with produit=connection.annonce.annonceproduit_set.first %}
+                                        {{ produit.nom_produit }} ({{ produit.quantite }} {{ produit.unite.abbr }})
+                                        {% endwith %}
+                                    </div>
+                                    <div class="connection-date">
+                                        Contacté via {{ connection.moyen_contact.nom }} le {{ connection.date_contact|date:"d/m/Y" }}
+                                    </div>
+                                </div>
+                                <div class="connection-actions">
+                                    {% with whatsapp=connection.client.contact_set.all|filter_type_contact:"WhatsApp"|first %}
+                                    {% if whatsapp %}
+                                    <a href="https://wa.me/{{ whatsapp.valeur }}" class="btn btn-sm btn-outline">
+                                        <i class="fab fa-whatsapp"></i> Contacter
+                                    </a>
+                                    {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="empty-state">
+                                <i data-lucide="handshake"></i>
+                                <h3>Aucune mise en relation</h3>
+                                <p>Vous n'avez pas encore de mises en relation.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <a href="?all_connections=1#connections-section" class="btn btn-outline">
+                                <i data-lucide="list"></i> Voir toutes les mises en relation
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <!-- Votre footer existant ici -->
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion du menu burger
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarClose = document.querySelector('.sidebar-close');
+            const sidebarOverlay = document.querySelector('.sidebar-overlay');
+            
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.add('active');
+                    sidebarOverlay.classList.add('active');
+                    toggleBurgerIcon();
+                });
+                
+                sidebarClose.addEventListener('click', function() {
+                    sidebar.classList.remove('active');
+                    sidebarOverlay.classList.remove('active');
+                    toggleBurgerIcon();
+                });
+                
+                sidebarOverlay.addEventListener('click', function() {
+                    sidebar.classList.remove('active');
+                    this.classList.remove('active');
+                    toggleBurgerIcon();
+                });
+                
+                function toggleBurgerIcon() {
+                    const bars = sidebarToggle.querySelector('.fa-bars');
+                    const times = sidebarToggle.querySelector('.fa-times');
+                    
+                    bars.style.display = bars.style.display === 'none' ? 'block' : 'none';
+                    times.style.display = times.style.display === 'none' ? 'block' : 'none';
+                }
+                
+                // Fermer le menu quand on clique sur un lien
+                document.querySelectorAll('.sidebar-link').forEach(link => {
+                    link.addEventListener('click', function() {
+                        if (window.innerWidth <= 992) {
+                            sidebar.classList.remove('active');
+                            sidebarOverlay.classList.remove('active');
+                            toggleBurgerIcon();
+                        }
+                    });
+                });
+            }
+
+            // Gestion du menu déroulant des notifications
+            const notificationBtn = document.querySelector('.notification-btn');
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+            
+            if (notificationBtn && dropdownMenu) {
+                notificationBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('active');
+                });
+                
+                // Fermer le dropdown quand on clique ailleurs
+                document.addEventListener('click', function() {
+                    dropdownMenu.classList.remove('active');
+                });
+                
+                // Empêcher la fermeture quand on clique dans le dropdown
+                dropdownMenu.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+
+            // Navigation entre sections
+            const sidebarLinks = document.querySelectorAll('.sidebar-link[href^="#"]');
+            
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Retirer la classe active de tous les liens
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Ajouter la classe active au lien cliqué
+                    this.classList.add('active');
+                    
+                    // Obtenir la section cible
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    if (targetSection) {
+                        // Calculer la position avec décalage pour la navbar
+                        const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                        const targetPosition = targetSection.offsetTop - navbarHeight;
+                        
+                        // Scroll vers la section
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                        
+                        // Mettre à jour l'URL
+                        history.pushState(null, null, targetId);
+                    }
+                });
+            });
+            
+            // Gestion du chargement initial avec hash dans l'URL
+            if (window.location.hash) {
+                const targetSection = document.querySelector(window.location.hash);
+                if (targetSection) {
+                    // Activer le lien correspondant
+                    const correspondingLink = document.querySelector(`.sidebar-link[href="${window.location.hash}"]`);
+                    if (correspondingLink) {
+                        sidebarLinks.forEach(l => l.classList.remove('active'));
+                        correspondingLink.classList.add('active');
+                    }
+                    
+                    // Scroll vers la section après un petit délai
+                    setTimeout(() => {
+                        const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                        const targetPosition = targetSection.offsetTop - navbarHeight;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }, 100);
+                }
+            }
+
+            // Confirmation avant suppression
+            const deleteButtons = document.querySelectorAll('.btn-delete');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (!confirm('Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

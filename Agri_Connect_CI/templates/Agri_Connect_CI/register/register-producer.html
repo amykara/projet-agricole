@@ -1,0 +1,1423 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devenir Producteur - AgriConnect</title>
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Couleurs */
+            --color-primary: #4CAF50;
+            --color-primary-dark: #388E3C;
+            --color-primary-light: #C8E6C9;
+            --color-secondary: #FFC107;
+            --color-accent: #2196F3;
+            --color-text: #2D3748;
+            --color-text-light: #718096;
+            --color-text-lighter: #A0AEC0;
+            --color-border: #E2E8F0;
+            --color-bg: #F7FAFC;
+            --color-bg-light: #FFFFFF;
+            --color-success: #48BB78;
+            --color-danger: #F56565;
+            --color-warning: #ED8936;
+            
+            /* Espacements */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+            
+            /* Rayons de bordure */
+            --border-radius-sm: 0.25rem;
+            --border-radius-md: 0.5rem;
+            --border-radius-lg: 1rem;
+            --border-radius-xl: 1.5rem;
+            
+            /* Ombres */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            /* Transitions */
+            --transition-fast: 0.15s;
+            --transition-normal: 0.3s;
+            --transition-slow: 0.5s;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-lg);
+        }
+        
+        /* Header */
+        .header {
+            background-color: var(--color-bg-light);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-md) 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background-color: var(--color-primary);
+            color: white;
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: var(--space-sm);
+        }
+        
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--color-text);
+        }
+        
+        .nav-desktop ul {
+            display: flex;
+            list-style: none;
+            gap: var(--space-xl);
+        }
+        
+        .nav-desktop a {
+            text-decoration: none;
+            color: var(--color-text);
+            font-weight: 500;
+            transition: color var(--transition-fast);
+            position: relative;
+        }
+        
+        .nav-desktop a:hover {
+            color: var(--color-primary);
+        }
+        
+        .nav-desktop a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--color-primary);
+            transition: width var(--transition-fast);
+        }
+        
+        .nav-desktop a:hover::after {
+            width: 100%;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: var(--space-md);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius-md);
+            font-weight: 500;
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--color-primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--color-primary-bg);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--color-text);
+            cursor: pointer;
+        }
+        
+        /* Form Container */
+        .auth-container {
+            max-width: 800px;
+            margin: 3rem auto;
+            background-color: var(--color-bg-light);
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .auth-header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+            color: white;
+            padding: var(--space-2xl) var(--space-xl);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-header::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .auth-header::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 200px;
+            height: 200px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .auth-header h1 {
+            font-size: 2rem;
+            margin-bottom: var(--space-sm);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .auth-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Form Content */
+        .form-content {
+            padding: var(--space-2xl) var(--space-xl);
+        }
+        
+        /* Navigation par onglets */
+        .tab-navigation {
+            display: flex;
+            margin-bottom: var(--space-xl);
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .tab-btn {
+            padding: var(--space-md) var(--space-lg);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--color-text-light);
+            position: relative;
+            transition: all var(--transition-fast);
+        }
+        
+        .tab-btn.active {
+            color: var(--color-primary-dark);
+        }
+        
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--color-primary);
+        }
+        
+        .tab-btn:hover:not(.active) {
+            color: var(--color-text);
+            background-color: rgba(76, 175, 80, 0.05);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn var(--transition-normal);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Navigation entre les onglets */
+        .tab-nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: var(--space-xl);
+        }
+        
+        .btn-tab {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius-md);
+            font-weight: 500;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            border: 1px solid var(--color-primary);
+            background-color: white;
+            color: var(--color-primary);
+        }
+        
+        .btn-tab:hover {
+            background-color: var(--color-primary-light);
+        }
+        
+        .btn-tab.next {
+            background-color: var(--color-primary);
+            color: white;
+        }
+        
+        .btn-tab.next:hover {
+            background-color: var(--color-primary-dark);
+        }
+        
+        .btn-tab[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: var(--color-border);
+            background-color: var(--color-border);
+            color: var(--color-text-light);
+        }
+        
+        .form-section-title {
+            font-size: 1.25rem;
+            color: var(--color-primary-dark);
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-sm);
+            border-bottom: 2px solid var(--color-border);
+            position: relative;
+        }
+        
+        .form-section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--color-primary);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-sm);
+            font-weight: 500;
+            color: var(--color-text);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            transition: all var(--transition-fast);
+            background-color: var(--color-bg-light);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+        
+        .form-input.error {
+            border-color: var(--color-danger);
+        }
+        
+        .error-message {
+            color: var(--color-danger);
+            font-size: 0.875rem;
+            margin-top: var(--space-xs);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius-md);
+            background-color: var(--color-bg-light);
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23718096" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            transition: all var(--transition-fast);
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+        
+        textarea.form-input {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-note {
+            font-size: 0.875rem;
+            color: var(--color-text-light);
+            margin-top: var(--space-xs);
+            font-style: italic;
+        }
+        
+        /* File Upload */
+        .file-upload {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+        
+        .file-upload-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            padding: 0.875rem 1rem;
+            background-color: var(--color-bg-light);
+            border: 2px dashed var(--color-border);
+            border-radius: var(--border-radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .file-upload-btn:hover {
+            border-color: var(--color-primary);
+            background-color: var(--color-primary-light);
+            color: var(--color-primary-dark);
+        }
+        
+        .file-upload-name {
+            font-size: 0.875rem;
+            color: var(--color-text-light);
+        }
+        
+        /* Checkbox */
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .checkbox-container input {
+            margin-top: 0.25rem;
+            accent-color: var(--color-primary);
+        }
+        
+        .checkbox-text {
+            font-size: 0.875rem;
+            color: var(--color-text);
+        }
+        
+        .checkbox-text a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .checkbox-text a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Product Types */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: var(--space-sm);
+            margin-top: var(--space-sm);
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: 0.5rem;
+            border-radius: var(--border-radius-md);
+            transition: all var(--transition-fast);
+        }
+        
+        .checkbox-item:hover {
+            background-color: var(--color-primary-light);
+        }
+        
+        .checkbox-item input {
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* Process Info */
+        .process-info {
+            background-color: var(--color-primary-light);
+            border-radius: var(--border-radius-lg);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-2xl);
+            border-left: 4px solid var(--color-primary);
+        }
+        
+        .process-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+            color: var(--color-primary-dark);
+            font-weight: 600;
+        }
+        
+        .process-title i {
+            font-size: 1.25rem;
+        }
+        
+        .process-steps {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+        
+        .process-steps li {
+            position: relative;
+            padding-left: var(--space-xl);
+            margin-bottom: var(--space-md);
+            counter-increment: step-counter;
+        }
+        
+        .process-steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            background-color: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+        }
+        
+        .btn-submit:hover {
+            background-color: var(--color-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+        
+        /* Auth Footer */
+        .auth-footer {
+            text-align: center;
+            margin-top: var(--space-xl);
+            padding-top: var(--space-xl);
+            border-top: 1px solid var(--color-border);
+        }
+        
+        .auth-footer p {
+            color: var(--color-text-light);
+            margin-bottom: var(--space-md);
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--color-text);
+            color: white;
+            padding: var(--space-2xl) 0;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-2xl);
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .footer-logo {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+        
+        .footer-logo .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .footer-logo .logo-icon {
+            width: 32px;
+            height: 32px;
+            background-color: white;
+            color: var(--color-primary);
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        
+        .footer-logo .logo-text {
+            color: white;
+            font-size: 1.25rem;
+        }
+        
+        .footer-logo p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.875rem;
+        }
+        
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+        
+        .footer-link:hover {
+            color: var(--color-primary-light);
+        }
+        
+        .footer-links h3 {
+            font-size: 1.125rem;
+            margin-bottom: var(--space-md);
+            color: white;
+        }
+        
+        .footer-links ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color var(--transition-fast);
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-contact ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+        
+        .footer-contact li {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+        }
+        
+        .footer-contact i {
+            margin-top: 0.125rem;
+            color: var(--color-primary-light);
+        }
+        
+        .footer-contact span {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.875rem;
+        }
+        
+        .footer-divider {
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+        }
+        
+        .footer-bottom p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--color-success);
+            color: white;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            z-index: 1000;
+            opacity: 0;
+            transition: all var(--transition-normal);
+        }
+        
+        .toast.show {
+            bottom: var(--space-xl);
+            opacity: 1;
+        }
+        
+        .toast-icon {
+            font-size: 1.25rem;
+        }
+        
+        .toast-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0;
+            margin-left: var(--space-md);
+        }
+        
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .nav-desktop, .auth-buttons {
+                display: none;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .auth-header {
+                padding: var(--space-xl) var(--space-lg);
+            }
+            
+            .form-content {
+                padding: var(--space-xl) var(--space-lg);
+            }
+            
+            .checkbox-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .tab-navigation {
+                flex-direction: column;
+                border-bottom: none;
+            }
+            
+            .tab-btn {
+                border-bottom: 1px solid var(--color-border);
+            }
+            
+            .tab-btn.active::after {
+                display: none;
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .checkbox-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+  {% include "Agri_Connect_CI/header_footer/header.html" %}
+  
+<div class="auth-container">
+    <div class="auth-header">
+        <h1>Devenir Producteur</h1>
+        <p>Rejoignez notre réseau et vendez vos produits agricoles</p>
+    </div>
+    
+    <div class="form-content">
+        <form id="producerForm" method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            
+            <!-- Navigation par onglets -->
+            <div class="tab-navigation">
+                <button type="button" class="tab-btn active" data-tab="personal">Informations personnelles</button>
+                <button type="button" class="tab-btn" data-tab="farm">Exploitation agricole</button>
+                <button type="button" class="tab-btn" data-tab="validation">Validation</button>
+            </div>
+            
+            <!-- Onglet 1: Informations personnelles -->
+            <div id="personal-tab" class="tab-content active">
+                <div class="process-info">
+                    <div class="process-title">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Processus de validation</span>
+                    </div>
+                    <ul class="process-steps">
+                        <li>Complétez ce formulaire avec vos informations personnelles et professionnelles</li>
+                        <li>Notre équipe vérifiera vos informations (délai de 24 à 48h)</li>
+                        <li>Vous recevrez un email de confirmation une fois votre compte validé</li>
+                        <li>Accédez à votre espace producteur et commencez à publier vos annonces</li>
+                    </ul>
+                </div>
+                
+                <div class="form-grid">
+                    <!-- Nom -->
+                    <div class="form-group">
+                        <label for="lastname" class="form-label">Nom</label>
+                        <input type="text" id="lastname" name="lastname" class="form-input" required value="{{ form.lastname.value|default_if_none:'' }}">
+                        <div class="error-message" id="lastname-error"></div>
+                    </div>
+                    
+                    <!-- Prénom -->
+                    <div class="form-group">
+                        <label for="firstname" class="form-label">Prénom</label>
+                        <input type="text" id="firstname" name="firstname" class="form-input" required value="{{ form.firstname.value|default_if_none:'' }}">
+                        <div class="error-message" id="firstname-error"></div>
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-input" required value="{{ form.email.value|default_if_none:'' }}">
+                        <div class="error-message" id="email-error"></div>
+                    </div>
+                    
+                    <!-- Téléphone -->
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Téléphone</label>
+                        <input type="tel" id="phone" name="phone" class="form-input" required value="{{ form.phone.value|default_if_none:'' }}">
+                        <div class="error-message" id="phone-error"></div>
+                    </div>
+                </div>
+                
+                <!-- WhatsApp -->
+                <div class="form-group">
+                    <label for="whatsapp" class="form-label">WhatsApp (optionnel)</label>
+                    <input type="tel" id="whatsapp" name="whatsapp" class="form-input" value="{{ form.whatsapp.value|default_if_none:'' }}">
+                    <div class="error-message" id="whatsapp-error"></div>
+                    <p class="form-note">Si différent du numéro de téléphone</p>
+                </div>
+                
+                <!-- Zone -->
+                <div class="form-group">
+                    <label for="zone" class="form-label">Zone de résidence</label>
+                    <select id="zone" name="zone" class="form-select" required>
+                        <option value="">Sélectionnez votre zone</option>
+                        {% for zone in zones %}
+                        <option value="{{ zone.id }}" {% if form.zone.value == zone.id %}selected{% endif %}>{{ zone.ville }} - {{ zone.quartier }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="error-message" id="zone-error"></div>
+                </div>
+                
+                <!-- Mot de passe (uniquement pour nouveaux utilisateurs) -->
+                {% if not user_exists %}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <input type="password" id="password" name="password" class="form-input" required>
+                        <div class="error-message" id="password-error"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm_password" class="form-label">Confirmer le mot de passe</label>
+                        <input type="password" id="confirm_password" name="confirm_password" class="form-input" required>
+                        <div class="error-message" id="confirm_password-error"></div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Photo de profil -->
+                <div class="form-group">
+                    <label for="photo_profil" class="form-label">Photo de profil</label>
+                    <div class="file-upload">
+                        <label for="photo_profil" class="file-upload-btn">
+                            <i class="fas fa-upload"></i> Choisir un fichier
+                        </label>
+                        <input type="file" id="photo_profil" name="photo_profil" class="form-file" accept="image/*">
+                        <span class="file-upload-name" id="photo_profil-name">
+                            {% if form.photo_profil.value %}Fichier sélectionné{% else %}Aucun fichier choisi{% endif %}
+                        </span>
+                    </div>
+                    <p class="form-note">Format accepté : JPG, PNG - Max 5MB</p>
+                    <div class="error-message" id="photo_profil-error"></div>
+                </div>
+                
+                <div class="tab-nav-buttons">
+                    <button type="button" class="btn-tab prev" disabled>Précédent</button>
+                    <button type="button" class="btn-tab next" data-next="farm">Suivant</button>
+                </div>
+            </div>
+            
+            <!-- Onglet 2: Exploitation agricole -->
+            <div id="farm-tab" class="tab-content">
+                <h2 class="form-section-title">Informations agricoles</h2>
+                
+                <!-- Nom de la ferme -->
+                <div class="form-group">
+                    <label for="farm_name" class="form-label">Nom de votre ferme/exploitation</label>
+                    <input type="text" id="farm_name" name="farm_name" class="form-input" required value="{{ form.farm_name.value|default_if_none:'' }}">
+                    <div class="error-message" id="farm_name-error"></div>
+                </div>
+                
+                <!-- Date début activité -->
+                <div class="form-group">
+                    <label for="date_debut_activite" class="form-label">Date de début d'activité</label>
+                    <input type="date" id="date_debut_activite" name="date_debut_activite" class="form-input" required value="{{ form.date_debut_activite.value|default_if_none:'' }}">
+                    <div class="error-message" id="date_debut_activite-error"></div>
+                </div>
+                
+                <!-- Méthode production -->
+                <div class="form-group">
+                    <label for="methode_production" class="form-label">Méthode de production</label>
+                    <select id="methode_production" name="methode_production" class="form-select" required>
+                        <option value="">Sélectionnez une méthode</option>
+                        <option value="bio" {% if form.methode_production.value == 'bio' %}selected{% endif %}>Bio</option>
+                        <option value="conventionnel" {% if form.methode_production.value == 'conventionnel' %}selected{% endif %}>Conventionnel</option>
+                        <option value="permaculture" {% if form.methode_production.value == 'permaculture' %}selected{% endif %}>Permaculture</option>
+                        <option value="autre" {% if form.methode_production.value == 'autre' %}selected{% endif %}>Autre</option>
+                    </select>
+                    <div class="error-message" id="methode_production-error"></div>
+                </div>
+                
+                <!-- Description activité -->
+                <div class="form-group">
+                    <label for="description_activite" class="form-label">Description de votre activité agricole</label>
+                    <textarea id="description_activite" name="description_activite" class="form-input" rows="4" required>{{ form.description_activite.value|default_if_none:'' }}</textarea>
+                    <div class="error-message" id="description_activite-error"></div>
+                    <p class="form-note">Décrivez brièvement vos produits, votre expérience et vos méthodes de culture</p>
+                </div>
+                
+                <!-- Spécialités -->
+                <div class="form-group">
+                    <label for="specialites" class="form-label">Spécialités (séparées par des virgules)</label>
+                    <input type="text" id="specialites" name="specialites" class="form-input" value="{{ form.specialites.value|default_if_none:'' }}">
+                    <div class="error-message" id="specialites-error"></div>
+                    <p class="form-note">Ex: Fruits, Légumes, Céréales</p>
+                </div>
+                
+                <!-- CNI -->
+                <div class="form-group">
+                    <label class="form-label">Documents d'identité</label>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="cni_recto" class="form-label">CNI Recto</label>
+                            <div class="file-upload">
+                                <label for="cni_recto" class="file-upload-btn">
+                                    <i class="fas fa-upload"></i> Choisir un fichier
+                                </label>
+                                <input type="file" id="cni_recto" name="cni_recto" class="form-file" accept="image/*,.pdf" required>
+                                <span class="file-upload-name" id="cni_recto-name">Aucun fichier choisi</span>
+                            </div>
+                            <p class="form-note">Format: JPG, PNG ou PDF - Max 5MB</p>
+                            <div class="error-message" id="cni_recto-error"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cni_verso" class="form-label">CNI Verso (optionnel)</label>
+                            <div class="file-upload">
+                                <label for="cni_verso" class="file-upload-btn">
+                                    <i class="fas fa-upload"></i> Choisir un fichier
+                                </label>
+                                <input type="file" id="cni_verso" name="cni_verso" class="form-file" accept="image/*,.pdf">
+                                <span class="file-upload-name" id="cni_verso-name">Aucun fichier choisi</span>
+                            </div>
+                            <p class="form-note">Mêmes formats que le recto</p>
+                            <div class="error-message" id="cni_verso-error"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Photos ferme -->
+                <div class="form-group">
+                    <label for="photos_ferme" class="form-label">Photos de votre ferme (optionnel)</label>
+                    <div class="file-upload">
+                        <label for="photos_ferme" class="file-upload-btn">
+                            <i class="fas fa-images"></i> Sélectionner jusqu'à 5 photos
+                        </label>
+                        <input type="file" id="photos_ferme" name="photos_ferme" class="form-file" accept="image/*" multiple>
+                        <div id="photos_ferme-names" class="file-upload-names">Aucun fichier choisi</div>
+                    </div>
+                    <p class="form-note">Formats acceptés: JPG, PNG - Max 5MB par photo</p>
+                    <div class="error-message" id="photos_ferme-error"></div>
+                </div>
+                
+                <div class="tab-nav-buttons">
+                    <button type="button" class="btn-tab prev" data-prev="personal">Précédent</button>
+                    <button type="button" class="btn-tab next" data-next="validation">Suivant</button>
+                </div>
+            </div>
+            
+            <!-- Onglet 3: Validation -->
+            <div id="validation-tab" class="tab-content">
+                <h2 class="form-section-title">Validation finale</h2>
+                
+                <div class="process-info">
+                    <div class="process-title">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Récapitulatif de votre demande</span>
+                    </div>
+                    <ul class="process-steps" id="summary-list">
+                        <!-- Rempli dynamiquement par JavaScript -->
+                    </ul>
+                </div>
+                
+                <!-- Accepter les conditions -->
+                <div class="checkbox-container">
+                    <input type="checkbox" id="accept_conditions" name="accept_conditions" required>
+                    <label for="accept_conditions" class="checkbox-text">
+                        J'accepte les <a href="" target="_blank">conditions générales</a> et la <a href="" target="_blank">politique de confidentialité</a> d'AgriConnect
+                    </label>
+                    <div class="error-message" id="accept_conditions-error"></div>
+                </div>
+                
+                <!-- Bouton de soumission -->
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-paper-plane"></i> Soumettre ma demande
+                </button>
+                
+                <div class="error-message" id="general-error" style="text-align: center; margin-top: var(--space-md);"></div>
+                
+                <div class="tab-nav-buttons">
+                    <button type="button" class="btn-tab prev" data-prev="farm">Précédent</button>
+                </div>
+            </div>
+        </form>
+        
+        <div class="auth-footer">
+            <p>Vous avez déjà un compte ?</p>
+            <div class="auth-links" style="margin-top: var(--space-md);">
+                <a href="{% url 'connexion' %}" class="btn btn-outline">Se connecter</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pied de page -->
+      {% include 'Agri_Connect_CI/header_footer/footer.html' %}
+<script>document.addEventListener('DOMContentLoaded', function() {
+    // Gestion des onglets
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabId = button.getAttribute('data-tab');
+            
+            // Désactiver tous les onglets
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Activer l'onglet sélectionné
+            button.classList.add('active');
+            document.getElementById(`${tabId}-tab`).classList.add('active');
+        });
+    });
+    
+    // Navigation entre les onglets
+    const nextButtons = document.querySelectorAll('.btn-tab.next');
+    const prevButtons = document.querySelectorAll('.btn-tab.prev');
+    
+    nextButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const nextTab = button.getAttribute('data-next');
+            const currentTab = document.querySelector('.tab-content.active').id.replace('-tab', '');
+            
+            if (validateTab(currentTab)) {
+                document.querySelector(`.tab-btn[data-tab="${currentTab}"]`).classList.remove('active');
+                document.querySelector(`.tab-btn[data-tab="${nextTab}"]`).classList.add('active');
+                
+                document.getElementById(`${currentTab}-tab`).classList.remove('active');
+                document.getElementById(`${nextTab}-tab`).classList.add('active');
+                
+                // Mettre à jour le récapitulatif si on passe à l'onglet validation
+                if (nextTab === 'validation') {
+                    updateSummary();
+                }
+            }
+        });
+    });
+    
+    prevButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const prevTab = button.getAttribute('data-prev');
+            const currentTab = document.querySelector('.tab-content.active').id.replace('-tab', '');
+            
+            document.querySelector(`.tab-btn[data-tab="${currentTab}"]`).classList.remove('active');
+            document.querySelector(`.tab-btn[data-tab="${prevTab}"]`).classList.add('active');
+            
+            document.getElementById(`${currentTab}-tab`).classList.remove('active');
+            document.getElementById(`${prevTab}-tab`).classList.add('active');
+        });
+    });
+    
+    // Affichage des noms des fichiers
+    function setupFileInput(inputId, displayId) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        
+        const displayElement = document.getElementById(displayId);
+        if (!displayElement) return;
+        
+        input.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                if (this.files.length === 1) {
+                    displayElement.textContent = this.files[0].name;
+                } else {
+                    displayElement.textContent = `${this.files.length} fichiers sélectionnés`;
+                }
+            } else {
+                displayElement.textContent = 'Aucun fichier choisi';
+            }
+        });
+    }
+    
+    // Initialisation des champs fichier
+    setupFileInput('photo_profil', 'photo_profil-name');
+    setupFileInput('cni_recto', 'cni_recto-name');
+    setupFileInput('cni_verso', 'cni_verso-name');
+    setupFileInput('photos_ferme', 'photos_ferme-names');
+    
+    // Validation des fichiers
+    function validateFile(input, maxSizeMB) {
+        if (!input.files || input.files.length === 0) return true;
+        
+        const maxSize = maxSizeMB * 1024 * 1024;
+        for (let i = 0; i < input.files.length; i++) {
+            if (input.files[i].size > maxSize) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    // Validation des onglets
+    function validateTab(tabId) {
+        let isValid = true;
+        let firstErrorField = null;
+        
+        // Réinitialiser les messages d'erreur
+        document.querySelectorAll(`#${tabId}-tab .error-message`).forEach(el => {
+            el.textContent = '';
+        });
+        
+        if (tabId === 'personal') {
+            // Valider les champs obligatoires
+            const requiredFields = [
+                'lastname', 'firstname', 'email', 'phone', 'zone'
+            ];
+            
+            if (!{{ user_exists|yesno:"false,true" }}) {
+                requiredFields.push('password', 'confirm_password');
+            }
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    document.getElementById(`${fieldId}-error`).textContent = 'Ce champ est obligatoire';
+                    field.classList.add('error');
+                    isValid = false;
+                    if (!firstErrorField) firstErrorField = field;
+                } else {
+                    field.classList.remove('error');
+                }
+            });
+            
+            // Validation email
+            const email = document.getElementById('email');
+            if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                document.getElementById('email-error').textContent = 'Email invalide';
+                email.classList.add('error');
+                isValid = false;
+                if (!firstErrorField) firstErrorField = email;
+            }
+            
+            // Validation mot de passe
+            if (!{{ user_exists|yesno:"true,false" }}) {
+                const password = document.getElementById('password');
+                const confirmPassword = document.getElementById('confirm_password');
+                
+                if (password.value && password.value.length < 8) {
+                    document.getElementById('password-error').textContent = 'Le mot de passe doit contenir au moins 8 caractères';
+                    password.classList.add('error');
+                    isValid = false;
+                    if (!firstErrorField) firstErrorField = password;
+                }
+                
+                if (password.value !== confirmPassword.value) {
+                    document.getElementById('confirm_password-error').textContent = 'Les mots de passe ne correspondent pas';
+                    confirmPassword.classList.add('error');
+                    isValid = false;
+                    if (!firstErrorField) firstErrorField = confirmPassword;
+                }
+            }
+            
+            // Validation photo profil
+            const photoProfil = document.getElementById('photo_profil');
+            if (photoProfil.files.length > 0 && !validateFile(photoProfil, 5)) {
+                document.getElementById('photo_profil-error').textContent = 'La taille du fichier ne doit pas dépasser 5MB';
+                isValid = false;
+                if (!firstErrorField) firstErrorField = photoProfil;
+            }
+        }
+        else if (tabId === 'farm') {
+            // Valider les champs obligatoires
+            const requiredFields = [
+                'farm_name', 'date_debut_activite', 'methode_production', 'description_activite', 'cni_recto'
+            ];
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field && !field.value) {
+                    document.getElementById(`${fieldId}-error`).textContent = 'Ce champ est obligatoire';
+                    if (field.tagName === 'INPUT' || field.tagName === 'SELECT' || field.tagName === 'TEXTAREA') {
+                        field.classList.add('error');
+                    }
+                    isValid = false;
+                    if (!firstErrorField) firstErrorField = field;
+                } else if (field) {
+                    field.classList.remove('error');
+                }
+            });
+            
+            // Validation des fichiers
+            const cniRecto = document.getElementById('cni_recto');
+            if (cniRecto.files.length === 0) {
+                document.getElementById('cni_recto-error').textContent = 'Ce fichier est obligatoire';
+                isValid = false;
+                if (!firstErrorField) firstErrorField = cniRecto;
+            } else if (!validateFile(cniRecto, 5)) {
+                document.getElementById('cni_recto-error').textContent = 'La taille du fichier ne doit pas dépasser 5MB';
+                isValid = false;
+                if (!firstErrorField) firstErrorField = cniRecto;
+            }
+            
+            const cniVerso = document.getElementById('cni_verso');
+            if (cniVerso.files.length > 0 && !validateFile(cniVerso, 5)) {
+                document.getElementById('cni_verso-error').textContent = 'La taille du fichier ne doit pas dépasser 5MB';
+                isValid = false;
+                if (!firstErrorField) firstErrorField = cniVerso;
+            }
+            
+            const photosFerme = document.getElementById('photos_ferme');
+            if (photosFerme.files.length > 0 && !validateFile(photosFerme, 5)) {
+                document.getElementById('photos_ferme-error').textContent = 'La taille des fichiers ne doit pas dépasser 5MB';
+                isValid = false;
+                if (!firstErrorField) firstErrorField = photosFerme;
+            }
+        }
+        
+        // Faire défiler jusqu'au premier champ erroné
+        if (!isValid && firstErrorField) {
+            firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            firstErrorField.focus();
+        }
+        
+        return isValid;
+    }
+    
+    // Mise à jour du récapitulatif
+    function updateSummary() {
+        const summaryList = document.getElementById('summary-list');
+        summaryList.innerHTML = '';
+        
+        // Informations personnelles
+        addSummaryItem('Nom complet', `${document.getElementById('firstname').value} ${document.getElementById('lastname').value}`);
+        addSummaryItem('Email', document.getElementById('email').value);
+        addSummaryItem('Téléphone', document.getElementById('phone').value);
+        
+        const whatsapp = document.getElementById('whatsapp').value;
+        if (whatsapp) {
+            addSummaryItem('WhatsApp', whatsapp);
+        }
+        
+        const zoneSelect = document.getElementById('zone');
+        addSummaryItem('Zone', zoneSelect.options[zoneSelect.selectedIndex].text);
+        
+        // Informations professionnelles
+        addSummaryItem('Nom de la ferme', document.getElementById('farm_name').value);
+        addSummaryItem('Date début activité', document.getElementById('date_debut_activite').value);
+        
+        const methodeSelect = document.getElementById('methode_production');
+        addSummaryItem('Méthode de production', methodeSelect.options[methodeSelect.selectedIndex].text);
+        
+        addSummaryItem('Description activité', document.getElementById('description_activite').value);
+        
+        const specialites = document.getElementById('specialites').value;
+        if (specialites) {
+            addSummaryItem('Spécialités', specialites);
+        }
+        
+        // Documents
+        const cniRecto = document.getElementById('cni_recto').files[0]?.name || 'Non fourni';
+        addSummaryItem('CNI Recto', cniRecto);
+        
+        const cniVerso = document.getElementById('cni_verso').files[0]?.name || 'Non fourni';
+        addSummaryItem('CNI Verso', cniVerso);
+        
+        const photosFerme = document.getElementById('photos_ferme').files;
+        if (photosFerme.length > 0) {
+            addSummaryItem('Photos ferme', `${photosFerme.length} photo(s)`);
+        }
+    }
+    
+    function addSummaryItem(label, value) {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${label}:</strong> ${value || 'Non renseigné'}`;
+        summaryList.appendChild(li);
+    }
+    
+    // Validation du formulaire
+    const form = document.getElementById('producerForm');
+    form.addEventListener('submit', function(e) {
+        // Valider tous les onglets
+        let allTabsValid = true;
+        const tabsToValidate = ['personal', 'farm'];
+        let firstInvalidTab = null;
+        
+        for (const tabId of tabsToValidate) {
+            if (!validateTab(tabId)) {
+                allTabsValid = false;
+                if (!firstInvalidTab) firstInvalidTab = tabId;
+            }
+        }
+        
+        // Valider l'acceptation des conditions
+        const acceptConditions = document.getElementById('accept_conditions').checked;
+        if (!acceptConditions) {
+            document.getElementById('accept_conditions-error').textContent = 'Vous devez accepter les conditions';
+            allTabsValid = false;
+        }
+        
+        if (!allTabsValid) {
+            e.preventDefault();
+            document.getElementById('general-error').textContent = 'Veuillez corriger les erreurs dans le formulaire';
+            
+            // Revenir au premier onglet avec erreur
+            if (firstInvalidTab) {
+                document.querySelector(`.tab-btn[data-tab="${firstInvalidTab}"]`).click();
+            } else if (!acceptConditions) {
+                document.querySelector('.tab-btn[data-tab="validation"]').click();
+            }
+        } else {
+            // Afficher un indicateur de chargement
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+        }
+    });
+});</script>
+
+
+   
+</body>
+</html>

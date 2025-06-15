@@ -1,0 +1,1272 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publication d'annonce - AgriConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Couleurs */
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-lighter: #81c784;
+            --primary-bg: #e8f5e9;
+            --secondary: #5d4037;
+            --secondary-light: #8d6e63;
+            --dark: #263238;
+            --gray: #546e7a;
+            --light-gray: #eceff1;
+            --white: #ffffff;
+            --error: #d32f2f;
+            
+            /* Espacements */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+            
+            /* Typographie */
+            --font-base: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            --font-heading: 'Montserrat', sans-serif;
+            
+            /* Bordures */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Ombres */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-base);
+            color: var(--dark);
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-lg);
+        }
+
+        /* En-tête */
+        .header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+        }
+        
+        .header h1 {
+            font-family: var(--font-heading);
+            color: var(--primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        /* Onglets */
+        .tabs-container {
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .tabs {
+            display: flex;
+            position: relative;
+        }
+
+        .tab {
+            padding: var(--space-md) var(--space-lg);
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray);
+            position: relative;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            font-family: var(--font-heading);
+            flex: 1;
+            text-align: center;
+        }
+
+        .tab.active {
+            color: var(--primary);
+        }
+
+        .tab-indicator {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        /* Contenu des onglets */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Carte de formulaire */
+        .form-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        /* Grille de formulaire */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+
+        /* Groupes de formulaire */
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-xs);
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: var(--space-sm);
+            border: 1px solid #ddd;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-base);
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-bg);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Upload d'images */
+        .upload-container {
+            margin-top: var(--space-md);
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            padding: var(--space-xl);
+            text-align: center;
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: var(--space-sm);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            margin-top: var(--space-sm);
+        }
+
+        .preview-thumbnail {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .preview-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--error);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+
+        /* Boutons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-xs);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .btn i {
+            font-size: 0.9em;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-bg);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-sm);
+            margin-top: var(--space-xl);
+            padding-top: var(--space-md);
+            border-top: 1px solid #eee;
+        }
+
+        /* Radio buttons */
+        .radio-group {
+            display: flex;
+            gap: var(--space-md);
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            cursor: pointer;
+        }
+
+        .radio-option input {
+            cursor: pointer;
+        }
+
+        /* Messages d'erreur */
+        .error-message {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: var(--space-xs);
+            display: none;
+        }
+
+        .has-error .form-control {
+            border-color: var(--error);
+        }
+
+        .has-error .error-message {
+            display: block;
+        }
+
+        /* Prévisualisation */
+        .preview-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-md);
+            overflow-y: auto;
+        }
+
+        .preview-container {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+            box-shadow: var(--shadow-lg);
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-preview {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-md);
+            align-items: center;
+        }
+
+        .preview-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-family: var(--font-heading);
+        }
+
+        .preview-price {
+            font-size: 1.25rem;
+            color: var(--primary-light);
+            font-weight: bold;
+        }
+
+        .preview-meta {
+            display: flex;
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .preview-description {
+            margin-bottom: var(--space-lg);
+            line-height: 1.7;
+            color: var(--dark);
+        }
+
+        .preview-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            font-size: 0.95rem;
+        }
+
+        .detail-icon {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .preview-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            margin-top: var(--space-md);
+        }
+
+        .preview-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+            border: 1px solid #eee;
+        }
+    
+.messages-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1100;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    animation: slideIn 0.3s ease-out;
+    min-width: 300px;
+    box-shadow: var(--shadow-lg);
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.close {
+    float: right;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+    color: inherit;
+    cursor: pointer;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                padding: var(--space-sm);
+            }
+            
+            .form-card {
+                padding: var(--space-md);
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- En haut du template -->
+<div class="messages-container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+        <button type="button" class="close" onclick="this.parentElement.remove()">
+            <span>&times;</span>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+
+    <div class="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Publier une annonce</h1>
+            <p>Remplissez les détails de votre annonce ci-dessous</p>
+        </div>
+
+        <div class="tabs-container">
+            <div class="tabs" id="tabs">
+                {% if is_producteur %}
+                <button class="tab active" data-tab="vente-produit" id="tab-produit">
+                    <i class="fas fa-shopping-bag"></i> Vente de produit
+                </button>
+                {% endif %}
+                
+                <button class="tab {% if not is_producteur %}active{% endif %}" data-tab="autre-annonce" id="tab-autre">
+                    <i class="fas fa-bullhorn"></i> Autre annonce
+                </button>
+                <span class="tab-indicator"></span>
+            </div>
+        </div>
+        
+        <!-- Contenu des onglets -->
+        {% if is_producteur %}
+        <div class="tab-content active" id="vente-produit">
+            <div class="form-card">
+                <form id="produit-form" method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="produit">
+                    
+                    <div class="form-grid">
+                        <div class="form-group" id="categorie-group">
+                            <label class="form-label" for="categorie_id">Catégorie *</label>
+                            <select name="categorie_id" id="categorie_id" class="form-control" required>
+                                <option value="">Sélectionnez une catégorie</option>
+                                {% for categorie in categories %}
+                                <option value="{{ categorie.id }}">{{ categorie.nom }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="error-message">Veuillez sélectionner une catégorie</div>
+                        </div>
+                        
+                        <div class="form-group" id="produit-group">
+                            <label class="form-label">Produit *</label>
+                            
+                            <div class="produit-selection">
+                                <select name="produit_id" id="produit_id" class="form-control" disabled>
+                                    <option value="">Choisissez un produit existant</option>
+                                </select>
+                            </div>
+                            
+                            <div class="produit-saisie" style="margin-top: var(--space-sm);">
+                                <input type="text" name="nom_produit" id="nom_produit" 
+                                    class="form-control" placeholder="Ou saisissez un nouveau produit">
+                            </div>
+                            <div class="error-message">Veuillez sélectionner un produit ou en saisir un nouveau</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group" id="quantite-group">
+                            <label class="form-label" for="quantite">Quantité disponible *</label>
+                            <input type="number" name="quantite" id="quantite" class="form-control" min="0.01" step="0.01" required>
+                            <div class="error-message">La quantité doit être supérieure à 0</div>
+                        </div>
+                        
+                        <div class="form-group" id="unite-group">
+                            <label class="form-label" for="unite_mesure">Unité de mesure *</label>
+                            <select name="unite_mesure" id="unite_mesure" class="form-control" required>
+                                <option value="">Sélectionnez une unité</option>
+                                {% for unite in unites %}
+                                <option value="{{ unite.id }}">{{ unite.nom }} ({{ unite.abbr }})</option>
+                                {% endfor %}
+                            </select>
+                            <div class="error-message">Veuillez sélectionner une unité</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group" id="prix-group">
+                            <label class="form-label" for="prix_unitaire">Prix unitaire *</label>
+                            <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                                <input type="number" name="prix_unitaire" id="prix_unitaire" class="form-control" min="0.01" step="0.01" required>
+                                <select name="devise" id="devise" class="form-control" required style="width: 100px;">
+                                    {% for devise in devises %}
+                                    <option value="{{ devise.id }}">{{ devise.code }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="error-message">Le prix doit être supérieur à 0</div>
+                        </div>
+                        
+                        <div class="form-group" id="conditionnement-group">
+                            <label class="form-label" for="conditionnement">Conditionnement</label>
+                            <select name="conditionnement" id="conditionnement" class="form-control">
+                                <option value="">Non spécifié</option>
+                                {% for conditionnement in conditionnements %}
+                                <option value="{{ conditionnement.id }}">{{ conditionnement.nom }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group" id="certification-group">
+                            <label class="form-label" for="certification">Certification</label>
+                            <select name="certification" id="certification" class="form-control">
+                                <option value="">Sans certification</option>
+                                {% for cert in certifications %}
+                                <option value="{{ cert.id }}">{{ cert.nom }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="livraison-group">
+                            <label class="form-label">Livraison disponible *</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="livraison_disponible" value="1" checked>
+                                    <span>Oui</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="livraison_disponible" value="0">
+                                    <span>Non</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="titre-group">
+                        <label class="form-label" for="titre">Titre de l'annonce *</label>
+                        <input type="text" name="titre" id="titre" class="form-control" placeholder="Ex: Mangues fraîches de saison" required minlength="10">
+                        <div class="error-message">Le titre doit contenir au moins 10 caractères</div>
+                    </div>
+                    
+                    <div class="form-group" id="description-group">
+                        <label class="form-label" for="description">Description détaillée *</label>
+                        <textarea name="description" id="description" rows="5" class="form-control" required minlength="30" placeholder="Décrivez votre produit en détail..."></textarea>
+                        <div class="error-message">La description doit contenir au moins 30 caractères</div>
+                    </div>
+                    
+                    <div class="form-group" id="photos-group">
+                        <label class="form-label">Photos du produit *</label>
+                        <p class="text-muted" style="color: var(--gray); font-size: 0.9rem; margin-bottom: var(--space-sm);">Ajoutez des photos de qualité pour mieux vendre votre produit</p>
+                        
+                        <div class="upload-container">
+                            <!-- Image principale -->
+                            <div class="form-group">
+                                <label class="form-label">Image principale *</label>
+                                <div class="upload-area" id="upload-area-1">
+                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                    <p>Glissez-déposez votre image ou <span style="color: var(--primary);">parcourir</span></p>
+                                    <input type="file" name="image1" id="image1" accept="image/*" style="display: none;" required>
+                                </div>
+                                <div class="image-preview" id="preview1"></div>
+                                <div class="error-message">L'image principale est requise</div>
+                            </div>
+                            
+                            <!-- Images supplémentaires -->
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Image supplémentaire</label>
+                                    <div class="upload-area" id="upload-area-2">
+                                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                        <p>Glissez-déposez votre image</p>
+                                        <input type="file" name="image2" id="image2" accept="image/*" style="display: none;">
+                                    </div>
+                                    <div class="image-preview" id="preview2"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Image supplémentaire</label>
+                                    <div class="upload-area" id="upload-area-3">
+                                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                        <p>Glissez-déposez votre image</p>
+                                        <input type="file" name="image3" id="image3" accept="image/*" style="display: none;">
+                                    </div>
+                                    <div class="image-preview" id="preview3"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="preview-btn" class="btn btn-outline">
+                            <i class="fas fa-eye"></i> Prévisualiser
+                        </button>
+                        <button type="submit" name="action" value="publish" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Publier l'annonce
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="autre-annonce">
+            <div class="form-card">
+                <form id="autre-form" method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="autre">
+                    
+                    <div class="form-group" id="type-annonce-group">
+                        <label class="form-label" for="type_annonce_id">Type d'annonce *</label>
+                        <select name="type_annonce_id" id="type_annonce_id" class="form-control" required>
+                            <option value="">Sélectionnez un type</option>
+                            {% for type in other_types %}
+                            <option value="{{ type.id }}">{{ type.nom }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="error-message">Veuillez sélectionner un type d'annonce</div>
+                    </div>
+                    
+                    <div class="form-group" id="titre-autre-group">
+                        <label class="form-label" for="titre-autre">Titre de l'annonce *</label>
+                        <input type="text" name="titre" id="titre-autre" class="form-control" placeholder="Ex: Recherche transporteur pour mangues" required minlength="10">
+                        <div class="error-message">Le titre doit contenir au moins 10 caractères</div>
+                    </div>
+                    
+                    <div class="form-group" id="description-autre-group">
+                        <label class="form-label" for="description-autre">Description *</label>
+                        <textarea name="description" id="description-autre" rows="5" class="form-control" required minlength="30" placeholder="Décrivez votre annonce en détail..."></textarea>
+                        <div class="error-message">La description doit contenir au moins 30 caractères</div>
+                    </div>
+                    
+                    <div class="form-group" id="photo-autre-group">
+                        <label class="form-label">Photo illustrative</label>
+                        <div class="upload-area" id="upload-autre">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <p>Glissez-déposez votre image ou <span style="color: var(--primary);">parcourir</span></p>
+                            <input type="file" name="photo" id="photo" accept="image/*" style="display: none;">
+                        </div>
+                        <div class="image-preview" id="preview-autre-image"></div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="preview-autre-btn" class="btn btn-outline">
+                            <i class="fas fa-eye"></i> Prévisualiser
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="submit-autre">
+                            <i class="fas fa-paper-plane"></i> Publier l'an:nonce
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Prévisualisation -->
+    <div id="preview-overlay" class="preview-overlay">
+        <div class="preview-container">
+            <button class="close-preview" onclick="closePreview()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="preview-header">
+                <h2 class="preview-title" id="preview-title"></h2>
+                <div class="preview-price" id="preview-prix"></div>
+            </div>
+            
+            <div class="preview-meta">
+                <span id="preview-type"></span>
+                <span id="preview-produit"></span>
+            </div>
+            
+            <div class="preview-description" id="preview-description"></div>
+            
+            <div class="preview-details">
+                <div class="detail-item">
+                    <i class="fas fa-box detail-icon"></i>
+                    <span id="preview-quantite"></span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-tag detail-icon"></i>
+                    <span id="preview-conditionnement"></span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-certificate detail-icon"></i>
+                    <span id="preview-certification"></span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-truck detail-icon"></i>
+                    <span id="preview-livraison"></span>
+                </div>
+            </div>
+            
+            <div class="preview-images" id="preview-images">
+                <!-- Les images seront ajoutées ici dynamiquement -->
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" onclick="closePreview()" class="btn btn-outline">
+                    <i class="fas fa-edit"></i> Modifier
+                </button>
+                <button type="button" onclick="submitForm()" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Confirmer et publier
+                </button>
+            </div>
+        </div>
+    </div>
+
+   <script>
+// Gestion des onglets
+document.addEventListener('DOMContentLoaded', function() {
+    // Fonction pour activer un onglet
+    function activateTab(tabId) {
+        // Désactiver tous les onglets
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        // Activer l'onglet spécifié
+        const tab = document.querySelector(`[data-tab="${tabId}"]`);
+        const content = document.getElementById(tabId);
+        
+        if (tab && content) {
+            tab.classList.add('active');
+            content.classList.add('active');
+            
+            // Mettre à jour l'indicateur visuel
+            const tabRect = tab.getBoundingClientRect();
+            const tabsRect = document.getElementById('tabs').getBoundingClientRect();
+            const indicator = document.querySelector('.tab-indicator');
+            
+            indicator.style.width = `${tabRect.width}px`;
+            indicator.style.left = `${tabRect.left - tabsRect.left}px`;
+        }
+    }
+
+    // Activer le bon onglet au chargement
+    const urlParams = new URLSearchParams(window.location.search);
+    const requestedTab = urlParams.get('tab');
+    const defaultTab = document.body.getAttribute('data-default-tab') || 'autre';
+    
+    if (requestedTab === 'produit' && document.querySelector('[data-tab="vente-produit"]')) {
+        activateTab('vente-produit');
+    } else if (requestedTab === 'autre' && document.querySelector('[data-tab="autre-annonce"]')) {
+        activateTab('autre-annonce');
+    } else if (defaultTab === 'produit' && document.querySelector('[data-tab="vente-produit"]')) {
+        activateTab('vente-produit');
+    } else if (document.querySelector('[data-tab="autre-annonce"]')) {
+        activateTab('autre-annonce');
+    }
+
+    // Gestion du clic sur les onglets
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+            activateTab(tabId);
+        });
+    });
+
+    // Configuration de l'upload d'images
+    setupImageUpload();
+    setupPreview();
+    loadProduitsByCategorie();
+
+    // Fermer automatiquement les messages après 5 secondes
+    setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(alert => {
+            alert.style.transition = 'opacity 0.5s';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 900);
+        });
+    }, 9000);
+});
+
+// Gestion de l'upload d'images
+function setupImageUpload() {
+    document.querySelectorAll('.upload-area').forEach(area => {
+        const input = area.querySelector('input[type="file"]');
+        
+        // Déterminer l'ID de prévisualisation en fonction de l'input
+        let previewId;
+        if (input.id === 'photo') {
+            // Cas spécifique pour le formulaire "autre annonce"
+            previewId = 'preview-autre-image';
+        } else {
+            // Cas pour les images du formulaire produit (image1, image2, image3)
+            previewId = 'preview' + input.id.replace('image', '');
+        }
+        
+        // Variable pour empêcher les doubles clics
+        let isProcessing = false;
+
+        // Gestion du clic sur la zone d'upload
+        area.addEventListener('click', function(e) {
+            if (isProcessing) return;
+            isProcessing = true;
+            
+            // On ne déclenche le clic que si on clique directement sur la zone
+            if (e.target === area) {
+                input.click();
+            }
+            
+            setTimeout(() => { isProcessing = false; }, 200);
+        }, true); // Utilisation de la capture pour priorité
+
+        // Empêche la propagation du clic sur l'input lui-même
+        input.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Gestion du drag and drop
+        area.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            area.style.borderColor = 'var(--primary)';
+            area.style.backgroundColor = 'var(--primary-bg)';
+        });
+
+        area.addEventListener('dragleave', function() {
+            area.style.borderColor = '#ddd';
+            area.style.backgroundColor = '';
+        });
+
+        area.addEventListener('drop', function(e) {
+            e.preventDefault();
+            area.style.borderColor = '#ddd';
+            area.style.backgroundColor = '';
+            
+            if (e.dataTransfer.files.length) {
+                input.files = e.dataTransfer.files;
+                updateImagePreview(input, previewId);
+            }
+        });
+
+        // Gestion du changement de fichier
+        input.addEventListener('change', function() {
+            updateImagePreview(this, previewId);
+        });
+    });
+}
+
+function updateImagePreview(input, previewId) {
+    const previewDiv = document.getElementById(previewId);
+    if (!previewDiv) return;
+    
+    previewDiv.innerHTML = '';
+    
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        if (!file.type.match('image.*')) {
+            alert('Veuillez sélectionner une image valide');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const thumb = document.createElement('div');
+            thumb.className = 'preview-thumbnail';
+            
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            
+            const removeBtn = document.createElement('div');
+            removeBtn.className = 'remove-image';
+            removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            removeBtn.onclick = function(e) {
+                e.stopPropagation();
+                thumb.remove();
+                input.value = '';
+            };
+            
+            thumb.appendChild(img);
+            thumb.appendChild(removeBtn);
+            previewDiv.appendChild(thumb);
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Chargement des produits par catégorie
+function loadProduitsByCategorie() {
+    const categorieSelect = document.getElementById('categorie_id');
+    if (!categorieSelect) return;
+    
+    categorieSelect.addEventListener('change', function() {
+        const produitSelect = document.getElementById('produit_id');
+        const categorieId = this.value;
+        
+        if (categorieId) {
+            fetch(`/annonces/produits-par-categorie/?categorie_id=${categorieId}`)
+                .then(response => response.json())
+                .then(data => {
+                    produitSelect.disabled = false;
+                    produitSelect.innerHTML = '<option value="">Choisissez un produit existant</option>';
+                    
+                    data.forEach(produit => {
+                        const option = document.createElement('option');
+                        option.value = produit.id;
+                        option.textContent = produit.nom_produit;
+                        produitSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Erreur:', error));
+        } else {
+            produitSelect.disabled = true;
+            produitSelect.innerHTML = '<option value="">Choisissez un produit existant</option>';
+        }
+    });
+}
+
+// Gestion de la prévisualisation
+function setupPreview() {
+    document.getElementById('preview-btn')?.addEventListener('click', showProduitPreview);
+    document.getElementById('preview-autre-btn')?.addEventListener('click', showAutrePreview);
+}
+
+function showProduitPreview() {
+    if (!validateProduitForm()) return;
+
+    const formData = {
+        type: "Produit agricole",
+        titre: document.getElementById('titre').value,
+        description: document.getElementById('description').value,
+        produit: {
+            nom: document.getElementById('nom_produit').value || 
+                 document.getElementById('produit_id').options[document.getElementById('produit_id').selectedIndex]?.text,
+            categorie: document.getElementById('categorie_id').options[document.getElementById('categorie_id').selectedIndex]?.text,
+            prix: document.getElementById('prix_unitaire').value,
+            devise: document.getElementById('devise').options[document.getElementById('devise').selectedIndex]?.text,
+            quantite: document.getElementById('quantite').value,
+            unite: document.getElementById('unite_mesure').options[document.getElementById('unite_mesure').selectedIndex]?.text,
+            conditionnement: document.getElementById('conditionnement').value ? 
+                document.getElementById('conditionnement').options[document.getElementById('conditionnement').selectedIndex]?.text : 'Non spécifié',
+            certification: document.getElementById('certification').value ? 
+                document.getElementById('certification').options[document.getElementById('certification').selectedIndex]?.text : 'Non spécifié',
+            livraison: document.querySelector('input[name="livraison_disponible"]:checked').value === '1' ? 'Oui' : 'Non'
+        },
+        images: []
+    };
+
+    // Récupérer les images
+    const imagePromises = [];
+    for (let i = 1; i <= 3; i++) {
+        const input = document.querySelector(`input[name="image${i}"]`);
+        if (input?.files?.[0]) {
+            imagePromises.push(new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    formData.images.push(e.target.result);
+                    resolve();
+                };
+                reader.readAsDataURL(input.files[0]);
+            }));
+        }
+    }
+
+    Promise.all(imagePromises).then(() => updatePreview(formData));
+}
+
+function showAutrePreview() {
+    if (!validateAutreForm()) return;
+
+    // Récupérer le type d'annonce sélectionné
+    const typeSelect = document.getElementById('type_annonce_id');
+    const selectedType = typeSelect.options[typeSelect.selectedIndex]?.text || "Type non spécifié";
+
+    const formData = {
+        type: selectedType,
+        titre: document.getElementById('titre-autre').value,
+        description: document.getElementById('description-autre').value,
+        // Ajout d'un flag pour identifier le type de formulaire
+        isOtherAnnouncement: true,
+        images: []
+    };
+
+    const input = document.querySelector(`input[name="photo"]`);
+    if (input?.files?.[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            formData.images.push(e.target.result);
+            updatePreview(formData);
+        };
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        updatePreview(formData);
+    }
+}
+
+function updatePreview(data) {
+    console.log("Updating preview with data:", data);
+    
+    // Éléments communs
+    const previewTitle = document.getElementById('preview-title');
+    const previewDescription = document.getElementById('preview-description');
+    const previewType = document.getElementById('preview-type');
+    const previewMeta = document.querySelector('.preview-meta');
+    const previewDetails = document.querySelector('.preview-details');
+    const imagesContainer = document.getElementById('preview-images');
+    
+    // Mise à jour des champs de base
+    if (previewTitle) previewTitle.textContent = data.titre || 'Aucun titre';
+    if (previewDescription) previewDescription.textContent = data.description || 'Aucune description';
+    
+    // Gestion différente selon le type de formulaire
+    if (data.isOtherAnnouncement) {
+        // Mode "autre annonce"
+        if (previewType) {
+            previewType.textContent = data.type;
+            previewType.parentElement.style.display = 'flex';
+        }
+        
+        // Masquer les détails produits si nécessaire
+        if (previewDetails) {
+            previewDetails.style.display = 'none';
+        }
+        
+        // Ajuster le style pour l'affichage
+        if (previewMeta) {
+            previewMeta.style.flexDirection = 'column';
+            previewMeta.style.alignItems = 'flex-start';
+        }
+    } else {
+        // Mode "produit"
+        if (previewType) previewType.textContent = data.type || 'Non spécifié';
+        
+        // Afficher les détails produits
+        const previewProduit = document.getElementById('preview-produit');
+        const previewPrix = document.getElementById('preview-prix');
+        const previewQuantite = document.getElementById('preview-quantite');
+        const previewConditionnement = document.getElementById('preview-conditionnement');
+        const previewCertification = document.getElementById('preview-certification');
+        const previewLivraison = document.getElementById('preview-livraison');
+        
+        if (data.produit) {
+            if (previewProduit) previewProduit.textContent = `${data.produit.nom} (${data.produit.categorie})`;
+            if (previewPrix) previewPrix.textContent = `${data.produit.prix} ${data.produit.devise}/${data.produit.unite}`;
+            if (previewQuantite) previewQuantite.textContent = `${data.produit.quantite} ${data.produit.unite}`;
+            if (previewConditionnement) previewConditionnement.textContent = data.produit.conditionnement;
+            if (previewCertification) previewCertification.textContent = data.produit.certification;
+            if (previewLivraison) previewLivraison.textContent = data.produit.livraison;
+        }
+        
+        if (previewDetails) {
+            previewDetails.style.display = 'grid';
+        }
+    }
+    
+    // Gestion des images (commune aux deux types)
+    if (imagesContainer) {
+        imagesContainer.innerHTML = '';
+        if (data.images && data.images.length > 0) {
+            data.images.forEach(imgSrc => {
+                const img = document.createElement('img');
+                img.src = imgSrc;
+                img.className = 'preview-image';
+                imagesContainer.appendChild(img);
+            });
+        } else {
+            imagesContainer.innerHTML = '<p>Aucune image</p>';
+        }
+    }
+    
+    // Afficher l'overlay
+    const previewOverlay = document.getElementById('preview-overlay');
+    if (previewOverlay) {
+        previewOverlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// Validation des formulaires
+function validateProduitForm() {
+    let isValid = true;
+    const requiredFields = [
+        'categorie_id', 'titre', 'description', 
+        'quantite', 'unite_mesure', 'prix_unitaire'
+    ];
+    
+    requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        const group = field.closest('.form-group');
+        
+        if (!field.value) {
+            group.classList.add('has-error');
+            isValid = false;
+        } else {
+            group.classList.remove('has-error');
+        }
+    });
+    
+    // Validation produit
+    const produitSelect = document.getElementById('produit_id');
+    const produitInput = document.getElementById('nom_produit');
+    const produitGroup = document.getElementById('produit-group');
+    
+    if (!produitSelect.value && !produitInput.value) {
+        produitGroup.classList.add('has-error');
+        isValid = false;
+    } else {
+        produitGroup.classList.remove('has-error');
+    }
+    
+    // Validation image
+    const image1 = document.querySelector('input[name="image1"]');
+    if (!image1.files || image1.files.length === 0) {
+        document.getElementById('photos-group').classList.add('has-error');
+        isValid = false;
+    } else {
+        document.getElementById('photos-group').classList.remove('has-error');
+    }
+    
+    return isValid;
+}
+
+function validateAutreForm() {
+    let isValid = true;
+    const requiredFields = ['type_annonce_id', 'titre-autre', 'description-autre'];
+    
+    requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        const group = field.closest('.form-group');
+        
+        if (!field.value) {
+            group.classList.add('has-error');
+            isValid = false;
+        } else {
+            group.classList.remove('has-error');
+        }
+    });
+    
+    return isValid;
+}
+
+// Fonctions globales
+window.closePreview = function() {
+    document.getElementById('preview-overlay').style.display = 'none';
+    document.body.style.overflow = '';
+};
+
+window.submitForm = function() {
+    const activeForm = document.querySelector('.tab-content.active form');
+    if (activeForm) {
+        const confirmInput = document.createElement('input');
+        confirmInput.type = 'hidden';
+        confirmInput.name = 'confirm';
+        confirmInput.value = '1';
+        activeForm.appendChild(confirmInput);
+        activeForm.submit();
+    }
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,1137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koné Transport | Livreur Professionnel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2A7F62;
+            --primary-dark: #1E5C48;
+            --primary-light: #E8F4F0;
+            --secondary: #3A4E40;
+            --accent: #FF9F1C;
+            --accent-dark: #E68C00;
+            --light: #F8F9FA;
+            --dark: #212529;
+            --gray: #6C757D;
+            --light-gray: #E9ECEF;
+            --white: #FFFFFF;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.16);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--dark);
+            background-color: var(--white);
+            line-height: 1.7;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background-color: var(--white);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 15px 0;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            color: var(--primary-dark);
+        }
+
+        .logo-icon {
+            color: var(--accent);
+            font-size: 26px;
+        }
+
+        /* Hero Section - Version compacte */
+        .hero {
+            background-color: var(--primary-light);
+            padding: 60px 0 40px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .hero-container {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .hero-avatar {
+            flex: 0 0 180px;
+            height: 180px;
+            min-width: 180px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid var(--white);
+            box-shadow: var(--shadow-md);
+            background-color: var(--primary-light);
+        }
+
+       .hero-avatar img,
+.hero-avatar div {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--white);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .hero-badge.available {
+            color: #28a745;
+        }
+
+        .hero-badge.unavailable {
+            color: #dc3545;
+        }
+
+        .hero-title {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--gray);
+            margin-bottom: 20px;
+            max-width: 600px;
+        }
+
+        .hero-meta {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .hero-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+        }
+
+        .hero-meta-item i {
+            color: var(--primary);
+        }
+
+        /* Main Layout */
+        .main-wrapper {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 350px;
+            flex-shrink: 0;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid var(--light-gray);
+        }
+
+        /* Contact Card */
+        .contact-card {
+            background-color: var(--white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--light-gray);
+        }
+
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            border: 1px solid var(--light-gray);
+        }
+
+        .contact-item:hover {
+            border-color: var(--primary);
+        }
+
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .contact-value {
+            font-weight: 500;
+        }
+
+        /* About Section */
+        .about-text {
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-item {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-label i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .info-value {
+            padding-left: 28px;
+        }
+
+        /* Transport Types */
+        .transport-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .transport-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background-color: var(--primary-light);
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary-dark);
+            border: 1px solid rgba(42, 127, 98, 0.3);
+        }
+
+        /* Availability - Only show available days */
+        .availability-section {
+            background-color: var(--primary-light);
+            padding: 20px;
+            border-radius: var(--radius-md);
+        }
+
+        .availability-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .availability-days {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .day-available {
+            padding: 8px 15px;
+            background-color: var(--white);
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Vehicles */
+        .vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .vehicle-card {
+            border: 1px solid var(--light-gray);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .vehicle-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .vehicle-image {
+            height: 150px;
+            background-color: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vehicle-image i {
+            font-size: 40px;
+            color: var(--gray);
+        }
+
+        .vehicle-details {
+            padding: 15px;
+        }
+
+        .vehicle-type {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        /* Reviews */
+        .review-card {
+            padding: 20px;
+            background-color: var(--white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 15px;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .review-author {
+            font-weight: 600;
+        }
+
+        .review-date {
+            color: var(--gray);
+            font-size: 13px;
+        }
+
+        .review-rating {
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .review-text {
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* Rating Form */
+        .rating-form {
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-top: 30px;
+        }
+
+        .rating-form-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            font-size: 24px;
+            color: #ddd;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-right: 5px;
+        }
+
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 127, 98, 0.1);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            border: none;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+            box-shadow: 0 4px 6px rgba(42, 127, 98, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(42, 127, 98, 0.3);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary-dark);
+            color: var(--primary-dark);
+        }
+
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: var(--white);
+            width: 100%;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #128C7E;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--secondary);
+            color: var(--white);
+            padding: 40px 0;
+            text-align: center;
+        }
+                /* Sidebar sticky */
+            .sidebar {
+                 width: 350px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+            align-self: flex-start;
+            }
+
+            /* Info Columns */
+            .info-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 30px;
+            }
+
+            .info-column {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            /* Zones desservies */
+            .zones-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-top: 5px;
+            }
+
+            .zone-badge {
+                background: var(--primary-light);
+                padding: 6px 12px;
+                border-radius: 50px;
+                font-size: 14px;
+                color: var(--primary-dark);
+            }
+
+            /* Transport types */
+            .transport-types {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-top: 5px;
+            }
+
+            /* Login Card */
+            .login-card {
+                text-align: center;
+                padding: 30px;
+            }
+
+            .login-card-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .login-icon {
+                font-size: 40px;
+                color: var(--primary);
+                margin-bottom: 10px;
+            }
+
+            .login-card h3 {
+                font-size: 18px;
+                margin-bottom: 5px;
+            }
+
+            .login-card p {
+                color: var(--gray);
+                font-size: 14px;
+                margin-bottom: 15px;
+            }
+
+            /* Styles pour les messages */
+.messages-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    animation: fadeIn 0.5s, fadeOut 0.5s 2.5s forwards;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* === FOOTER === */
+.footer {
+    background-color: #1E1E1E;
+    color: #A0A0A0;
+    padding: var(--space-xxl) 0 var(--space-lg);
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-xxl);
+    margin-bottom: var(--space-xxl);
+}
+
+.footer-logo .logo {
+    margin-bottom: var(--space-lg);
+}
+
+.footer-logo .logo-text {
+    color: white;
+}
+
+.footer-logo p {
+    margin-bottom: var(--space-lg);
+    line-height: 1.6;
+}
+
+.footer-link {
+    color: var(--color-primary-light);
+    font-size: var(--font-size-sm);
+}
+
+.footer h3 {
+    color: white;
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.footer-links ul li {
+    margin-bottom: var(--space-md);
+}
+
+.footer-links a {
+    color: #A0A0A0;
+    font-size: var(--font-size-base);
+    transition: color var(--transition-fast);
+}
+
+.footer-links a:hover {
+    color: white;
+}
+
+.footer-contact ul li {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+    align-items: flex-start;
+}
+
+.footer-contact i {
+    color: var(--color-primary-light);
+}
+
+.footer-divider {
+    height: 1px;
+    background-color: #333;
+    margin-bottom: var(--space-lg);
+}
+
+.footer-bottom {
+    text-align: center;
+    color: #666;
+    font-size: var(--font-size-sm);
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .main-wrapper {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+        position: static;
+        height: auto;
+        order: -1;
+        margin-bottom: 40px;
+            }
+            
+            .hero-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero-avatar {
+                 margin: 0 auto 20px;
+            }
+            
+            .hero-meta {
+                justify-content: center;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 30px;
+            }
+            
+            .hero-subtitle {
+                font-size: 16px;
+            }
+            
+            .hero-meta {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+            }
+            
+            .vehicles-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-avatar {
+        width: 150px;
+        height: 150px;
+        flex: 0 0 150px;
+    }
+        }
+
+        @media (max-width: 576px) {
+            .hero-avatar {
+        width: 120px;
+        height: 120px;
+        flex: 0 0 120px;
+    }
+            
+            .hero-title {
+                font-size: 26px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+ 
+
+    {% if messages %}
+<div class="messages-container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+    <!-- Hero Section - Compact Version -->
+    <section class="hero">
+        <div class="container hero-container">
+                    <div class="hero-avatar">
+                {% if livreur.utilisateur.photo_profil %}
+                    <img src="{{ livreur.utilisateur.photo_profil.url }}" alt="{{ livreur.utilisateur.full_name }}" style="width:100%; height:100%; object-fit: cover;">
+                {% else %}
+                    <div style="background-color: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; height: 100%; font-size: 60px; font-weight: bold;">
+                        {{ livreur.utilisateur.full_name|slice:":1"|upper }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="hero-content">
+                <div class="hero-badge {% if livreur.etat.nom == 'disponible' %}available{% else %}unavailable{% endif %}">
+                    <i class="fas fa-{% if livreur.etat.nom == 'disponible' %}check-circle{% else %}times-circle{% endif %}"></i>
+                    {% if livreur.etat.nom == 'disponible' %}Disponible maintenant{% else %}Non disponible{% endif %}
+                </div>
+                
+                <h1 class="hero-title">{{ livreur.utilisateur.full_name }}</h1>
+                <p class="hero-subtitle">{{ livreur.description|default:"Livreur professionnel avec des années d'expérience" }}</p>
+                
+                {% if whatsapp_contact %}
+                <a href="https://wa.me/{{ whatsapp_contact.valeur }}" class="btn btn-primary" target="_blank">
+                    <i class="fas fa-phone-alt"></i>
+                    Contacter le livreur
+                </a>
+                {% endif %}
+                
+                <div class="hero-meta">
+                    <div class="hero-meta-item">
+                        <i class="fas fa-star"></i>
+                        <span>
+                            {% if note_moyenne %}{{ note_moyenne|floatformat:1 }}/5 ({{ nb_avis }} avis){% else %}Pas encore noté{% endif %}
+                        </span>
+                    </div>
+                    <div class="hero-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>
+                            {% if zones %}{{ zones|length }} zone(s) desservie(s){% else %}Zones non spécifiées{% endif %}
+                        </span>
+                    </div>
+                    <div class="hero-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Livreur depuis {{ livreur.utilisateur.date_inscription|date:"Y" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-wrapper">
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- About Section -->
+                <section class="section">
+                    <h2 class="section-title"><i class="fas fa-user-tie"></i> À propos</h2>
+                    <div class="card">
+                        <p class="about-text">{{ livreur.description|default:"Ce livreur professionnel n'a pas encore fourni de description détaillée." }}</p>
+                        
+                        {% if is_entreprise and vehicules %}
+                        <div class="vehicles-section">
+                            <h3 class="info-label"><i class="fas fa-truck"></i> Véhicules de l'entreprise</h3>
+                            <div class="vehicles-grid">
+                                {% for vehicule in vehicules %}
+                                <div class="vehicle-card">
+                                    <div class="vehicle-image">
+                                        {% if vehicule.photo_url %}
+                                            <img src="{{ vehicule.photo_url.url }}" alt="{{ vehicule.type }}" style="width:100%; height:100%; object-fit:cover;">
+                                        {% else %}
+                                            <i class="fas fa-truck"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="vehicle-details">
+                                        <div class="vehicle-type">{{ vehicule.type }}</div>
+                                        {% if vehicule.immatriculation %}
+                                            <div class="info-value">{{ vehicule.immatriculation }}</div>
+                                        {% endif %}
+                                        {% if vehicule.capacite %}
+                                            <div class="info-value">Capacité: {{ vehicule.capacite }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </section>
+
+            <!-- Information Section -->
+<section class="section">
+    <h2 class="section-title"><i class="fas fa-info-circle"></i> Informations professionnelles</h2>
+    <div class="card">
+        <div class="info-grid">
+            <!-- Colonne 1 -->
+            <div class="info-column">
+                <div class="info-item">
+                    <div class="info-label"><i class="fas fa-tag"></i> Type de livreur</div>
+                    <div class="info-value">{{ livreur.type_livreur.nom }}</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label"><i class="fas fa-clock"></i> Expérience</div>
+                    <div class="info-value">Livreur depuis {{ livreur.utilisateur.date_inscription|date:"Y" }}</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label"><i class="fas fa-money-bill-wave"></i> Tarification</div>
+                    <div class="info-value">
+                        {% if livreur.tarif %}
+                            {{ livreur.tarif.valeur }} {{ livreur.tarif.devise.nom }} ({{ livreur.tarif.type_tarif }})
+                        {% else %}
+                            Non spécifié
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Colonne 2 -->
+            <div class="info-column">
+                <div class="info-item">
+                    <div class="info-label"><i class="fas fa-truck"></i> Moyens de transport</div>
+                    <div class="transport-types">
+                        {% if moyens_transport %}
+                            {% for mt in moyens_transport %}
+                                <span class="transport-badge">
+                                    <i class="fas fa-{% if mt.moyen_transport.nom == 'Camion' %}truck{% elif mt.moyen_transport.nom == 'Moto' %}motorcycle{% else %}bicycle{% endif %}"></i>
+                                    {{ mt.moyen_transport.nom }}
+                                </span>
+                            {% endfor %}
+                        {% else %}
+                            <div class="info-value">Non spécifié</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label"><i class="fas fa-map-marked-alt"></i> Zones desservies</div>
+                    <div class="info-value">
+                        {% if zones %}
+                            <div class="zones-container">
+                                {% for zone in zones %}
+                                    <span class="zone-badge">{{ zone.zone.ville }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            Non spécifié
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+                <!-- Availability Section -->
+                <section class="section">
+                    <h2 class="section-title"><i class="fas fa-calendar-check"></i> Disponibilités</h2>
+                    <div class="card">
+                        <div class="availability-section">
+                            <h3 class="availability-title">Jours de disponibilité</h3>
+                            <div class="availability-days">
+                                {% for jour, statut in disponibilites.items %}
+                                    {% if statut == 'disponible' %}
+                                        <div class="day-available">{{ jour|capfirst }}</div>
+                                    {% endif %}
+                                {% empty %}
+                                    <p>Aucune disponibilité enregistrée</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Contact Card -->
+                <div class="contact-card">
+                    <h3 class="section-title"><i class="fas fa-phone-alt"></i> Contact</h3>
+                    
+                            <div class="contact-list">
+                    {% for contact in contacts %}
+                        {% if contact.type_contact.nom == 'Téléphone' %}
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div class="contact-value">{{ contact.valeur }}</div>
+                            </div>
+                        {% endif %}
+                    {% empty %}
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-value">Non disponible</div>
+                        </div>
+                    {% endfor %}
+                </div>
+                    
+                    {% if whatsapp_contact %}
+                                    <a href="{% url 'contacter_livreur_whatsapp' livreur.id %}" class="btn btn-whatsapp" target="_blank">
+                    <i class="fab fa-whatsapp"></i> Contacter via WhatsApp
+                </a>
+                    {% endif %}
+                </div>
+
+                   
+
+{% if user_connected %}
+<div class="rating-form">
+    <h3 class="rating-form-title">Donnez votre avis</h3>
+    
+    <form method="post" action="{% url 'noter_livreur' livreur.id %}">
+        {% csrf_token %}
+        
+        <div class="star-rating">
+            {% for i in "54321" %}
+                <input type="radio" id="star{{i}}" name="note" value="{{i}}" 
+                       {% if note_existante and note_existante.note == i|add:"0" %}checked{% endif %} required>
+                <label for="star{{i}}"><i class="fas fa-star"></i></label>
+            {% endfor %}
+        </div>
+        
+        <div class="form-group">
+            <textarea name="commentaire" class="form-control" 
+                      placeholder="Décrivez votre expérience avec ce livreur...">{% if note_existante %}{{ note_existante.commentaire }}{% endif %}</textarea>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane"></i> 
+                {% if note_existante %}Mettre à jour{% else %}Envoyer{% endif %} l'avis
+            </button>
+            
+            {% if note_existante %}
+            <a href="{% url 'supprimer_notation_livreur' livreur.id %}" class="btn btn-outline" onclick="return confirm('Êtes-vous sûr de vouloir supprimer votre avis ?');">
+                <i class="fas fa-trash-alt"></i> Supprimer
+            </a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% else %}
+<div class="card login-card">
+    <div class="login-card-content">
+        <i class="fas fa-user-lock login-icon"></i>
+        <h3>Connectez-vous pour laisser un avis</h3>
+        <p>Partagez votre expérience avec ce livreur en vous connectant à votre compte.</p>
+        <a href="{% url 'connexion' %}?next={% url 'livreur_detail' livreur.id %}" class="btn btn-primary">
+            <i class="fas fa-sign-in-alt"></i> Se connecter
+        </a>
+    </div>
+</div>
+{% endif %}
+
+
+
+            
+
+                <!-- Reviews Section -->
+                <section class="section">
+                    <h2 class="section-title"><i class="fas fa-star"></i> Avis clients ({{ nb_avis }})</h2>
+                    
+                    {% for notation in notations %}
+                    <div class="review-card">
+                        <div class="review-header">
+                            <span class="review-author">{{ notation.evaluateur.full_name }}</span>
+                            <span class="review-date">{{ notation.date_creation|date:"d/m/Y" }}</span>
+                        </div>
+                        <div class="review-rating">
+                            {% for i in note_etoiles %}
+                            <i class="fas fa-star{% if i <= notation.note %}{% elif i|add:"-0.5" <= notation.note %}-half-alt{% else %}{% endif %}"></i>
+                            {% endfor %}
+                            <span style="margin-left: 5px; font-size: 14px;">{{ notation.note }}/5</span>
+                        </div>
+                        <p class="review-text">"{{ notation.commentaire|default:"Aucun commentaire" }}"</p>
+                    </div>
+                    {% empty %}
+                    <div class="card">
+                        <p style="text-align: center; padding: 20px;">Aucun avis pour le moment. Soyez le premier à noter ce livreur !</p>
+                    </div>
+                    {% endfor %}
+                    
+                    {% if nb_avis > 3 %}
+                    <a href="#all-reviews" class="btn btn-outline" style="width: 100%; margin-top: 15px;">
+                        <i class="fas fa-list"></i> Voir tous les avis
+                    </a>
+                    {% endif %}
+                </section>
+            </aside>
+        </div>
+    </div>
+
+          {% include 'Agri_Connect_CI/header_footer/footer.html' %}
+
+</body>
+</html>

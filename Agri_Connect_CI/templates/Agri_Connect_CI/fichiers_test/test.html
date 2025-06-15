@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Acheteur - AgriConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'agri-primary': '#2A7D4F',
+                        'agri-secondary': '#4CAF50',
+                        'agri-accent': '#8B5E34',
+                        'agri-dark': '#1A2D1A',
+                        'agri-light': '#F2F8F2',
+                        'agri-gray': '#6B7280',
+                        'agri-yellow': '#F9BB47',
+                        'agri-error': '#DC2626',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sticky-sidebar {
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+        
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .avatar-edit {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .profile-section {
+            transition: all 0.3s ease;
+        }
+        
+        .profile-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-input:focus {
+            border-color: #2A7D4F;
+            box-shadow: 0 0 0 2px rgba(42, 125, 79, 0.2);
+        }
+        
+        .dashboard-nav-link {
+            transition: all 0.3s ease;
+            color: #6B7280;
+        }
+        
+        .dashboard-nav-link:hover {
+            background-color: #F2F8F2;
+            color: #2A7D4F;
+        }
+        
+        .active-nav-link {
+            background-color: #F2F8F2;
+            color: #2A7D4F;
+            border-left: 3px solid #2A7D4F;
+        }
+        
+        .annonce-card {
+            transition: all 0.3s ease;
+        }
+        
+        .annonce-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Styles pour le menu burger */
+        .burger-menu {
+           display: none;
+            cursor: pointer;
+            padding: 10px 12px;
+            background-color: #2A7D4F;
+            color: white;
+            border-radius: 5px;
+            position: fixed;
+            top: -5px; /* Positionné sous la navbar */
+            left: 20px;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu {
+            display: none;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .mobile-menu.open {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .burger-menu {
+                display: block;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-agri-light">
+    <div id="toast-container" class="fixed top-4 right-4 z-50"></div>
+
+    <main>
+        <div class="container mx-auto py-8 px-4 max-w-7xl">
+            <div class="flex flex-col md:flex-row gap-8">
+                <!-- Bouton Burger Menu (visible uniquement en mobile) -->
+                <button id="burger-menu" class="burger-menu md:hidden">
+                    <i class="fas fa-bars mr-2"></i> Menu
+                </button>
+
+                <!-- Menu mobile (visible uniquement après clic) -->
+                <div id="mobile-menu" class="mobile-menu md:hidden w-full">
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="p-6 border-b border-gray-100">
+                            <div class="flex items-center">
+                                <div id="user-avatar-mobile" class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl mr-4 overflow-hidden bg-agri-primary">
+                                    <span>J</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg">John Doe</h3>
+                                    <p class="text-sm text-gray-500">Acheteur</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4">
+                            <nav class="space-y-1">
+                                <a href="#dashboard-section" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-home mr-3"></i> Tableau de bord
+                                </a>
+
+                                <a href="#profile-section" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-user mr-3"></i> Profil
+                                </a>
+
+                                <a href="#connections-section" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-exchange-alt mr-3"></i> Mises en relation
+                                </a>
+
+                                <a href="#favorites-section" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-heart mr-3"></i> Favoris
+                                </a>
+
+                                <a href="../register/editer-produit.html" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-plus-circle mr-3"></i> Publier une annonce
+                                </a>
+
+                                <a href="#mes-annonces-section" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-bullhorn mr-3"></i> Mes annonces
+                                </a>
+
+                                <a href="../links/livreur.html" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-truck mr-3"></i> Livreur
+                                </a>
+
+                                <a href="index.html" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-arrow-left mr-3"></i> Retour à l'accueil
+                                </a>
+
+                                <a href="#" class="flex items-center px-4 py-3 rounded-md text-agri-error hover:bg-red-50">
+                                    <i class="fas fa-sign-out-alt mr-3"></i> Déconnexion
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barre latérale avec effet de navigation (visible en grand écran) -->
+                <div class="sidebar w-full md:w-1/4">
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden sticky-sidebar">
+                        <div class="p-6 border-b border-gray-100">
+                            <div class="flex items-center">
+                                <div id="user-avatar" class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl mr-4 overflow-hidden bg-agri-primary">
+                                    <span id="user-avatar-initial">J</span>
+                                </div>
+                                <div>
+                                    <h3 id="user-name" class="font-semibold text-lg">John Doe</h3>
+                                    <p class="text-sm text-gray-500">Acheteur</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4">
+                            <nav class="space-y-1">
+                                <a href="#dashboard-section" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-home mr-3"></i> Tableau de bord
+                                </a>
+
+                                <a href="#profile-section" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-user mr-3"></i> Profil
+                                </a>
+
+                                <a href="#connections-section" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-exchange-alt mr-3"></i> Mises en relation
+                                </a>
+
+                                <a href="#favorites-section" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-heart mr-3"></i> Favoris
+                                </a>
+
+                                <a href="../register/editer-produit.html" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-plus-circle mr-3"></i> Publier une annonce
+                                </a>
+
+                                <a href="#mes-annonces-section" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-bullhorn mr-3"></i> Mes annonces
+                                </a>
+
+                                <a href="../links/livreur.html" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-truck mr-3"></i> Livreur
+                                </a>
+
+                                <a href="index.html" class="dashboard-nav-link flex items-center px-4 py-3 rounded-md">
+                                    <i class="fas fa-arrow-left mr-3"></i> Retour à l'accueil
+                                </a>
+
+                                <a href="#" class="flex items-center px-4 py-3 rounded-md text-agri-error hover:bg-red-50">
+                                    <i class="fas fa-sign-out-alt mr-3"></i> Déconnexion
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenu principal -->
+                <div class="w-full md:w-3/4">
+                    <!-- Tableau de bord -->
+                    <div id="dashboard-section" class="dashboard-section">
+                        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                            <h2 class="text-xl font-semibold mb-4">Bienvenue, <span id="welcome-name" class="text-agri-primary">John</span>!</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <div class="stat-card bg-agri-primary/10 p-4 rounded-md border border-agri-primary/20">
+                                    <h4 class="font-medium text-agri-primary">Mises en relation</h4>
+                                    <p class="text-2xl font-bold">12</p>
+                                </div>
+                                <div class="stat-card bg-agri-secondary/10 p-4 rounded-md border border-agri-secondary/20">
+                                    <h4 class="font-medium text-agri-secondary">Favoris</h4>
+                                    <p class="text-2xl font-bold">8</p>
+                                </div>
+                                <div class="stat-card bg-agri-accent/10 p-4 rounded-md border border-agri-accent/20">
+                                    <h4 class="font-medium text-agri-accent">Évaluations données</h4>
+                                    <p class="text-2xl font-bold">5</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8">
+                                <h3 class="font-semibold mb-3">Activités récentes</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-start p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                                        <div class="bg-agri-primary/10 p-2 rounded-full mr-3">
+                                            <i class="fas fa-exchange-alt text-agri-primary"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">Nouvelle mise en relation avec <span class="text-agri-primary">FarmFresh</span></p>
+                                            <p class="text-sm text-gray-500">Il y a 2 heures • Transport de tomates</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                                        <div class="bg-agri-secondary/10 p-2 rounded-full mr-3">
+                                            <i class="fas fa-heart text-agri-secondary"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">Produit ajouté aux favoris</p>
+                                            <p class="text-sm text-gray-500">Hier • Mangues de saison</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section Profil améliorée -->
+                    <div id="profile-section" class="dashboard-section">
+                        <div class="bg-white rounded-lg shadow-md p-6 mb-6 profile-section">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-semibold">Mon profil</h2>
+                                <button id="edit-profile-btn" class="text-agri-primary hover:text-agri-primary/90">
+                                    <i class="fas fa-edit mr-1"></i> Modifier
+                                </button>
+                            </div>
+                            
+                            <div class="flex flex-col md:flex-row gap-8">
+                                <!-- Photo de profil -->
+                                <div class="md:w-1/3 flex flex-col items-center">
+                                    <div class="avatar-container mb-4">
+                                        <div id="profile-avatar" class="w-32 h-32 rounded-full bg-agri-primary flex items-center justify-center text-white text-4xl font-bold overflow-hidden">
+                                            <span id="profile-initial">J</span>
+                                        </div>
+                                        <div class="avatar-edit" id="change-avatar-btn">
+                                            <i class="fas fa-camera text-sm"></i>
+                                        </div>
+                                    </div>
+                                    <input type="file" id="avatar-upload" accept="image/*" class="hidden">
+                                    <p class="text-sm text-gray-500 mt-2">Format JPG, PNG max. 2MB</p>
+                                </div>
+                                
+                                <!-- Informations du profil -->
+                                <div class="md:w-2/3">
+                                    <form id="profile-form">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                                                <input type="text" value="John" class="form-input w-full px-3 py-2 border border-gray-300 rounded-md" disabled>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+                                                <input type="text" value="Doe" class="form-input w-full px-3 py-2 border border-gray-300 rounded-md" disabled>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                            <input type="email" value="john@example.com" class="form-input w-full px-3 py-2 border border-gray-300 rounded-md" disabled>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                                            <input type="tel" value="+221 77 123 45 67" class="form-input w-full px-3 py-2 border border-gray-300 rounded-md" disabled>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
+                                            <input type="text" value="Dakar, Sénégal" class="form-input w-full px-3 py-2 border border-gray-300 rounded-md" disabled>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+                                            <div class="relative">
+                                                <input type="password" value="password123" class="form-input w-full px-3 py-2 border border-gray-300 rounded-md pr-10" disabled>
+                                                <button type="button" class="absolute right-3 top-2 text-agri-primary hover:text-agri-primary/90">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex justify-end space-x-3 mt-6 hidden" id="form-actions">
+                                            <button type="button" id="cancel-edit-btn" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                                                Annuler
+                                            </button>
+                                            <button type="submit" class="px-4 py-2 bg-agri-primary hover:bg-agri-primary/90 text-white rounded-md">
+                                                Enregistrer
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section Mises en relation -->
+                    <div id="connections-section" class="dashboard-section">
+                        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                            <h2 class="text-xl font-semibold mb-4">Mes mises en relation</h2>
+                            <div id="connections-list" class="space-y-4">
+                                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-semibold text-lg">FarmFresh</h3>
+                                            <p class="text-sm text-gray-600">Transport de tomates • 50kg</p>
+                                        </div>
+                                        <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">En cours</span>
+                                    </div>
+                                    <div class="mt-3 flex items-center text-sm text-gray-500">
+                                        <i class="fas fa-map-marker-alt mr-2 text-agri-primary"></i>
+                                        <span>Abidjan → Bouaké</span>
+                                    </div>
+                                    <div class="mt-4 flex justify-between items-center">
+                                        <div class="flex items-center">
+                                            <div class="flex mr-2">
+                                                <i class="fas fa-star text-yellow-500"></i>
+                                                <i class="fas fa-star text-yellow-500"></i>
+                                                <i class="fas fa-star text-yellow-500"></i>
+                                                <i class="fas fa-star text-yellow-500"></i>
+                                                <i class="fas fa-star text-gray-300"></i>
+                                            </div>
+                                            <span class="text-sm text-gray-600">(24 avis)</span>
+                                        </div>
+                                        <button class="px-3 py-1 bg-agri-primary text-white rounded-md text-sm hover:bg-agri-primary/90">
+                                            Voir détails
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-semibold text-lg">AgriQuick</h3>
+                                            <p class="text-sm text-gray-600">Transport de bananes • 200kg</p>
+                                        </div>
+                                        <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Terminé</span>
+                                    </div>
+                                    <div class="mt-3 flex items-center text-sm text-gray-500">
+                                        <i class="fas fa-map-marker-alt mr-2 text-agri-primary"></i>
+                                        <span>Yamoussoukro → Abidjan</span>
+                                    </div>
+                                    <div class="mt-4 flex justify-between items-center">
+                                        <div class="flex items-center">
+                                            <div class="flex mr-2">
+                                                <i class="fas fa-star text-yellow-500"></i>
+                                                <i class="fas fa-star text-yellow-500"></i>
+                                                <i class="fas fa-star text-yellow-500"></i>
+                                                <i class="fas fa-star text-yellow-500"></i>
+                                                <i class="fas fa-star-half-alt text-yellow-500"></i>
+                                            </div>
+                                            <span class="text-sm text-gray-600">(36 avis)</span>
+                                        </div>
+                                        <button class="px-3 py-1 border border-agri-primary text-agri-primary rounded-md text-sm hover:bg-agri-primary hover:text-white">
+                                            Évaluer
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section Favoris -->
+                    <div id="favorites-section" class="dashboard-section">
+                        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                            <h2 class="text-xl font-semibold mb-4">Mes favoris</h2>
+                            <div id="favorites-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
+                                <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                                    <div class="h-40 bg-gray-100 overflow-hidden">
+                                        <img src="https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?q=80&w=1935&auto=format&fit=crop" alt="Tomates" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                                    </div>
+                                    <div class="p-4">
+                                        <h3 class="font-semibold">Tomates bio</h3>
+                                        <p class="text-sm text-gray-600 mb-2">Producteur: FarmFresh</p>
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-medium text-agri-primary">1 200 FCFA/kg</span>
+                                            <button class="text-red-500 hover:text-red-700">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                                    <div class="h-40 bg-gray-100 overflow-hidden">
+                                        <img src="https://images.unsplash.com/photo-1550258987-190a2d41a8ba?q=80&w=2070&auto=format&fit=crop" alt="Mangues" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                                    </div>
+                                    <div class="p-4">
+                                        <h3 class="font-semibold">Mangues de saison</h3>
+                                        <p class="text-sm text-gray-600 mb-2">Producteur: MangoPlus</p>
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-medium text-agri-primary">800 FCFA/kg</span>
+                                            <button class="text-red-500 hover:text-red-700">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section Mes Annonces -->
+                    <div id="mes-annonces-section" class="dashboard-section">
+                        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-semibold">Mes annonces</h2>
+                                <div class="flex space-x-2">
+                                    <select class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-agri-primary focus:border-transparent">
+                                        <option>Toutes</option>
+                                        <option>Actives</option>
+                                        <option>Archivées</option>
+                                    </select>
+                                    <button class="px-3 py-1 bg-agri-primary text-white rounded-md text-sm hover:bg-agri-primary/90">
+                                        <i class="fas fa-plus mr-1"></i> Nouvelle
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <!-- Annonce 1 -->
+                                <div class="annonce-card border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-semibold text-lg">Transport de mangues</h3>
+                                            <p class="text-sm text-gray-600">150kg • Abidjan → Dakar</p>
+                                        </div>
+                                        <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Active</span>
+                                    </div>
+                                    <div class="mt-3 flex items-center text-sm text-gray-500">
+                                        <i class="fas fa-calendar-alt mr-2 text-agri-primary"></i>
+                                        <span>Date de ramassage: 15/05/2023</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <p class="text-sm text-gray-700 line-clamp-2">
+                                            Recherche transporteur sérieux pour livraison de mangues de qualité supérieure. Conditionnement en caisses de 10kg. Chargement et déchargement assurés par nos soins.
+                                        </p>
+                                    </div>
+                                    <div class="mt-4 flex justify-between items-center">
+                                        <div class="flex items-center">
+                                            <span class="font-medium text-agri-primary">Budget: 75 000 FCFA</span>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button class="px-3 py-1 border border-agri-primary text-agri-primary rounded-md text-sm hover:bg-agri-primary hover:text-white">
+                                                <i class="fas fa-edit mr-1"></i> Modifier
+                                            </button>
+                                            <button class="px-3 py-1 border border-red-500 text-red-500 rounded-md text-sm hover:bg-red-500 hover:text-white">
+                                                <i class="fas fa-trash mr-1"></i> Supprimer
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Annonce 2 -->
+                                <div class="annonce-card border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-semibold text-lg">Transport de tomates</h3>
+                                            <p class="text-sm text-gray-600">300kg • Bouaké → Abidjan</p>
+                                        </div>
+                                        <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Terminée</span>
+                                    </div>
+                                    <div class="mt-3 flex items-center text-sm text-gray-500">
+                                        <i class="fas fa-calendar-alt mr-2 text-agri-primary"></i>
+                                        <span>Date de ramassage: 02/05/2023</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <p class="text-sm text-gray-700 line-clamp-2">
+                                            Transport de tomates fraîches en provenance de Bouaké vers Abidjan. Nécessite un véhicule réfrigéré. Livraison à Marcory.
+                                        </p>
+                                    </div>
+                                    <div class="mt-4 flex justify-between items-center">
+                                        <div class="flex items-center">
+                                            <span class="font-medium text-agri-primary">Budget: 120 000 FCFA</span>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button class="px-3 py-1 border border-gray-300 text-gray-700 rounded-md text-sm hover:bg-gray-100">
+                                                <i class="fas fa-eye mr-1"></i> Voir
+                                            </button>
+                                            <button class="px-3 py-1 border border-agri-primary text-agri-primary rounded-md text-sm hover:bg-agri-primary hover:text-white">
+                                                <i class="fas fa-redo mr-1"></i> Relancer
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Annonce 3 -->
+                                <div class="annonce-card border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-semibold text-lg">Transport de bananes</h3>
+                                            <p class="text-sm text-gray-600">500kg • Daloa → San Pedro</p>
+                                        </div>
+                                        <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">En attente</span>
+                                    </div>
+                                    <div class="mt-3 flex items-center text-sm text-gray-500">
+                                        <i class="fas fa-calendar-alt mr-2 text-agri-primary"></i>
+                                        <span>Date de ramassage: 22/05/2023</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <p class="text-sm text-gray-700 line-clamp-2">
+                                            Recherche transport pour bananes plantain. Conditionnement en régimes. Chargement rapide nécessaire. Paiement à la livraison.
+                                        </p>
+                                    </div>
+                                    <div class="mt-4 flex justify-between items-center">
+                                        <div class="flex items-center">
+                                            <span class="font-medium text-agri-primary">Budget: 65 000 FCFA</span>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button class="px-3 py-1 border border-agri-primary text-agri-primary rounded-md text-sm hover:bg-agri-primary hover:text-white">
+                                                <i class="fas fa-edit mr-1"></i> Modifier
+                                            </button>
+                                            <button class="px-3 py-1 border border-red-500 text-red-500 rounded-md text-sm hover:bg-red-500 hover:text-white">
+                                                <i class="fas fa-trash mr-1"></i> Supprimer
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-center mt-8">
+                                <button class="px-4 py-2 border border-agri-primary text-agri-primary rounded-md hover:bg-agri-primary hover:text-white">
+                                    Voir plus d'annonces
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer bg-agri-dark text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="footer-logo">
+                    <div class="logo flex items-center mb-4">
+                        <div class="logo-icon bg-agri-primary rounded-full w-10 h-10 flex items-center justify-center mr-2">
+                            <i class="fas fa-leaf text-white"></i>
+                        </div>
+                        <div class="logo-text font-bold text-xl">AgriConnect</div>
+                    </div>
+                    <p class="text-agri-light mb-4">AgriConnect connecte les producteurs locaux, les acheteurs et les livreurs pour favoriser une agriculture de proximité et des échanges plus directs et justes.</p>
+                    <a href="about.html" class="text-agri-primary hover:text-agri-secondary">En savoir plus →</a>
+                </div>
+                
+                <div class="footer-links">
+                    <h3 class="font-semibold text-lg mb-4">Liens utiles</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-agri-light hover:text-agri-primary">Accueil</a></li>
+                        <li><a href="catalog.html" class="text-agri-light hover:text-agri-primary">Catalogue</a></li>
+                        <li><a href="about.html" class="text-agri-light hover:text-agri-primary">À propos</a></li>
+                        <li><a href="faq.html" class="text-agri-light hover:text-agri-primary">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3 class="font-semibold text-lg mb-4">S'inscrire</h3>
+                    <ul class="space-y-2">
+                        <li><a href="autres/tableau de bord-acheteur.html" class="text-agri-light hover:text-agri-primary">Devenir acheteur</a></li>
+                        <li><a href="autres/tableau-de-bord-producteur.html" class="text-agri-light hover:text-agri-primary">Devenir producteur</a></li>
+                        <li><a href="register-producer.html" class="text-agri-light hover:text-agri-primary">Devenir livreur</a></li>
+                        <li><a href="login.html" class="text-agri-light hover:text-agri-primary">Se connecter</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-contact">
+                    <h3 class="font-semibold text-lg mb-4">Contact</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-agri-primary"></i>
+                            <span class="text-agri-light">123 Rue de l'Agriculture<br>75000 Paris, France</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone mr-3 text-agri-primary"></i>
+                            <span class="text-agri-light">+33 1 23 45 67 89</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-3 text-agri-primary"></i>
+                            <span class="text-agri-light">contact@AgriConnect.fr</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-agri-gray mt-8 pt-6">
+                <div class="text-center text-agri-light">
+                    <p>© <span id="current-year">2023</span> AgriConnect. Tous droits réservés.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Gestion du menu burger
+        const burgerMenu = document.getElementById('burger-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        burgerMenu.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // Gestion de l'upload d'avatar
+        const changeAvatarBtn = document.getElementById('change-avatar-btn');
+        const avatarUpload = document.getElementById('avatar-upload');
+
+        if (changeAvatarBtn && avatarUpload) {
+            changeAvatarBtn.addEventListener('click', () => {
+                avatarUpload.click();
+            });
+
+            avatarUpload.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const avatar = document.getElementById('profile-avatar');
+                        const mobileAvatar = document.getElementById('user-avatar-mobile');
+                        
+                        avatar.innerHTML = '';
+                        avatar.style.backgroundImage = `url(${event.target.result})`;
+                        avatar.style.backgroundSize = 'cover';
+                        avatar.style.backgroundPosition = 'center';
+                        
+                        if (mobileAvatar) {
+                            mobileAvatar.innerHTML = '';
+                            mobileAvatar.style.backgroundImage = `url(${event.target.result})`;
+                            mobileAvatar.style.backgroundSize = 'cover';
+                            mobileAvatar.style.backgroundPosition = 'center';
+                        }
+                    };
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+        }
+
+        // Gestion de l'édition du profil
+        const editProfileBtn = document.getElementById('edit-profile-btn');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const formActions = document.getElementById('form-actions');
+        const formInputs = document.querySelectorAll('#profile-form input');
+
+        if (editProfileBtn && cancelEditBtn && formActions) {
+            editProfileBtn.addEventListener('click', () => {
+                formInputs.forEach(input => {
+                    input.disabled = false;
+                });
+                formActions.classList.remove('hidden');
+                editProfileBtn.classList.add('hidden');
+            });
+
+            cancelEditBtn.addEventListener('click', () => {
+                formInputs.forEach(input => {
+                    input.disabled = true;
+                });
+                formActions.classList.add('hidden');
+                editProfileBtn.classList.remove('hidden');
+            });
+        }
+
+        // Mise à jour de l'année du footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

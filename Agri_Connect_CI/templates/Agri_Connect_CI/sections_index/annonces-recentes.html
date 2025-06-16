@@ -1,40 +1,7 @@
 <style>
 
 
-/* Adaptation pour les petits écrans */
-@media (max-width: 576px) {
-    .annonces-header {
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .annonces-header h2 {
-        font-size: 1.7rem;
-        flex: 1;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    
-    .annonces-header .btn-primary {
-        padding: 6px 12px;
-        font-size: 1.1rem;
-    }
-}
 
-/* Pour les très petits écrans */
-@media (max-width: 400px) {
-    .annonces-header h2 {
-        font-size: 1.2rem;
-    }
-    
-    .annonces-header .btn-primary {
-        padding: 5px 10px;
-        font-size: 0.75rem;
-    }
-}
 
  .annonce-user {
     display: flex;
@@ -141,6 +108,40 @@
         height: 160px; /* Hauteur légèrement réduite sur mobile */
     }
 }
+/* Adaptation pour les petits écrans */
+@media (max-width: 576px) {
+    .annonces-header {
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .annonces-header h2 {
+        font-size: 1.7rem;
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .annonces-header .btn-primary {
+        padding: 6px 12px;
+        font-size: 1.1rem;
+    }
+}
+
+/* Pour les très petits écrans */
+@media (max-width: 400px) {
+    .annonces-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .annonces-header .btn-primary {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+    }
+}
 </style>
 
 <!-- Section Annonces récentes -->
@@ -189,7 +190,7 @@
 
                             <h3 class="annonce-title">{{ annonce.titre }}</h3>
                             <p class="annonce-description">
-                                {{ annonce.description|truncatechars:100 }}
+                                {{ annonce.description|truncatechars:200 }}
                             </p>
                             <div class="annonce-meta">
                                 <div class="annonce-location">
@@ -207,12 +208,8 @@
                                 </div>
                             </div>
                            <div class="annonce-footer">
-                                {% if annonce.annonceproduit_set.exists %}
-                                <div class="annonce-price">
-                                    {{ annonce.annonceproduit_set.first.prix_unitaire }} 
-                                    {{ annonce.annonceproduit_set.first.devise.nom }}
-                                </div>
-                                {% endif %}
+                                
+                                
                                 
                                 {% if request.user.is_authenticated %}
                                     <a href="{% url 'contacter_whatsapp' annonce.id %}" class="btn-repondre">

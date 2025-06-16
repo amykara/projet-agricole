@@ -5,6 +5,7 @@ from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.http import Http404,JsonResponse
 from django.contrib import messages
+from django.contrib.messages import get_messages
 from django.template.exceptions import TemplateDoesNotExist
 from django.db.models import Avg, Subquery, Prefetch, Count, Min, Sum
 from django.shortcuts import render
@@ -18,6 +19,21 @@ import logging
 from django.db import transaction
 from django.db.models.functions import Lower
 from django.apps import apps  
+
+TarifFormSet = inlineformset_factory(
+    Livreur,
+    TarifLivreur,
+    fields=('vehicule', 'type_livraison', 'zone', 'prix', 'devise'),
+    extra=1,
+    can_delete=True,
+    widgets={
+        'vehicule': forms.Select(attrs={'class': 'form-control'}),
+        'type_livraison': forms.Select(attrs={'class': 'form-control'}),
+        'zone': forms.Select(attrs={'class': 'form-control'}),
+        'prix': forms.NumberInput(attrs={'class': 'form-control'}),
+        'devise': forms.Select(attrs={'class': 'form-control'}),
+    }
+)
 
 logger = logging.getLogger(__name__)
 
@@ -184,7 +200,7 @@ from django.contrib.auth import logout
 
 def deconnexion(request):
     logout(request)
-    messages.success(request, "Vous avez été déconnecté avec succès.")
+    
     return redirect('home')
 
 @login_required
@@ -678,8 +694,6 @@ def faq_view(request):
         'user_connected': request.user.is_authenticated
     })
 
-
-
 def annonces_view(request):
     """Sous-fonction dédiée à la gestion des annonces"""
     # Récupération du type de vente produits à exclure
@@ -699,16 +713,16 @@ def annonces_view(request):
         Prefetch('annonceproduit_set', queryset=AnnonceProduit.objects.select_related('unite', 'devise'))
     ).order_by('-date_annonce')
 
-
-    category_filter = request.GET.get('filter-category', 'all')
+    # Récupération des paramètres de filtre
+    category_filter = request.GET.get('category', 'all')
     if category_filter != 'all':
         annonces_list = annonces_list.filter(type_annonce__nom__iexact=category_filter)
 
-    location_filter = request.GET.get('filter-location', 'all')
+    location_filter = request.GET.get('location', 'all')
     if location_filter != 'all':
         annonces_list = annonces_list.filter(zone__ville__iexact=location_filter)
 
-    sort_filter = request.GET.get('filter-sort', 'recent')
+    sort_filter = request.GET.get('sort', 'recent')
     if sort_filter == 'ancien':
         annonces_list = annonces_list.order_by('date_annonce')
     elif sort_filter == 'prix-asc':
@@ -740,7 +754,6 @@ def annonces_view(request):
 
 
 
-
 def liste_livreurs(request):
     # Récupération des filtres depuis la requête GET
     type_vehicule_filter = request.GET.getlist('type_vehicule')
@@ -749,14 +762,6 @@ def liste_livreurs(request):
     disponible_filter = request.GET.get('disponible') == 'on'
     tri = request.GET.get('tri', 'note_desc')
     tab = request.GET.get('tab', 'all')
-
-    # Gestion de la valeur 'all'
-    if 'all' in type_vehicule_filter:
-        type_vehicule_filter = []
-    if 'all' in zones_filter:
-        zones_filter = []
-    if 'all' in capacites_filter:
-        capacites_filter = []
 
     # Initialisation du queryset
     livreurs = Livreur.objects.select_related(
@@ -769,19 +774,17 @@ def liste_livreurs(request):
     )
 
     # Application des filtres
-    if type_vehicule_filter:
+    if type_vehicule_filter and 'all' not in type_vehicule_filter:
         livreurs = livreurs.filter(vehicule__type__in=type_vehicule_filter).distinct()
     
-    if zones_filter:
+    if zones_filter and 'all' not in zones_filter:
         livreurs = livreurs.filter(livreurzone__zone_id__in=zones_filter).distinct()
     
-    if capacites_filter:
-        livreurs = livreurs.filter(vehicule__capacite__in=capacites_filter).distinct()
+    if capacites_filter and 'all' not in capacites_filter:
+        livreurs = livreurs.filter(vehicule__capacite_id__in=capacites_filter).distinct()
     
     if disponible_filter:
-         livreurs = livreurs.filter(etat__nom__iexact='disponible')
-
-   
+        livreurs = livreurs.filter(etat__nom__icontains='disponible')  # Modification ici
 
     # Application du tri
     if tri == 'note_desc':
@@ -810,7 +813,7 @@ def liste_livreurs(request):
         'livreurs': livreurs,
         'types_vehicule': types_vehicule,
         'zones_couverture': zones_couverture,
-        'zones_dict': zones_dict,  # Pour le filtre get_item
+        'zones_dict': zones_dict,
         'capacites': capacites,
         'filtres_actifs': {
             'type_vehicule': type_vehicule_filter,
@@ -969,12 +972,15 @@ def tableau_bord_livreur(request):
     return render(request, 'Agri_Connect_CI/tableau_de_bord/tableau-de-bord-livreur.html', context)
 
 
-
 @login_required
 def creer_annonce(request):
-    default_tab = request.GET.get('tab', 'produit' if request.user.role == 'producteur' else 'autre')
+    # Nettoyer les messages existants
+    storage = get_messages(request)
+    for message in storage:
+        pass
+    storage.used = True
 
-    # Données nécessaires pour les formulaires
+    default_tab = request.GET.get('tab', 'produit' if request.user.role == 'producteur' else 'autre')
     categories = CategorieProduit.objects.all()
     unites = UniteMesure.objects.all()
     devises = Devise.objects.all()
@@ -985,37 +991,13 @@ def creer_annonce(request):
     if request.method == 'POST':
         form_type = request.POST.get('form_type')
         
-        # Mode confirmation après prévisualisation
         if request.POST.get('confirm') == '1':
-            # Récupérer les données de la session
-            session_data = request.session.get('form_data', {})
-            form_type = request.session.get('form_type')
-            
-            # Créer une copie mutable du POST
-            mutable_post = request.POST.copy()
-            
-            # Mettre à jour avec les données de la session
-            for key, value in session_data.items():
-                if key not in mutable_post:
-                    mutable_post[key] = value
-            
-            request.POST = mutable_post
-            
-            # Les fichiers doivent être retéléchargés par l'utilisateur
-            # On ne peut pas les récupérer depuis la session
+            # Gestion de la prévisualisation...
+            pass
 
         if form_type == 'produit' and request.user.role == 'producteur':
-            # Validation des champs produit
-            produit_id = request.POST.get('produit_id')
-            nom_produit = request.POST.get('nom_produit')
-            
-            if not nom_produit:
-                messages.error(request, "Vous devez sélectionner ou saisir un produit")
-                return redirect('create_annonce')
-            
             try:
                 with transaction.atomic():
-                    # Création de l'annonce
                     annonce = Annonce(
                         auteur=request.user,
                         type_annonce=TypeAnnonce.objects.get(nom__icontains='produit'),
@@ -1026,10 +1008,9 @@ def creer_annonce(request):
                     )
                     annonce.save()
                     
-                    # Création du produit associé
                     produit = AnnonceProduit(
                         annonce=annonce,
-                        nom_produit=nom_produit,
+                        nom_produit=request.POST.get('nom_produit'),
                         categorie_id=request.POST.get('categorie_id'),
                         unite_id=request.POST.get('unite_mesure'),
                         quantite=request.POST.get('quantite'),
@@ -1041,23 +1022,20 @@ def creer_annonce(request):
                     )
                     produit.save()
                     
-                    # Gestion des images (1 à 3)
                     for i in range(1, 4):
                         image_field = f'image{i}'
                         if image_field in request.FILES:
-                            image_instance = AnnonceImage(
+                            image_file = request.FILES[image_field]
+                            AnnonceImage.objects.create(
                                 annonce=annonce, 
-                                url_image=request.FILES[image_field]
+                                url_image=image_file,
+                                legende=f"Image {i} pour {produit.nom_produit}"
                             )
-                            image_instance.save()
                     
-                    # Nettoyer la session après succès
-                    if 'form_data' in request.session:
-                        del request.session['form_data']
-                    if 'form_type' in request.session:
-                        del request.session['form_type']
-                    if 'files' in request.session:
-                        del request.session['files']
+                    # Nettoyer la session
+                    request.session.pop('form_data', None)
+                    request.session.pop('form_type', None)
+                    request.session.pop('files', None)
                     
                     messages.success(request, "Votre annonce produit a été publiée avec succès!")
                     return redirect('tableau_bord_producteur')
@@ -1068,52 +1046,46 @@ def creer_annonce(request):
                 
         elif form_type == 'autre':
             try:
-                annonce = Annonce(
-                    auteur=request.user,
-                    type_annonce_id=request.POST.get('type_annonce_id'),
-                    titre=request.POST.get('titre'),
-                    description=request.POST.get('description'),
-                    zone=request.user.zone,
-                    statut='active'
-                )
-                annonce.save()
-                
-                # Gestion des images (1 à 3)
-                for i in range(1, 4):
-                    image_field = f'image{i}'
-                    if image_field in request.FILES:
-                        AnnonceImage.objects.create(
-                            annonce=annonce, 
-                            url_image=request.FILES[image_field]
-                        )
-                
-                # Nettoyer la session après succès
-                if 'form_data' in request.session:
-                    del request.session['form_data']
-                if 'form_type' in request.session:
-                    del request.session['form_type']
-                if 'files' in request.session:
-                    del request.session['files']
-                
-                messages.success(request, "Votre annonce a été publiée avec succès!")
-                return redirect('tableau_de_bord')
+                with transaction.atomic():
+                    annonce = Annonce(
+                        auteur=request.user,
+                        type_annonce_id=request.POST.get('type_annonce_id'),
+                        titre=request.POST.get('titre'),
+                        description=request.POST.get('description'),
+                        zone=request.user.zone,
+                        statut='active'
+                    )
+                    annonce.save()
+                    
+                    for i in range(1, 4):
+                        image_field = f'image{i}'
+                        if image_field in request.FILES:
+                            image_file = request.FILES[image_field]
+                            AnnonceImage.objects.create(
+                                annonce=annonce, 
+                                url_image=image_file,
+                                legende=f"Image {i} pour {annonce.titre}"
+                            )
+                    
+                    # Nettoyer la session
+                    request.session.pop('form_data', None)
+                    request.session.pop('form_type', None)
+                    request.session.pop('files', None)
+                    
+                    messages.success(request, "Votre annonce a été publiée avec succès!")
+                    
+                    # Redirection selon le rôle
+                    if request.user.role == 'producteur':
+                        return redirect('tableau_bord_producteur')
+                    elif request.user.role == 'livreur':
+                        return redirect('tableau_bord_livreur')
+                    else:
+                        return redirect('tableau_de_bord_acheteur')
                 
             except Exception as e:
                 messages.error(request, f"Erreur lors de la création: {str(e)}")
                 return redirect('create_annonce')
-        else:
-            # Mode prévisualisation - sauvegarder les données en session
-            request.session['form_data'] = request.POST.dict()
-            request.session['form_type'] = form_type
-            
-            # Sauvegarder seulement les noms des fichiers pour référence
-            request.session['files'] = {
-                f'image{i}': request.FILES.get(f'image{i}').name 
-                for i in range(1, 4) if request.FILES.get(f'image{i}')
-            }
-            
-            # Ne pas stocker les fichiers eux-mêmes dans la session
-    
+
     context = {
         'categories': categories,
         'unites': unites,
@@ -1225,14 +1197,25 @@ def update_livreur_statut(request):
 @login_required
 def creer_annonce_livreur(request):
     if request.method == 'POST':
-        form = AnnonceLivreurForm(request.POST)
+        form = AnnonceLivreurForm(request.POST, request.FILES)  # Ajoutez request.FILES
         if form.is_valid():
             annonce = form.save(commit=False)
             annonce.auteur = request.user
-            annonce.type_annonce_id = 2  # ID pour les annonces de livraison
+            annonce.type_annonce_id = 2
             annonce.save()
+            
+            # Gestion des images
+            for i in range(1, 4):
+                image_field = f'image{i}'
+                if image_field in request.FILES:
+                    AnnonceImage.objects.create(
+                        annonce=annonce,
+                        url_image=request.FILES[image_field],
+                        legende=f"Image {i}"
+                    )
+            
             messages.success(request, "Annonce créée avec succès")
-            return redirect('tableau_de_bord', role='livreur')
+            return redirect('tableau_bord_livreur')  # Redirection spécifique
     else:
         form = AnnonceLivreurForm()
     
@@ -1304,7 +1287,7 @@ def marquer_notification_lue(request, notification_id):
 
 
 
-
+from datetime import datetime, time, date
 @login_required
 def editer_profil_livreur(request):
     try:
@@ -1312,58 +1295,205 @@ def editer_profil_livreur(request):
     except Livreur.DoesNotExist:
         return redirect('tableau_bord_livreur')
 
-    # Récupération des données existantes
-    email_type = TypeContact.objects.filter(nom='Email').first()
-    phone_type = TypeContact.objects.filter(nom='Téléphone').first()
-    
-    contacts = {
-        'email': Contact.objects.filter(utilisateur=request.user, type_contact=email_type).first(),
-        'phone': Contact.objects.filter(utilisateur=request.user, type_contact=phone_type).first(),
+    # Initialisation des données
+    initial_data = {
+        'full_name': request.user.full_name,
+        'email': request.user.get_email(),
+        'telephone': request.user.contact_set.filter(type_contact__nom='Téléphone').first().valeur if request.user.contact_set.filter(type_contact__nom='Téléphone').exists() else '',
+        'photo_profil': request.user.photo_profil,
+        'description': livreur.description,
+        'type_livreur': livreur.type_livreur.id if livreur.type_livreur else None,
+        'etat': livreur.etat.id if livreur.etat else None,
+        'zone': livreur.livreurzone_set.first().zone.id if livreur.livreurzone_set.exists() else None,
+        'jours_disponibilite': [d.jour_semaine for d in livreur.disponibilitelivreur_set.all()],
+        'heure_debut': livreur.disponibilitelivreur_set.first().date_debut.time() if livreur.disponibilitelivreur_set.exists() else '08:00',
+        'heure_fin': livreur.disponibilitelivreur_set.first().date_fin.time() if livreur.disponibilitelivreur_set.exists() else '18:00',
+        'siret': request.user.contact_set.filter(type_contact__nom='SIRET').first().valeur if request.user.contact_set.filter(type_contact__nom='SIRET').exists() else '',
+        'moyen_transport': livreur.livreurmoyentransport_set.first().moyen_transport.id if livreur.livreurmoyentransport_set.exists() else None,
     }
-    
-    vehicules = Vehicule.objects.filter(livreur=livreur)
-    zones_livraison = LivreurZone.objects.filter(livreur=livreur)
-    disponibilites = DisponibiliteLivreur.objects.filter(livreur=livreur)
 
     if request.method == 'POST':
         form = LivreurForm(request.POST, request.FILES, instance=livreur)
+        account_type = request.POST.get('account_type', 'individual')
+        
         if form.is_valid():
-            form.save()
-            return redirect('tableau_bord_livreur')
+            try:
+                with transaction.atomic():
+                    # Sauvegarde des informations de base
+                    livreur = form.save(commit=False)
+                    
+                    # Mise à jour du type de livreur
+                    type_livreur_id = request.POST.get('type_livreur')
+                    if type_livreur_id:
+                        livreur.type_livreur = TypeLivreur.objects.get(id=type_livreur_id)
+                    
+                    # Gestion des contacts
+                    email_type, _ = TypeContact.objects.get_or_create(nom='Email')
+                    phone_type, _ = TypeContact.objects.get_or_create(nom='Téléphone')
+                    
+                    Contact.objects.update_or_create(
+                        utilisateur=request.user,
+                        type_contact=email_type,
+                        defaults={'valeur': form.cleaned_data['email']}
+                    )
+                    
+                    Contact.objects.update_or_create(
+                        utilisateur=request.user,
+                        type_contact=phone_type,
+                        defaults={'valeur': form.cleaned_data['telephone']}
+                    )
+                    
+                    # Pour les entreprises, gestion du SIRET
+                    if account_type == 'company':
+                        siret_type, _ = TypeContact.objects.get_or_create(nom='SIRET')
+                        Contact.objects.update_or_create(
+                            utilisateur=request.user,
+                            type_contact=siret_type,
+                            defaults={'valeur': request.POST.get('siret', '')}
+                        )
+                    
+                    # Gestion du nom complet selon le type
+                    if account_type == 'individual':
+                        request.user.full_name = f"{request.POST.get('first_name', '')} {request.POST.get('last_name', '')}".strip()
+                    else:
+                        request.user.full_name = request.POST.get('company_name', '')
+                    request.user.save()
+                    
+                    # Gestion des moyens de transport/véhicules
+                    LivreurMoyenTransport.objects.filter(livreur=livreur).delete()
+                    Vehicule.objects.filter(livreur=livreur).delete()
+                    
+                    if account_type == 'individual':
+                        # Livreur individuel - un seul moyen de transport
+                        moyen_transport_id = request.POST.get('moyen_transport')
+                        if moyen_transport_id:
+                            LivreurMoyenTransport.objects.create(
+                                livreur=livreur,
+                                moyen_transport=MoyenTransport.objects.get(id=moyen_transport_id)
+                            )
+                    else:
+                        # Entreprise - plusieurs véhicules
+                        i = 0
+                        while f'company_vehicles[{i}][type]' in request.POST:
+                            vehicle_type = request.POST.get(f'company_vehicles[{i}][type]')
+                            vehicle_capacity = request.POST.get(f'company_vehicles[{i}][capacity]')
+                            if vehicle_type and vehicle_capacity:
+                                Vehicule.objects.create(
+                                    livreur=livreur,
+                                    type=MoyenTransport.objects.get(id=vehicle_type).nom,
+                                    capacite=CapaciteVehicule.objects.get(id=vehicle_capacity),
+                                    immatriculation=request.POST.get(f'company_vehicles[{i}][immatriculation]', ''),
+                                    photo_url=request.FILES.get(f'company_vehicles[{i}][photo]')
+                                )
+                            i += 1
+                    
+                    # Gestion de la zone (une seule)
+                    LivreurZone.objects.filter(livreur=livreur).delete()
+                    zone_id = request.POST.get('zone')
+                    if zone_id:
+                        LivreurZone.objects.create(
+                            livreur=livreur,
+                            zone=Zone.objects.get(id=zone_id)
+                        )
+                    
+                    # Gestion des tarifs
+                    TarifLivreur.objects.filter(livreur=livreur).delete()
+                    
+                    if account_type == 'individual':
+                        # Tarifs pour livreur individuel (une seule grille)
+                        i = 0
+                        while f'individual_pricing[{i}][label]' in request.POST:
+                            label = request.POST.get(f'individual_pricing[{i}][label]')
+                            price = request.POST.get(f'individual_pricing[{i}][price]')
+                            
+                            if price:
+                                TarifLivreur.objects.create(
+                                    livreur=livreur,
+                                    libelle=label,
+                                    prix=price,
+                                    devise=Devise.objects.get(code='FCFA'),
+                                    type_livraison=TypeLivraison.objects.get(nom='Standard')
+                                )
+                            i += 1
+                    else:
+                        # Tarifs pour entreprise (par véhicule et type de livraison)
+                        for vehicule in Vehicule.objects.filter(livreur=livreur):
+                            # Tarifs pour livraison individuelle
+                            i = 0
+                            while f'company_pricing[{vehicule.id}][individual][{i}][label]' in request.POST:
+                                label = request.POST.get(f'company_pricing[{vehicule.id}][individual][{i}][label]')
+                                price = request.POST.get(f'company_pricing[{vehicule.id}][individual][{i}][price]')
+                                
+                                if price:
+                                    TarifLivreur.objects.create(
+                                        livreur=livreur,
+                                        vehicule=vehicule,
+                                        libelle=label,
+                                        type_livraison=TypeLivraison.objects.get(nom='individuelle'),
+                                        prix=price,
+                                        devise=Devise.objects.get(code='FCFA')
+                                    )
+                                i += 1
+                            
+                            # Tarifs pour groupage
+                            i = 0
+                            while f'company_pricing[{vehicule.id}][group][{i}][label]' in request.POST:
+                                label = request.POST.get(f'company_pricing[{vehicule.id}][group][{i}][label]')
+                                price = request.POST.get(f'company_pricing[{vehicule.id}][group][{i}][price]')
+                                
+                                if price:
+                                    TarifLivreur.objects.create(
+                                        livreur=livreur,
+                                        vehicule=vehicule,
+                                        libelle=label,
+                                        type_livraison=TypeLivraison.objects.get(nom='groupage'),
+                                        prix=price,
+                                        devise=Devise.objects.get(code='FCFA')
+                                    )
+                                i += 1
+                    
+                    # Gestion de la disponibilité
+                    DisponibiliteLivreur.objects.filter(livreur=livreur).delete()
+                    jours = request.POST.getlist('jours_disponibilite')
+                    heure_debut = request.POST.get('startTime')
+                    heure_fin = request.POST.get('endTime')
+                    
+                    for jour in jours:
+                        DisponibiliteLivreur.objects.create(
+                            livreur=livreur,
+                            jour_semaine=jour,
+                            date_debut=datetime.combine(date.today(), time.fromisoformat(heure_debut)),
+                            date_fin=datetime.combine(date.today(), time.fromisoformat(heure_fin)),
+                            statut='disponible'
+                        )
+                    
+                    livreur.save()
+                    messages.success(request, "Profil mis à jour avec succès")
+                    return redirect('tableau_bord_livreur')
+            
+            except Exception as e:
+                messages.error(request, f"Une erreur est survenue: {str(e)}")
+                logger.error(f"Erreur lors de la mise à jour du profil livreur: {str(e)}")
+
     else:
-        # Préparation des données initiales complètes
-        initial_data = {
-            'full_name': request.user.full_name,
-            'email': contacts['email'].valeur if contacts['email'] else '',
-            'telephone': contacts['phone'].valeur if contacts['phone'] else '',
-            'photo_profil': request.user.photo_profil,
-            'description': livreur.description,
-            'type_livreur': livreur.type_livreur.id if livreur.type_livreur else None,
-            'etat': livreur.etat.id if livreur.etat else None,
-            'tarif': livreur.tarif.id if livreur.tarif else None,
-            'zones': [zl.zone.id for zl in zones_livraison],
-            'jours_disponibilite': [d.jour_semaine for d in disponibilites],
-            # Ajoutez d'autres champs selon votre formulaire
-        }
         form = LivreurForm(instance=livreur, initial=initial_data)
 
     context = {
         'form': form,
         'livreur': livreur,
-        'vehicules': vehicules,
+        'vehicules': Vehicule.objects.filter(livreur=livreur),
         'all_zones': Zone.objects.all(),
         'types_livreur': TypeLivreur.objects.all(),
         'etats_livreur': EtatLivreur.objects.all(),
-        'tarifs': Tarif.objects.all(),
         'capacites_vehicule': CapaciteVehicule.objects.all(),
         'moyens_transport': MoyenTransport.objects.all(),
+        'types_livraison': TypeLivraison.objects.all(),
+        'devises': Devise.objects.all(),
+        'jours_semaine': DisponibiliteLivreur.JOURS,
+        'tarifs_existants': TarifLivreur.objects.filter(livreur=livreur),
+        'account_type': 'company' if livreur.type_livreur and livreur.type_livreur.nom.lower() == 'entreprise' else 'individual',
     }
     return render(request, 'Agri_Connect_CI/register/edit-livreur.html', context)
-
-
-
-
-
 
 
 

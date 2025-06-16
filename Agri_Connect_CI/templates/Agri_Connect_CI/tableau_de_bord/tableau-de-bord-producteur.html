@@ -817,13 +817,9 @@
     </style>
 </head>
 <body>
-    {% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endif %}
+
+    {% include 'Agri_Connect_CI/links/message.html' %}
+   
     <!-- Navbar -->
     <header class="navbar">
         <button class="sidebar-toggle" aria-label="Menu sidebar">
@@ -1246,10 +1242,8 @@
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <!-- Votre footer existant ici -->
-    </footer>
+       <!-- Pied de page -->
+      {% include 'Agri_Connect_CI/header_footer/footer.html' %}
 
     <script>
         // Initialize Lucide icons

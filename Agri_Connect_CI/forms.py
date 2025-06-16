@@ -7,6 +7,8 @@ from django.core.exceptions import ValidationError
 from .models import Utilisateur, TypeContact, Contact
 from django.forms.widgets import ClearableFileInput
 import datetime
+from django.forms import inlineformset_factory
+from .models import TarifLivreur, Livreur
 
 class MultiFileClearableInput(ClearableFileInput):
     """
@@ -399,6 +401,8 @@ class LivreurForm(forms.ModelForm):
 
     heure_debut = forms.TimeField(label="Heure de début", required=False)
     heure_fin = forms.TimeField(label="Heure de fin", required=False)
+     
+  
 
     class Meta:
         model = Livreur
@@ -411,6 +415,7 @@ class LivreurForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
         }
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

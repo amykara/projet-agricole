@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulaire Livreur | AgriLog</title>
+    <title>Formulaire Livreur</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -54,7 +54,7 @@
 
         /* Header */
         .header {
-            background-color: var(--white);
+           
             box-shadow: var(--shadow-sm);
             padding: 15px 0;
             margin-bottom: 30px;
@@ -534,14 +534,14 @@
     </style>
 </head>
 <body>
+    
     <!-- Header -->
     <header class="header">
-        <nav class="navbar">
-            <a href="/" class="logo">
-                <i class="fas fa-truck logo-icon"></i>
-                AgriLog
-            </a>
-        </nav>
+        <div style="margin-bottom: 25px; margin-left: 20px;">
+                <a href="{% url 'tableau_bord_livreur' %}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
     </header>
 
     <!-- Main Content -->
@@ -569,9 +569,13 @@
                         <i class="fas fa-map-marked-alt"></i> Zones
                         <span class="tab-badge">3</span>
                     </div>
+                    <div class="form-tab" data-tab="pricing">
+                        <i class="fas fa-money-bill-wave"></i> Tarifs
+                        <span class="tab-badge">4</span>
+                    </div>
                     <div class="form-tab" data-tab="availability">
                         <i class="fas fa-calendar-alt"></i> Disponibilité
-                        <span class="tab-badge">4</span>
+                        <span class="tab-badge">5</span>
                     </div>
                 </div>
 
@@ -582,12 +586,12 @@
                         <label class="form-label required">Type de compte :</label>
                         <div>
                             <label>
-                                <input type="radio" name="accountType" value="individual" 
+                                <input type="radio" name="account_type" value="individual" 
                                     {% if not livreur.type_livreur or livreur.type_livreur.nom == 'individuel' %}checked{% endif %}> 
                                 Livreur individuel
                             </label>
                             <label>
-                                <input type="radio" name="accountType" value="company" 
+                                <input type="radio" name="account_type" value="company" 
                                     {% if livreur.type_livreur and livreur.type_livreur.nom == 'entreprise' %}checked{% endif %}> 
                                 Entreprise de transport
                             </label>
@@ -621,19 +625,19 @@
                         </h3>
                         
                         <!-- Champs pour individu -->
-                        <div id="individualFields" {% if livreur.type_livreur and livreur.type_livreur.nom == 'entreprise' %}style="display: none;"{% endif %}>
+                        <div id="individualFields" {% if livreur.type_livreur and livreur.type_livreur.nom == 'entreprise' %}class="hidden"{% endif %}>
                             <div class="form-row">
                                 <div class="form-col">
                                     <div class="form-group">
                                         <label for="firstName" class="form-label required">Prénom</label>
-                                        <input type="text" id="firstName" name="firstName" class="form-control" 
+                                        <input type="text" id="firstName" name="first_name" class="form-control" 
                                             value="{{ livreur.utilisateur.full_name.split|first }}" required>
                                     </div>
                                 </div>
                                 <div class="form-col">
                                     <div class="form-group">
                                         <label for="lastName" class="form-label required">Nom</label>
-                                        <input type="text" id="lastName" name="lastName" class="form-control" 
+                                        <input type="text" id="lastName" name="last_name" class="form-control" 
                                             value="{{ livreur.utilisateur.full_name.split|last }}" required>
                                     </div>
                                 </div>
@@ -641,10 +645,10 @@
                         </div>
                         
                         <!-- Champs pour entreprise -->
-                        <div id="companyFields" {% if not livreur.type_livreur or livreur.type_livreur.nom != 'entreprise' %}style="display: none;"{% endif %}>
+                        <div id="companyFields" {% if not livreur.type_livreur or livreur.type_livreur.nom != 'entreprise' %}class="hidden"{% endif %}>
                             <div class="form-group">
                                 <label for="companyName" class="form-label required">Nom de l'entreprise</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" 
+                                <input type="text" id="companyName" name="company_name" class="form-control" 
                                     value="{{ livreur.utilisateur.full_name }}">
                             </div>
                             <div class="form-group">
@@ -704,18 +708,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <label for="tarif" class="form-label">Tarif par défaut</label>
-                            <select id="tarif" name="tarif" class="form-control">
-                                <option value="">Sélectionnez...</option>
-                                {% for tarif in tarifs %}
-                                <option value="{{ tarif.id }}" {% if livreur.tarif.id == tarif.id %}selected{% endif %}>
-                                    {{ tarif.type_tarif }} - {{ tarif.valeur }} {{ tarif.devise.code }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
                     </div>
 
                     <div class="tab-navigation">
@@ -729,21 +721,19 @@
                 <!-- Onglet 2: Véhicules -->
                 <div id="vehicles" class="tab-content">
                     <!-- Véhicule (pour individuel) -->
-                    <div class="form-section" id="individualVehicleSection" {% if livreur.type_livreur and livreur.type_livreur.nom == 'entreprise' %}style="display: none;"{% endif %}>
+                    <div class="form-section" id="individualVehicleSection" {% if livreur.type_livreur and livreur.type_livreur.nom == 'entreprise' %}class="hidden"{% endif %}>
                         <h3 class="section-title">
                             <i class="fas fa-truck-moving"></i> Véhicule
                         </h3>
                         
-                        {% if vehicules %}
-                        {% for vehicule in vehicules %}
                         <div class="form-row">
                             <div class="form-col">
                                 <div class="form-group">
                                     <label for="vehicleType" class="form-label required">Type de véhicule</label>
-                                    <select id="vehicleType" name="vehicleType" class="form-control" required>
+                                    <select id="vehicleType" name="vehicle_type" class="form-control" required>
                                         <option value="">Sélectionnez...</option>
                                         {% for moyen in moyens_transport %}
-                                        <option value="{{ moyen.id }}" {% if vehicule.type == moyen.nom %}selected{% endif %}>
+                                        <option value="{{ moyen.id }}" {% if vehicules.0.type == moyen.nom %}selected{% endif %}>
                                             {{ moyen.nom }}
                                         </option>
                                         {% endfor %}
@@ -753,10 +743,10 @@
                             <div class="form-col">
                                 <div class="form-group">
                                     <label for="vehicleCapacity" class="form-label required">Capacité</label>
-                                    <select id="vehicleCapacity" name="vehicleCapacity" class="form-control" required>
+                                    <select id="vehicleCapacity" name="vehicle_capacity" class="form-control" required>
                                         <option value="">Sélectionnez...</option>
                                         {% for capacite in capacites_vehicule %}
-                                        <option value="{{ capacite.id }}" {% if vehicule.capacite.id == capacite.id %}selected{% endif %}>
+                                        <option value="{{ capacite.id }}" {% if vehicules.0.capacite.id == capacite.id %}selected{% endif %}>
                                             {{ capacite.valeur }} {{ capacite.unite.abbr }}
                                         </option>
                                         {% endfor %}
@@ -767,49 +757,17 @@
                         
                         <div class="form-group">
                             <label for="vehiclePhoto" class="form-label">Photo du véhicule</label>
-                            {% if vehicule.photo_url %}
+                            {% if vehicules.0.photo_url %}
                             <div class="photo-preview">
-                                <img src="{{ vehicule.photo_url.url }}" alt="Photo du véhicule">
+                                <img src="{{ vehicules.0.photo_url.url }}" alt="Photo du véhicule">
                             </div>
                             {% endif %}
-                            <input type="file" id="vehiclePhoto" name="vehiclePhoto" class="form-control" accept="image/*">
+                            <input type="file" id="vehiclePhoto" name="vehicle_photo" class="form-control" accept="image/*">
                         </div>
-                        {% endfor %}
-                        {% else %}
-                        <div class="form-row">
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="vehicleType" class="form-label required">Type de véhicule</label>
-                                    <select id="vehicleType" name="vehicleType" class="form-control" required>
-                                        <option value="">Sélectionnez...</option>
-                                        {% for moyen in moyens_transport %}
-                                        <option value="{{ moyen.id }}">{{ moyen.nom }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="vehicleCapacity" class="form-label required">Capacité</label>
-                                    <select id="vehicleCapacity" name="vehicleCapacity" class="form-control" required>
-                                        <option value="">Sélectionnez...</option>
-                                        {% for capacite in capacites_vehicule %}
-                                        <option value="{{ capacite.id }}">{{ capacite.valeur }} {{ capacite.unite.abbr }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="vehiclePhoto" class="form-label">Photo du véhicule</label>
-                            <input type="file" id="vehiclePhoto" name="vehiclePhoto" class="form-control" accept="image/*">
-                        </div>
-                        {% endif %}
                     </div>
                     
                     <!-- Véhicules (pour entreprise) -->
-                    <div class="form-section" id="companyVehiclesSection" {% if not livreur.type_livreur or livreur.type_livreur.nom != 'entreprise' %}style="display: none;"{% endif %}>
+                    <div class="form-section" id="companyVehiclesSection" {% if not livreur.type_livreur or livreur.type_livreur.nom != 'entreprise' %}class="hidden"{% endif %}>
                         <h3 class="section-title">
                             <i class="fas fa-truck-moving"></i> Véhicules
                         </h3>
@@ -824,7 +782,7 @@
                                     <div class="form-col">
                                         <div class="form-group">
                                             <label for="companyVehicleType{{ forloop.counter }}" class="form-label required">Type de véhicule</label>
-                                            <select id="companyVehicleType{{ forloop.counter }}" name="companyVehicles[{{ forloop.counter }}][type]" class="form-control" required>
+                                            <select id="companyVehicleType{{ forloop.counter }}" name="company_vehicles[{{ forloop.counter }}][type]" class="form-control" required>
                                                 <option value="">Sélectionnez...</option>
                                                 {% for moyen in moyens_transport %}
                                                 <option value="{{ moyen.id }}" {% if vehicule.type == moyen.nom %}selected{% endif %}>
@@ -837,7 +795,7 @@
                                     <div class="form-col">
                                         <div class="form-group">
                                             <label for="companyVehicleCapacity{{ forloop.counter }}" class="form-label required">Capacité</label>
-                                            <select id="companyVehicleCapacity{{ forloop.counter }}" name="companyVehicles[{{ forloop.counter }}][capacity]" class="form-control" required>
+                                            <select id="companyVehicleCapacity{{ forloop.counter }}" name="company_vehicles[{{ forloop.counter }}][capacity]" class="form-control" required>
                                                 <option value="">Sélectionnez...</option>
                                                 {% for capacite in capacites_vehicule %}
                                                 <option value="{{ capacite.id }}" {% if vehicule.capacite.id == capacite.id %}selected{% endif %}>
@@ -855,7 +813,7 @@
                                         <img src="{{ vehicule.photo_url.url }}" alt="Photo du véhicule">
                                     </div>
                                     {% endif %}
-                                    <input type="file" id="companyVehiclePhoto{{ forloop.counter }}" name="companyVehicles[{{ forloop.counter }}][photo]" class="form-control" accept="image/*">
+                                    <input type="file" id="companyVehiclePhoto{{ forloop.counter }}" name="company_vehicles[{{ forloop.counter }}][photo]" class="form-control" accept="image/*">
                                 </div>
                                 <i class="fas fa-times remove-vehicle"></i>
                             </div>
@@ -868,7 +826,7 @@
                                     <div class="form-col">
                                         <div class="form-group">
                                             <label for="companyVehicleType1" class="form-label required">Type de véhicule</label>
-                                            <select id="companyVehicleType1" name="companyVehicles[1][type]" class="form-control" required>
+                                            <select id="companyVehicleType1" name="company_vehicles[1][type]" class="form-control" required>
                                                 <option value="">Sélectionnez...</option>
                                                 {% for moyen in moyens_transport %}
                                                 <option value="{{ moyen.id }}">{{ moyen.nom }}</option>
@@ -879,7 +837,7 @@
                                     <div class="form-col">
                                         <div class="form-group">
                                             <label for="companyVehicleCapacity1" class="form-label required">Capacité</label>
-                                            <select id="companyVehicleCapacity1" name="companyVehicles[1][capacity]" class="form-control" required>
+                                            <select id="companyVehicleCapacity1" name="company_vehicles[1][capacity]" class="form-control" required>
                                                 <option value="">Sélectionnez...</option>
                                                 {% for capacite in capacites_vehicule %}
                                                 <option value="{{ capacite.id }}">{{ capacite.valeur }} {{ capacite.unite.abbr }}</option>
@@ -890,7 +848,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="companyVehiclePhoto1" class="form-label">Photo du véhicule</label>
-                                    <input type="file" id="companyVehiclePhoto1" name="companyVehicles[1][photo]" class="form-control" accept="image/*">
+                                    <input type="file" id="companyVehiclePhoto1" name="company_vehicles[1][photo]" class="form-control" accept="image/*">
                                 </div>
                                 <i class="fas fa-times remove-vehicle"></i>
                             </div>
@@ -912,40 +870,231 @@
                     </div>
                 </div>
 
-                <!-- Onglet 3: Zones desservies -->
-                <div id="zones" class="tab-content">
-                    <div class="form-section">
-                        <h3 class="section-title">
-                            <i class="fas fa-map-marked-alt"></i> Zones desservies
-                        </h3>
-                        
-                        <div class="form-group">
-                            <label class="form-label required">Sélectionnez vos zones</label>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                {% for zone in all_zones %}
-                                <div class="flex items-center">
-                                    <input type="checkbox" name="zones" value="{{ zone.id }}" 
-                                           id="zone-{{ zone.id }}" 
-                                           {% if zone in livreur.zones.all %}checked{% endif %}
-                                           class="mr-2">
-                                    <label for="zone-{{ zone.id }}">{{ zone.ville }} - {{ zone.quartier }}</label>
-                                </div>
-                                {% endfor %}
-                            </div>
+                <!-- Zones desservies (onglet 3) -->
+<div id="zones" class="tab-content">
+    <div class="form-section">
+        <h3 class="section-title">
+            <i class="fas fa-map-marked-alt"></i> Zone de couverture
+        </h3>
+        
+        <div class="form-group">
+            <label for="zone" class="form-label required">Zone de couverture</label>
+            <select id="zone" name="zone" class="form-control" required>
+                <option value="">Sélectionnez votre zone de couverture</option>
+                {% for zone in all_zones %}
+                <option value="{{ zone.id }}" {% if livreur.zones.count == 1 and livreur.zones.first.id == zone.id %}selected{% endif %}>
+                    {{ zone.ville }} - {{ zone.quartier }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="tab-navigation">
+        <button type="button" class="btn btn-outline prev-tab" data-prev="vehicles">
+            <i class="fas fa-arrow-left"></i> Précédent
+        </button>
+        <button type="button" class="btn btn-primary next-tab" data-next="pricing">
+            Suivant <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Tarification (onglet 4) -->
+<div id="pricing" class="tab-content">
+    <div class="form-section">
+        <h3 class="section-title">
+            <i class="fas fa-money-bill-wave"></i> Tarification
+        </h3>
+        
+        <!-- Tarification pour livreur individuel -->
+        <div id="individualPricing" {% if livreur.type_livreur and livreur.type_livreur.nom == 'entreprise' %}class="hidden"{% endif %}>
+            <div class="form-group">
+                <label class="form-label required">Grille de prix</label>
+                <table class="pricing-table">
+                    <thead>
+                        <tr>
+                            <th>Libellé</th>
+                            <th>Prix (FCFA)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="individualPricingTable">
+                        {% for tarif in tarifs_existants %}
+                        {% if not tarif.vehicule %}
+                        <tr>
+                            <td>
+                                <input type="text" name="individual_pricing[{{ forloop.counter0 }}][label]" 
+                                       class="form-control" value="{{ tarif.libelle|default:'Prix de base' }}" required>
+                            </td>
+                            <td>
+                                <input type="number" name="individual_pricing[{{ forloop.counter0 }}][price]" 
+                                       class="form-control" value="{{ tarif.prix }}" required>
+                            </td>
+                            <td>
+                                <i class="fas fa-times remove-pricing-row"></i>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% empty %}
+                        <tr>
+                            <td>
+                                <input type="text" name="individual_pricing[0][label]" 
+                                       class="form-control" value="Prix de base" required>
+                            </td>
+                            <td>
+                                <input type="number" name="individual_pricing[0][price]" 
+                                       class="form-control" placeholder="1000" required>
+                            </td>
+                            <td>
+                                <i class="fas fa-times remove-pricing-row"></i>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="add-pricing-row" id="addIndividualPricingRow">
+                    <i class="fas fa-plus"></i> Ajouter un tarif
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tarification pour entreprise -->
+        <div id="companyPricing" {% if not livreur.type_livreur or livreur.type_livreur.nom != 'entreprise' %}class="hidden"{% endif %}>
+            <div class="pricing-tables" id="companyPricingTables">
+                {% for vehicule in vehicules %}
+                <div class="pricing-table-container" id="pricingTableVehicle{{ forloop.counter }}">
+                    <div class="pricing-table-title">
+                        <i class="fas fa-truck"></i> Tarifs pour: {{ vehicule.type }}
+                    </div>
+                    
+                    <!-- Onglets pour type de livraison -->
+                    <div class="delivery-type-tabs">
+                        <div class="delivery-type-tab active" data-tab="delivery-individual-{{ vehicule.id }}">
+                            Livraison individuelle
+                        </div>
+                        <div class="delivery-type-tab" data-tab="delivery-group-{{ vehicule.id }}">
+                            Groupage
                         </div>
                     </div>
-
-                    <div class="tab-navigation">
-                        <button type="button" class="btn btn-outline prev-tab" data-prev="vehicles">
-                            <i class="fas fa-arrow-left"></i> Précédent
-                        </button>
-                        <button type="button" class="btn btn-primary next-tab" data-next="availability">
-                            Suivant <i class="fas fa-arrow-right"></i>
-                        </button>
+                    
+                    <!-- Contenu pour chaque type de livraison -->
+                    <div id="delivery-individual-{{ vehicule.id }}" class="delivery-type-content active">
+                        <table class="pricing-table">
+                            <thead>
+                                <tr>
+                                    <th>Libellé</th>
+                                    <th>Prix (FCFA)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tarif in tarifs_existants %}
+                                {% if tarif.vehicule.id == vehicule.id and tarif.type_livraison.nom == 'individuelle' %}
+                                <tr>
+                                    <td>
+                                        <input type="text" name="company_pricing[{{ vehicule.id }}][individual][{{ forloop.counter0 }}][label]" 
+                                               class="form-control" value="{{ tarif.libelle|default:'Prix de base' }}" required>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="company_pricing[{{ vehicule.id }}][individual][{{ forloop.counter0 }}][price]" 
+                                               class="form-control" value="{{ tarif.prix }}" required>
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-times remove-pricing-row"></i>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                                {% if not tarifs_existants %}
+                                <tr>
+                                    <td>
+                                        <input type="text" name="company_pricing[{{ vehicule.id }}][individual][0][label]" 
+                                               class="form-control" value="Prix de base" required>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="company_pricing[{{ vehicule.id }}][individual][0][price]" 
+                                               class="form-control" placeholder="1000" required>
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-times remove-pricing-row"></i>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                        <div class="add-pricing-row" onclick="addPricingRow('{{ vehicule.id }}', 'individual')">
+                            <i class="fas fa-plus"></i> Ajouter un tarif
+                        </div>
+                    </div>
+                    
+                    <div id="delivery-group-{{ vehicule.id }}" class="delivery-type-content">
+                        <table class="pricing-table">
+                            <thead>
+                                <tr>
+                                    <th>Libellé</th>
+                                    <th>Prix (FCFA)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tarif in tarifs_existants %}
+                                {% if tarif.vehicule.id == vehicule.id and tarif.type_livraison.nom == 'groupage' %}
+                                <tr>
+                                    <td>
+                                        <input type="text" name="company_pricing[{{ vehicule.id }}][group][{{ forloop.counter0 }}][label]" 
+                                               class="form-control" value="{{ tarif.libelle|default:'Prix de base' }}" required>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="company_pricing[{{ vehicule.id }}][group][{{ forloop.counter0 }}][price]" 
+                                               class="form-control" value="{{ tarif.prix }}" required>
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-times remove-pricing-row"></i>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                                {% if not tarifs_existants %}
+                                <tr>
+                                    <td>
+                                        <input type="text" name="company_pricing[{{ vehicule.id }}][group][0][label]" 
+                                               class="form-control" value="Prix de base" required>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="company_pricing[{{ vehicule.id }}][group][0][price]" 
+                                               class="form-control" placeholder="800" required>
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-times remove-pricing-row"></i>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                        <div class="add-pricing-row" onclick="addPricingRow('{{ vehicule.id }}', 'group')">
+                            <i class="fas fa-plus"></i> Ajouter un tarif
+                        </div>
                     </div>
                 </div>
+                {% empty %}
+                <p>Aucun véhicule enregistré. Veuillez d'abord ajouter des véhicules.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
-                <!-- Onglet 4: Disponibilité -->
+    <div class="tab-navigation">
+        <button type="button" class="btn btn-outline prev-tab" data-prev="zones">
+            <i class="fas fa-arrow-left"></i> Précédent
+        </button>
+        <button type="button" class="btn btn-primary next-tab" data-next="availability">
+            Suivant <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+</div>
+
+                <!-- Onglet 5: Disponibilité -->
                 <div id="availability" class="tab-content">
                     <div class="form-section">
                         <h3 class="section-title">
@@ -985,7 +1134,7 @@
                     </div>
 
                     <div class="form-actions">
-                        <button type="button" class="btn btn-outline prev-tab" data-prev="zones">
+                        <button type="button" class="btn btn-outline prev-tab" data-prev="pricing">
                             <i class="fas fa-arrow-left"></i> Précédent
                         </button>
                         <button type="submit" class="btn btn-primary">
@@ -997,33 +1146,195 @@
         </div>
     </div>
 
-
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 AgriLog. Tous droits réservés.</p>
+            <p>&copy; 2025 Agri_Connect_CI. Tous droits réservés.</p>
         </div>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Éléments du DOM
-            const accountTypeRadios = document.querySelectorAll('input[name="accountType"]');
-            const individualFields = document.getElementById('individualFields');
-            const companyFields = document.getElementById('companyFields');
-            const individualVehicleSection = document.getElementById('individualVehicleSection');
-            const companyVehiclesSection = document.getElementById('companyVehiclesSection');
-            const individualPricing = document.getElementById('individualPricing');
-            const companyPricing = document.getElementById('companyPricing');
-            const companyPricingTables = document.getElementById('companyPricingTables');
-            const photoPreview = document.getElementById('photoPreview');
-            const profilePhoto = document.getElementById('profilePhoto');
-            const vehiclesContainer = document.getElementById('vehiclesContainer');
-            const addVehicleBtn = document.getElementById('addVehicleBtn');
-            let vehicleCount = 1;
-            let pricingRowCount = 2;
+            // Gestion du changement de type de compte
+            const accountTypeRadios = document.querySelectorAll('input[name="account_type"]');
+            
+            accountTypeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const isCompany = this.value === 'company';
+                    
+                    // Afficher/masquer les sections appropriées
+                    document.getElementById('individualFields').classList.toggle('hidden', isCompany);
+                    document.getElementById('companyFields').classList.toggle('hidden', !isCompany);
+                    document.getElementById('individualVehicleSection').classList.toggle('hidden', isCompany);
+                    document.getElementById('companyVehiclesSection').classList.toggle('hidden', !isCompany);
+                    document.getElementById('individualPricing').classList.toggle('hidden', isCompany);
+                    document.getElementById('companyPricing').classList.toggle('hidden', !isCompany);
+                    
+                    // Mettre à jour le style de la photo de profil
+                    const photoPreview = document.querySelector('.photo-preview');
+                    if (isCompany) {
+                        photoPreview.classList.add('company');
+                        photoPreview.querySelector('p').textContent = "Logo de l'entreprise";
+                        photoPreview.querySelector('i').className = "fas fa-building fa-3x";
+                    } else {
+                        photoPreview.classList.remove('company');
+                        photoPreview.querySelector('p').textContent = "Photo du livreur";
+                        photoPreview.querySelector('i').className = "fas fa-user fa-3x";
+                    }
+                });
+            });
 
-            // Gestion des onglets
+            // Gestion de l'upload de photo
+            document.getElementById('uploadPhotoBtn').addEventListener('click', function() {
+                document.getElementById('profilePhoto').click();
+            });
+
+            document.getElementById('profilePhoto').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const photoPreview = document.querySelector('.photo-preview');
+                        photoPreview.innerHTML = `<img src="${event.target.result}" alt="Photo de profil">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Gestion des véhicules pour les entreprises
+            const addVehicleBtn = document.getElementById('addVehicleBtn');
+            if (addVehicleBtn) {
+                addVehicleBtn.addEventListener('click', function() {
+                    const vehiclesContainer = document.getElementById('vehiclesContainer');
+                    const vehicleCount = vehiclesContainer.querySelectorAll('.vehicle-card').length + 1;
+                    
+                    const newVehicleHtml = `
+                        <div class="vehicle-card" data-vehicle-id="${vehicleCount}">
+                            <div class="vehicle-title">
+                                <i class="fas fa-truck"></i> Véhicule #${vehicleCount}
+                            </div>
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <div class="form-group">
+                                        <label for="companyVehicleType${vehicleCount}" class="form-label required">Type de véhicule</label>
+                                        <select id="companyVehicleType${vehicleCount}" name="company_vehicles[${vehicleCount}][type]" class="form-control" required>
+                                            <option value="">Sélectionnez...</option>
+                                            {% for moyen in moyens_transport %}
+                                            <option value="{{ moyen.id }}">{{ moyen.nom }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-col">
+                                    <div class="form-group">
+                                        <label for="companyVehicleCapacity${vehicleCount}" class="form-label required">Capacité</label>
+                                        <select id="companyVehicleCapacity${vehicleCount}" name="company_vehicles[${vehicleCount}][capacity]" class="form-control" required>
+                                            <option value="">Sélectionnez...</option>
+                                            {% for capacite in capacites_vehicule %}
+                                            <option value="{{ capacite.id }}">{{ capacite.valeur }} {{ capacite.unite.abbr }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="companyVehiclePhoto${vehicleCount}" class="form-label">Photo du véhicule</label>
+                                <input type="file" id="companyVehiclePhoto${vehicleCount}" name="company_vehicles[${vehicleCount}][photo]" class="form-control" accept="image/*">
+                            </div>
+                            <i class="fas fa-times remove-vehicle"></i>
+                        </div>
+                    `;
+                    
+                    vehiclesContainer.insertAdjacentHTML('beforeend', newVehicleHtml);
+                });
+            }
+
+            // Suppression d'un véhicule
+            document.getElementById('vehiclesContainer')?.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-vehicle')) {
+                    const vehicleCard = e.target.closest('.vehicle-card');
+                    if (confirm('Voulez-vous vraiment supprimer ce véhicule ?')) {
+                        vehicleCard.remove();
+                    }
+                }
+            });
+
+            // Gestion des onglets de type de livraison
+            document.querySelectorAll('.delivery-type-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    const container = this.closest('.pricing-table-container');
+                    
+                    // Désactiver tous les onglets et contenus dans ce container
+                    container.querySelectorAll('.delivery-type-tab').forEach(t => t.classList.remove('active'));
+                    container.querySelectorAll('.delivery-type-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Activer l'onglet et le contenu sélectionnés
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
+                    // la fonction pour ajouter des lignes tarifaires individuelles
+            document.getElementById('addIndividualPricingRow')?.addEventListener('click', function() {
+                const tbody = document.getElementById('individualPricingTable');
+                const rowCount = tbody.querySelectorAll('tr').length;
+                
+                const newRow = `
+                    <tr>
+                        <td>
+                            <input type="text" name="individual_pricing[${rowCount}][label]" 
+                                class="form-control" value="Prix ${rowCount + 1}" required>
+                        </td>
+                        <td>
+                            <input type="number" name="individual_pricing[${rowCount}][price]" 
+                                class="form-control" placeholder="1000" required>
+                        </td>
+                        <td>
+                            <i class="fas fa-times remove-pricing-row"></i>
+                        </td>
+                    </tr>
+                `;
+                
+                tbody.insertAdjacentHTML('beforeend', newRow);
+            });
+
+                        // Suppression de lignes tarifaires
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-pricing-row')) {
+                    const row = e.target.closest('tr');
+                    if (confirm('Voulez-vous vraiment supprimer cette ligne tarifaire ?')) {
+                        row.remove();
+                    }
+                }
+            });
+
+         // Mettre à jour la fonction addPricingRow
+            window.addPricingRow = function(vehicleId, deliveryType) {
+                const containerId = `delivery-${deliveryType}-${vehicleId}`;
+                const tbody = document.querySelector(`#${containerId} tbody`);
+                const rowCount = tbody.querySelectorAll('tr').length;
+                
+                const newRow = `
+                    <tr>
+                        <td>
+                            <input type="text" name="company_pricing[${vehicleId}][${deliveryType}][${rowCount}][label]" 
+                                class="form-control" value="Prix ${rowCount + 1}" required>
+                        </td>
+                        <td>
+                            <input type="number" name="company_pricing[${vehicleId}][${deliveryType}][${rowCount}][price]" 
+                                class="form-control" placeholder="${deliveryType === 'individual' ? '1000' : '800'}" required>
+                        </td>
+                        <td>
+                            <i class="fas fa-times remove-pricing-row"></i>
+                        </td>
+                    </tr>
+                `;
+                
+                tbody.insertAdjacentHTML('beforeend', newRow);
+            };
+
+            // Gestion de la navigation par onglets
             const tabs = document.querySelectorAll('.form-tab');
             const tabContents = document.querySelectorAll('.tab-content');
             
@@ -1094,360 +1405,6 @@
                 
                 return isValid;
             }
-
-            // Changement de type de compte
-            accountTypeRadios.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    if (this.value === 'individual') {
-                        // Afficher les champs pour individu
-                        individualFields.style.display = 'block';
-                        companyFields.style.display = 'none';
-                        individualVehicleSection.style.display = 'block';
-                        companyVehiclesSection.style.display = 'none';
-                        individualPricing.style.display = 'block';
-                        companyPricing.style.display = 'none';
-                        
-                        // Changer le style de la photo preview
-                        photoPreview.classList.remove('company');
-                        photoPreview.querySelector('p').textContent = 'Photo du livreur';
-                        photoPreview.querySelector('i').className = 'fas fa-user fa-3x';
-                    } else {
-                        // Afficher les champs pour entreprise
-                        individualFields.style.display = 'none';
-                        companyFields.style.display = 'block';
-                        individualVehicleSection.style.display = 'none';
-                        companyVehiclesSection.style.display = 'block';
-                        individualPricing.style.display = 'none';
-                        companyPricing.style.display = 'block';
-                        
-                        // Changer le style de la photo preview
-                        photoPreview.classList.add('company');
-                        photoPreview.querySelector('p').textContent = 'Logo de l\'entreprise';
-                        photoPreview.querySelector('i').className = 'fas fa-building fa-3x';
-                        
-                        // Générer les tables de tarification pour les véhicules existants
-                        generateCompanyPricingTables();
-                    }
-                });
-            });
-
-            // Gestion de la photo
-            document.getElementById('uploadPhotoBtn').addEventListener('click', function() {
-                profilePhoto.click();
-            });
-
-            profilePhoto.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        photoPreview.innerHTML = `<img src="${event.target.result}" alt="Photo du profil">`;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            // Gestion des véhicules pour entreprise
-            addVehicleBtn.addEventListener('click', function() {
-                vehicleCount++;
-                const vehicleHtml = `
-                    <div class="vehicle-card" data-vehicle-id="${vehicleCount}">
-                        <div class="vehicle-title">
-                            <i class="fas fa-truck"></i> Véhicule #${vehicleCount}
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="companyVehicleType${vehicleCount}" class="form-label required">Type de véhicule</label>
-                                    <select id="companyVehicleType${vehicleCount}" name="companyVehicles[${vehicleCount}][type]" class="form-control" required>
-                                        <option value="">Sélectionnez...</option>
-                                        <option value="camion-refrigere">Camion réfrigéré</option>
-                                        <option value="camion-frigorifique">Camion frigorifique</option>
-                                        <option value="fourgon-refrigere">Fourgon réfrigéré</option>
-                                        <option value="camion-bache">Camion bâché</option>
-                                        <option value="utilitaire">Véhicule utilitaire</option>
-                                        <option value="moto">Moto</option>
-                                        <option value="autre">Autre</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="companyVehicleCapacity${vehicleCount}" class="form-label required">Capacité</label>
-                                    <select id="companyVehicleCapacity${vehicleCount}" name="companyVehicles[${vehicleCount}][capacity]" class="form-control" required>
-                                        <option value="">Sélectionnez...</option>
-                                        <option value="500kg">500 kg</option>
-                                        <option value="1-tonne">1 tonne</option>
-                                        <option value="3-tonnes">3 tonnes</option>
-                                        <option value="5-tonnes">5 tonnes</option>
-                                        <option value="10-tonnes">10 tonnes</option>
-                                        <option value="15-tonnes">15 tonnes</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="companyVehiclePhoto${vehicleCount}" class="form-label">Photo du véhicule</label>
-                            <input type="file" id="companyVehiclePhoto${vehicleCount}" name="companyVehicles[${vehicleCount}][photo]" class="form-control" accept="image/*">
-                        </div>
-                        <i class="fas fa-times remove-vehicle"></i>
-                    </div>
-                `;
-                vehiclesContainer.insertAdjacentHTML('beforeend', vehicleHtml);
-                
-                // Générer une nouvelle table de tarification si c'est une entreprise
-                if (document.querySelector('input[name="accountType"]:checked').value === 'company') {
-                    generateCompanyPricingTables();
-                }
-            });
-
-            // Suppression d'un véhicule
-            vehiclesContainer.addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-vehicle')) {
-                    const vehicleCard = e.target.closest('.vehicle-card');
-                    if (vehiclesContainer.querySelectorAll('.vehicle-card').length > 1) {
-                        const vehicleId = vehicleCard.dataset.vehicleId;
-                        vehicleCard.remove();
-                        
-                        // Supprimer la table de tarification correspondante si c'est une entreprise
-                        if (document.querySelector('input[name="accountType"]:checked').value === 'company') {
-                            document.getElementById(`pricingTableVehicle${vehicleId}`).remove();
-                        }
-                    } else {
-                        alert('Vous devez avoir au moins un véhicule.');
-                    }
-                }
-            });
-
-            // Générer les tables de tarification pour les véhicules d'une entreprise
-            function generateCompanyPricingTables() {
-                companyPricingTables.innerHTML = '';
-                
-                document.querySelectorAll('.vehicle-card').forEach(vehicleCard => {
-                    const vehicleId = vehicleCard.dataset.vehicleId;
-                    const vehicleTypeSelect = vehicleCard.querySelector('select[name^="companyVehicles"]');
-                    const vehicleType = vehicleTypeSelect.options[vehicleTypeSelect.selectedIndex].text;
-                    
-                    const pricingTableHtml = `
-                        <div class="pricing-table-container" id="pricingTableVehicle${vehicleId}">
-                            <div class="pricing-table-title">Tarifs pour: ${vehicleType}</div>
-                            
-                            <!-- Onglets pour type de livraison -->
-                            <div class="delivery-type-tabs">
-                                <div class="delivery-type-tab active" data-tab="individual-${vehicleId}">Livraison individuelle</div>
-                                <div class="delivery-type-tab" data-tab="group-${vehicleId}">Groupage</div>
-                            </div>
-                            
-                            <!-- Contenu pour livraison individuelle -->
-                            <div id="individual-${vehicleId}" class="delivery-type-content active">
-                                <table class="pricing-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Zone</th>
-                                            <th>Prix (FCFA)</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <select name="companyPricing[${vehicleId}][individual][0][zone]" class="form-control" required>
-                                                    <option value="abidjan" selected>Abidjan</option>
-                                                    <option value="bingerville">Bingerville</option>
-                                                    <option value="grand-bassam">Grand-Bassam</option>
-                                                    <option value="yamoussoukro">Yamoussoukro</option>
-                                                    <option value="san-pedro">San Pedro</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="companyPricing[${vehicleId}][individual][0][price]" class="form-control" placeholder="1000" required>
-                                            </td>
-                                            <td>
-                                                <i class="fas fa-times remove-pricing-row"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <select name="companyPricing[${vehicleId}][individual][1][zone]" class="form-control" required>
-                                                    <option value="abidjan">Abidjan</option>
-                                                    <option value="bingerville">Bingerville</option>
-                                                    <option value="grand-bassam">Grand-Bassam</option>
-                                                    <option value="yamoussoukro" selected>Yamoussoukro</option>
-                                                    <option value="san-pedro">San Pedro</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="companyPricing[${vehicleId}][individual][1][price]" class="form-control" placeholder="1500" required>
-                                            </td>
-                                            <td>
-                                                <i class="fas fa-times remove-pricing-row"></i>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <div class="add-pricing-row" onclick="addPricingRow('${vehicleId}', 'individual')">
-                                    <i class="fas fa-plus"></i> Ajouter une zone tarifaire
-                                </div>
-                            </div>
-                            
-                            <!-- Contenu pour groupage -->
-                            <div id="group-${vehicleId}" class="delivery-type-content">
-                                <table class="pricing-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Zone</th>
-                                            <th>Prix (FCFA)</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <select name="companyPricing[${vehicleId}][group][0][zone]" class="form-control" required>
-                                                    <option value="abidjan" selected>Abidjan</option>
-                                                    <option value="bingerville">Bingerville</option>
-                                                    <option value="grand-bassam">Grand-Bassam</option>
-                                                    <option value="yamoussoukro">Yamoussoukro</option>
-                                                    <option value="san-pedro">San Pedro</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="companyPricing[${vehicleId}][group][0][price]" class="form-control" placeholder="800" required>
-                                            </td>
-                                            <td>
-                                                <i class="fas fa-times remove-pricing-row"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <select name="companyPricing[${vehicleId}][group][1][zone]" class="form-control" required>
-                                                    <option value="abidjan">Abidjan</option>
-                                                    <option value="bingerville">Bingerville</option>
-                                                    <option value="grand-bassam">Grand-Bassam</option>
-                                                    <option value="yamoussoukro" selected>Yamoussoukro</option>
-                                                    <option value="san-pedro">San Pedro</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="companyPricing[${vehicleId}][group][1][price]" class="form-control" placeholder="1200" required>
-                                            </td>
-                                            <td>
-                                                <i class="fas fa-times remove-pricing-row"></i>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <div class="add-pricing-row" onclick="addPricingRow('${vehicleId}', 'group')">
-                                    <i class="fas fa-plus"></i> Ajouter une zone tarifaire
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    companyPricingTables.insertAdjacentHTML('beforeend', pricingTableHtml);
-                    
-                    // Gestion des onglets de type de livraison
-                    const tabs = document.querySelectorAll(`#pricingTableVehicle${vehicleId} .delivery-type-tab`);
-                    tabs.forEach(tab => {
-                        tab.addEventListener('click', function() {
-                            const tabId = this.getAttribute('data-tab');
-                            
-                            // Désactiver tous les onglets et contenus
-                            tabs.forEach(t => t.classList.remove('active'));
-                            document.querySelectorAll(`#pricingTableVehicle${vehicleId} .delivery-type-content`).forEach(c => c.classList.remove('active'));
-                            
-                            // Activer l'onglet et le contenu sélectionnés
-                            this.classList.add('active');
-                            document.getElementById(tabId).classList.add('active');
-                        });
-                    });
-                });
-            }
-
-            // Ajouter une ligne tarifaire pour un véhicule d'entreprise
-            window.addPricingRow = function(vehicleId, deliveryType) {
-                const tbody = document.querySelector(`#${deliveryType}-${vehicleId} tbody`);
-                const rowCount = tbody.querySelectorAll('tr').length;
-                
-                const rowHtml = `
-                    <tr>
-                        <td>
-                            <select name="companyPricing[${vehicleId}][${deliveryType}][${rowCount}][zone]" class="form-control" required>
-                                <option value="abidjan">Abidjan</option>
-                                <option value="bingerville">Bingerville</option>
-                                <option value="grand-bassam">Grand-Bassam</option>
-                                <option value="yamoussoukro">Yamoussoukro</option>
-                                <option value="san-pedro">San Pedro</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="number" name="companyPricing[${vehicleId}][${deliveryType}][${rowCount}][price]" class="form-control" placeholder="0" required>
-                        </td>
-                        <td>
-                            <i class="fas fa-times remove-pricing-row"></i>
-                        </td>
-                    </tr>
-                `;
-                tbody.insertAdjacentHTML('beforeend', rowHtml);
-            };
-
-            // Ajouter une ligne tarifaire pour un livreur individuel
-            document.getElementById('addIndividualPricingRow').addEventListener('click', function() {
-                const tbody = document.getElementById('individualPricingTable');
-                const rowCount = tbody.querySelectorAll('tr').length;
-                
-                const rowHtml = `
-                    <tr>
-                        <td>
-                            <select name="individualPricing[${rowCount}][zone]" class="form-control" required>
-                                <option value="abidjan">Abidjan</option>
-                                <option value="bingerville">Bingerville</option>
-                                <option value="grand-bassam">Grand-Bassam</option>
-                                <option value="yamoussoukro">Yamoussoukro</option>
-                                <option value="san-pedro">San Pedro</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="number" name="individualPricing[${rowCount}][price]" class="form-control" placeholder="0" required>
-                        </td>
-                        <td>
-                            <i class="fas fa-times remove-pricing-row"></i>
-                        </td>
-                    </tr>
-                `;
-                tbody.insertAdjacentHTML('beforeend', rowHtml);
-            });
-
-            // Suppression d'une ligne tarifaire
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-pricing-row')) {
-                    const row = e.target.closest('tr');
-                    const tbody = row.parentNode;
-                    if (tbody.querySelectorAll('tr').length > 1) {
-                        row.remove();
-                    } else {
-                        alert('Vous devez avoir au moins une zone tarifaire.');
-                    }
-                }
-            });
-
-            // Affichage du champ "Autre zone"
-            document.getElementById('zone-other').addEventListener('change', function() {
-                document.getElementById('otherZone').style.display = this.checked ? 'block' : 'none';
-            });
-
-            // Validation du formulaire
-            const form = document.getElementById('driverForm');
-            
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Valider le dernier onglet avant soumission
-                if (validateCurrentTab()) {
-                    // Ici vous pouvez ajouter la logique d'envoi des données au serveur
-                    alert('Profil enregistré avec succès!');
-                    // window.location.href = 'tableau-de-bord.html';
-                }
-            });
         });
     </script>
 </body>

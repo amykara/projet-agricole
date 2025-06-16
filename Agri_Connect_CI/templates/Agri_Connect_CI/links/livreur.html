@@ -71,6 +71,7 @@
         .card-hover:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+           
         }
         
         .card-image-hover:hover {
@@ -170,7 +171,21 @@
         color: #9ca3af; /* Couleur grise */
         font-size: 3rem; /* Taille de l'icône */
     }
-
+    .filters-container {
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.filter-group {
+    min-width: 200px;
+    flex: 1 1 auto;
+}
+@media (max-width: 768px) {
+    .filter-group {
+        min-width: 100%;
+    }
+}
     </style>
 </head>
 
@@ -196,11 +211,11 @@
             </div>
         </div>
         
-        <!-- Barre de filtres améliorée -->
+        <!-- Barre de filtres  -->
         <div class="container mx-auto px-4 py-6">
             <form id="filtres-form" method="get" action="{% url 'page' 'livreur' %}">
-                <div class="filters-container mb-6 bg-white p-4 rounded-lg shadow-sm">
-                    <div class="filters flex flex-col md:flex-row gap-4">
+                <div class="filters-container mb-6 bg-white p-4 rounded-lg shadow-sm max-w-4xl mx-auto">
+                    <div class="filters flex flex-col md:flex-row gap-4 flex-wrap">
                         <!-- Type de véhicule -->
                         <div class="filter-group flex-1">
                             <label class="filter-label block text-sm font-medium text-gray-700 mb-1">Type de véhicule</label>
@@ -242,11 +257,13 @@
                         </div>
                         
                         <!-- Disponibilité -->
+                        
                         <div class="filter-group flex items-end">
                             <div class="flex items-center h-10 mt-1">
                                 <input type="checkbox" id="disponible" name="disponible" 
                                     {% if filtres_actifs.disponible %}checked{% endif %} 
-                                    class="h-4 w-4 text-agri-green focus:ring-agri-green border-gray-300 rounded">
+                                    class="h-4 w-4 text-agri-green focus:ring-agri-green border-gray-300 rounded"
+                                    onchange="this.form.submit()">
                                 <label for="disponible" class="ml-2 block text-sm text-gray-700">Disponible maintenant</label>
                             </div>
                         </div>
@@ -320,9 +337,9 @@
                 <div>
                     
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="livreurs-container">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="livreurs-container">
     {% for livreur in livreurs %}
-    <div class="bg-white rounded-lg shadow-md overflow-hidden transition-all-smooth card-hover">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden transition-all-smooth card-hover ">
        
         <div class="h-48 w-full overflow-hidden flex items-center justify-center bg-gray-100">
             {% if livreur.utilisateur.photo_profil %}
@@ -330,12 +347,10 @@
                     alt="{{ livreur.utilisateur.full_name }}" 
                     class="max-w-full max-h-full object-contain transition-all-smooth card-image-hover"/>
             {% else %}
-                <img src="{% static 'images/default-profile.jpg' %}" 
-                    alt="{{ livreur.utilisateur.full_name }}" 
-                    class="max-w-full max-h-full object-contain transition-all-smooth card-image-hover"/>
+                <i class="fas fa-truck-fast" style="font-size: 50px;"></i>
             {% endif %}
         </div>
-        
+       
         
         <div class="p-4 border-b border-gray-100">
             <div class="flex justify-between items-center">
@@ -350,7 +365,7 @@
                     <i class="fas fa-{{ livreur.type_livreur.nom|lower }} text-green-600"></i>
                 </div>
                 <span class="capitalize">{{ livreur.type_livreur.nom }}</span> • 
-                <span>{{ livreur.vehicule_set.first.capacite }}</span>
+                
             </div>
         </div>
         
@@ -363,34 +378,27 @@
                 <div class="flex items-center gap-1">
                     <i class="fas fa-map-marker-alt text-green-600 text-sm"></i>
                     <span class="truncate">
-                        {% for zone in livreur.livreurzone_set.all|slice:":3" %}
+                        {% for zone in livreur.livreurzone_set.all|slice:":1" %}
                             {{ zone.zone.ville }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </span>
                 </div>
                 <div class="flex items-center gap-1">
-                    <i class="fas fa-calendar-alt text-green-600 text-sm"></i>
-                    <span>Actif le {{ livreur.utilisateur.derniere_connexion|date:"d M Y" }}</span>
+                    <!-- Icône étoile -->
+                    <i class="fas fa-star text-yellow-400"></i>
+                    
+                    <!-- Note moyenne et nombre d'avis -->
+                    <span class="text-sm text-gray-600">
+                        {{ livreur.note_moyenne|floatformat:1|default:"0.0" }}/5 
+                        <span class="text-gray-400">({{ livreur.nb_avis|default:"0" }} avis)</span>
+                    </span>
                 </div>
             </div>
             
             <div class="flex justify-between items-center mt-3">
-                <div class="flex items-center gap-1">
-                    <div class="flex">
-                        {% with note=livreur.note_moyenne|default:0 %}
-                            {% for i in "12345" %}
-                                {% if i|add:0 <= note|add:0 %}
-                                    <i class="fas fa-star text-yellow-500"></i>
-                                {% else %}
-                                    <i class="fas fa-star text-gray-300"></i>
-                                {% endif %}
-                            {% endfor %}
-                        {% endwith %}
-                    </div>
-                    <span class="text-sm text-gray-600">({{ livreur.nb_avis|default:0 }})</span>
-                </div>
+                
                 <div class="font-semibold text-green-800">
-                    {{ livreur.tarif.valeur }} {{ livreur.tarif.devise.code }}
+                    {{ livreur.tarif.valeur }} {{ livreur.tarif.devise.nom }}
                     <span class="text-xs text-gray-500 ml-1">+ {{ livreur.tarif.type_tarif }}</span>
                 </div>
             </div>
@@ -407,7 +415,7 @@
                         <i class="fab fa-whatsapp mr-1"></i> WhatsApp
                     </a>
                 {% else %}
-                    <a href="{% url 'connexion' %}?next={% url 'page' 'livreur' %}" class="w-1/2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-all-smooth text-center">
+                    <a href="{% url 'connexion' %}?next={% url 'livreur_detail' livreur.id %}" class="w-1/2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-all-smooth text-center">
                         <i class="fab fa-whatsapp mr-1"></i> WhatsApp
                     </a>
                 {% endif %}
@@ -417,6 +425,7 @@
                 </button>
             {% endif %}
         </div>
+        
     </div>
     {% empty %}
     <div class="col-span-3 text-center py-10">
@@ -509,6 +518,22 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('select[name="tri"]').addEventListener('change', function() {
         document.getElementById('filtres-form').submit();
     });
+
+    
+    // Gestion de la case à cocher "Disponible"
+    const disponibleCheckbox = document.getElementById('disponible');
+    if (disponibleCheckbox) {
+        disponibleCheckbox.addEventListener('change', function() {
+            // Si la case est décochée, on supprime le paramètre "disponible"
+            if (!this.checked) {
+                const url = new URL(window.location.href);
+                url.searchParams.delete('disponible');
+                window.location.href = url.toString();
+            } else {
+                document.getElementById('filtres-form').submit();
+            }
+        });
+    }
 });
 </script>
 </body>

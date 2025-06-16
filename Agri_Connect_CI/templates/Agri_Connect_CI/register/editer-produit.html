@@ -505,25 +505,35 @@
 </head>
 <body>
 <!-- En haut du template -->
-<div class="messages-container">
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }}">
-        {{ message }}
-        <button type="button" class="close" onclick="this.parentElement.remove()">
-            <span>&times;</span>
-        </button>
-    </div>
-    {% endfor %}
-</div>
+<!-- Bouton retour -->
+            
+            {% if user.role == 'producteur' %}
+                <div style="margin-bottom: 25px; margin-left: 10px;">
+                <a href="{% url 'tableau_bord_producteur' %}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+                 {% elif user.role == 'livreur' %}
+     <div style="margin-bottom: 25px; margin-left: 10px;">
+                <a href="{% url 'tableau_bord_livreur' %}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+            {% else %}
+                 <div style="margin-bottom: 25px; margin-left: 10px;">
+                <a href="{% url 'tableau_de_bord_acheteur' %}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+                {% endif %}
 
-
-
+ {% include 'Agri_Connect_CI/links/message.html' %}
 
     <div class="loading">
         <div class="loading-spinner"></div>
     </div>
 
-    <div class="container">
+     <div class="container">
         <div class="header">
             <h1>Publier une annonce</h1>
             <p>Remplissez les détails de votre annonce ci-dessous</p>
@@ -531,13 +541,13 @@
 
         <div class="tabs-container">
             <div class="tabs" id="tabs">
-                {% if is_producteur %}
+                {% if user.role == 'producteur' %}
                 <button class="tab active" data-tab="vente-produit" id="tab-produit">
                     <i class="fas fa-shopping-bag"></i> Vente de produit
                 </button>
                 {% endif %}
                 
-                <button class="tab {% if not is_producteur %}active{% endif %}" data-tab="autre-annonce" id="tab-autre">
+                <button class="tab {% if user.role != 'producteur' %}active{% endif %}" data-tab="autre-annonce" id="tab-autre">
                     <i class="fas fa-bullhorn"></i> Autre annonce
                 </button>
                 <span class="tab-indicator"></span>
@@ -545,7 +555,7 @@
         </div>
         
         <!-- Contenu des onglets -->
-        {% if is_producteur %}
+        {% if user.role == 'producteur' %}
         <div class="tab-content active" id="vente-produit">
             <div class="form-card">
                 <form id="produit-form" method="post" enctype="multipart/form-data" novalidate>
@@ -716,8 +726,9 @@
                 </form>
             </div>
         </div>
+        {% endif %}
         
-        <div class="tab-content" id="autre-annonce">
+        <div class="tab-content {% if user.role != 'producteur' %}active{% endif %}" id="autre-annonce">
             <div class="form-card">
                 <form id="autre-form" method="post" enctype="multipart/form-data" novalidate>
                     {% csrf_token %}
@@ -761,13 +772,12 @@
                             <i class="fas fa-eye"></i> Prévisualiser
                         </button>
                         <button type="submit" class="btn btn-primary" id="submit-autre">
-                            <i class="fas fa-paper-plane"></i> Publier l'an:nonce
+                            <i class="fas fa-paper-plane"></i> Publier l'annonce
                         </button>
                     </div>
                 </form>
             </div>
         </div>
-        {% endif %}
     </div>
 
     <!-- Prévisualisation -->
@@ -824,72 +834,66 @@
     </div>
 
    <script>
-// Gestion des onglets
-document.addEventListener('DOMContentLoaded', function() {
-    // Fonction pour activer un onglet
-    function activateTab(tabId) {
-        // Désactiver tous les onglets
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.remove('active');
-        });
-        
-        // Activer l'onglet spécifié
-        const tab = document.querySelector(`[data-tab="${tabId}"]`);
-        const content = document.getElementById(tabId);
-        
-        if (tab && content) {
-            tab.classList.add('active');
-            content.classList.add('active');
+ document.addEventListener('DOMContentLoaded', function() {
+            // Fonction pour activer un onglet
+            function activateTab(tabId) {
+                // Désactiver tous les onglets
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Activer l'onglet spécifié
+                const tab = document.querySelector(`[data-tab="${tabId}"]`);
+                const content = document.getElementById(tabId);
+                
+                if (tab && content) {
+                    tab.classList.add('active');
+                    content.classList.add('active');
+                    
+                    // Mettre à jour l'indicateur visuel
+                    const tabRect = tab.getBoundingClientRect();
+                    const tabsRect = document.getElementById('tabs').getBoundingClientRect();
+                    const indicator = document.querySelector('.tab-indicator');
+                    
+                    indicator.style.width = `${tabRect.width}px`;
+                    indicator.style.left = `${tabRect.left - tabsRect.left}px`;
+                }
+            }
+
+            // Activer le bon onglet au chargement
+            const urlParams = new URLSearchParams(window.location.search);
+            const requestedTab = urlParams.get('tab');
+            const defaultTab = document.body.getAttribute('data-default-tab') || 'autre';
             
-            // Mettre à jour l'indicateur visuel
-            const tabRect = tab.getBoundingClientRect();
-            const tabsRect = document.getElementById('tabs').getBoundingClientRect();
-            const indicator = document.querySelector('.tab-indicator');
-            
-            indicator.style.width = `${tabRect.width}px`;
-            indicator.style.left = `${tabRect.left - tabsRect.left}px`;
-        }
-    }
+            if (requestedTab === 'produit' && document.querySelector('[data-tab="vente-produit"]')) {
+                activateTab('vente-produit');
+            } else if (requestedTab === 'autre' && document.querySelector('[data-tab="autre-annonce"]')) {
+                activateTab('autre-annonce');
+            } else if (defaultTab === 'produit' && document.querySelector('[data-tab="vente-produit"]')) {
+                activateTab('vente-produit');
+            } else if (document.querySelector('[data-tab="autre-annonce"]')) {
+                activateTab('autre-annonce');
+            }
 
-    // Activer le bon onglet au chargement
-    const urlParams = new URLSearchParams(window.location.search);
-    const requestedTab = urlParams.get('tab');
-    const defaultTab = document.body.getAttribute('data-default-tab') || 'autre';
-    
-    if (requestedTab === 'produit' && document.querySelector('[data-tab="vente-produit"]')) {
-        activateTab('vente-produit');
-    } else if (requestedTab === 'autre' && document.querySelector('[data-tab="autre-annonce"]')) {
-        activateTab('autre-annonce');
-    } else if (defaultTab === 'produit' && document.querySelector('[data-tab="vente-produit"]')) {
-        activateTab('vente-produit');
-    } else if (document.querySelector('[data-tab="autre-annonce"]')) {
-        activateTab('autre-annonce');
-    }
+            // Gestion du clic sur les onglets
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    activateTab(tabId);
+                });
+            });
 
-    // Gestion du clic sur les onglets
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', function() {
-            const tabId = this.getAttribute('data-tab');
-            activateTab(tabId);
-        });
-    });
-
-    // Configuration de l'upload d'images
-    setupImageUpload();
-    setupPreview();
-    loadProduitsByCategorie();
+            // Configuration de l'upload d'images
+            setupImageUpload();
+            setupPreview();
+            loadProduitsByCategorie();
+        
 
     // Fermer automatiquement les messages après 5 secondes
-    setTimeout(() => {
-        document.querySelectorAll('.alert').forEach(alert => {
-            alert.style.transition = 'opacity 0.5s';
-            alert.style.opacity = '0';
-            setTimeout(() => alert.remove(), 900);
-        });
-    }, 9000);
+    
 });
 
 // Gestion de l'upload d'images
@@ -1270,3 +1274,6 @@ window.submitForm = function() {
 </script>
 </body>
 </html>
+
+
+   

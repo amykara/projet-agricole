@@ -823,17 +823,9 @@
 <body>
  
 
-    {% if messages %}
-<div class="messages-container">
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }}">
-        {{ message }}
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
+      {% include 'Agri_Connect_CI/links/message.html' %}
 
-    <!-- Hero Section - Compact Version -->
+    
     <section class="hero">
         <div class="container hero-container">
                     <div class="hero-avatar">
@@ -847,10 +839,12 @@
             </div>
             
             <div class="hero-content">
-                <div class="hero-badge {% if livreur.etat.nom == 'disponible' %}available{% else %}unavailable{% endif %}">
-                    <i class="fas fa-{% if livreur.etat.nom == 'disponible' %}check-circle{% else %}times-circle{% endif %}"></i>
-                    {% if livreur.etat.nom == 'disponible' %}Disponible maintenant{% else %}Non disponible{% endif %}
-                </div>
+                <div class="hero-badge {% if livreur.etat.nom|lower == 'disponible' %}available{% else %}unavailable{% endif %}">
+                <i class="fas fa-{% if livreur.etat.nom|lower == 'disponible' %}check-circle{% else %}times-circle{% endif %}"></i>
+                <span class="{% if livreur.etat.nom|lower == 'disponible' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %} px-2 py-1 text-xs rounded-full">
+                    {{ livreur.etat.nom }}
+                </span>
+            </div>
                 
                 <h1 class="hero-title">{{ livreur.utilisateur.full_name }}</h1>
                 <p class="hero-subtitle">{{ livreur.description|default:"Livreur professionnel avec des années d'expérience" }}</p>

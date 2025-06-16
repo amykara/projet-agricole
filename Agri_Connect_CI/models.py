@@ -350,6 +350,24 @@ class DisponibiliteLivreur(models.Model):
 
     def __str__(self):
         return f"{self.livreur} - {self.jour_semaine} ({self.statut})"
+    
+class TypeLivraison(models.Model):
+    nom = models.CharField(max_length=50)  # "Individuelle", "Groupage"
+    coefficient = models.DecimalField(max_digits=5, decimal_places=2)  # Pour calcul automatique
+
+class TarifLivreur(models.Model):
+    livreur = models.ForeignKey(Livreur, on_delete=models.CASCADE)
+    vehicule = models.ForeignKey(Vehicule, null=True, blank=True, on_delete=models.CASCADE)
+    type_livraison = models.ForeignKey(TypeLivraison, on_delete=models.PROTECT)
+    zone = models.ForeignKey(Zone, on_delete=models.PROTECT)
+    prix = models.DecimalField(max_digits=10, decimal_places=2)
+    devise = models.ForeignKey(Devise, on_delete=models.PROTECT)
+    libelle = models.CharField(max_length=100, default='Prix de base') 
+    class Meta:
+        unique_together = [
+            ['livreur', 'vehicule', 'type_livraison', 'zone'],  # Pour les entreprises
+            ['livreur', 'type_livraison', 'zone']  # Pour les individus
+        ]
 
 # ====================
 # RELATION CLIENT-LIVREUR

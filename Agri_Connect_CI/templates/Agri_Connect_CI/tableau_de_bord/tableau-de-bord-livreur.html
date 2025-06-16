@@ -200,10 +200,11 @@
             height: calc(100vh - 6rem);
             overflow-y: auto;
         }
-        /* Navigation améliorée */
+    
 nav.bg-white {
-    background-color: #2A7D4F !important; /* Couleur verte AgriConnect */
-    border-bottom: none !important;
+    background-color: #2A7D4F ;
+    color: white; /* Couleur verte AgriConnect */
+    border-bottom: none ;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -250,26 +251,19 @@ nav.bg-white .flex.space-x-4 {
     </style>
 </head>
 <body class="bg-agri-light min-h-screen flex flex-col">
-    <!-- Messages d'alerte -->
-    {% if messages %}
-    <div class="container mx-auto px-4 mt-4">
-        {% for message in messages %}
-        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}error{% endif %} animate-fadeIn">
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
+    {% include 'Agri_Connect_CI/links/message.html' %}
 
     <!-- Header/Navbar -->
     <nav class="bg-white border-b border-agri-gray/20 sticky top-0 z-10 shadow-sm">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="{% url 'home' %}" class="flex items-center">
-                <span class="text-xl font-bold text-agri-primary">AgriConnect</span>
+            <a href="" class="flex items-center">
+                <span class="text-xl font-bold text-agri-primary">Tableau de bord de {{ user.full_name }} </span>
             </a>
             <div class="flex items-center space-x-4">
-                <a href="{% url 'tableau_bord_livreur' %}" class="text-agri-primary font-medium hover:text-agri-primary/90 transition-colors">Tableau de bord</a>
-                <a href="{% url 'deconnexion' %}" class="text-agri-error hover:text-agri-error/80 transition-colors">Déconnexion</a>
+
+                <a href="{% url 'deconnexion' %}" class="flex items-center px-4 py-3 rounded-md text-agri-error hover:bg-red-50 transition-colors duration-300">
+                                    <i class="fas fa-sign-out-alt mr-3 text-lg"></i> Déconnexion
+                                </a>
             </div>
         </div>
     </nav>
@@ -390,12 +384,6 @@ nav.bg-white .flex.space-x-4 {
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="flex justify-end">
-                            <a href="#annonces" class="btn-primary">
-                                <i class="fas fa-plus"></i> Créer une annonce
-                            </a>
-                        </div>
                     </section>
                     
                     <!-- Deliveries/Annonces section -->
@@ -436,23 +424,18 @@ nav.bg-white .flex.space-x-4 {
                                     </div>
                                     <div class="text-right">
                                         <p class="text-sm text-gray-600">Publiée: <span class="font-medium">{{ annonce.date_annonce|date:"d/m/Y" }}</span></p>
-                                        {% if annonce.statut == 'active' %}
-                                        <p class="text-sm text-gray-600">Expire: <span class="font-medium">{{ annonce.date_expiration|date:"d/m/Y" }}</span></p>
-                                        {% endif %}
+                                       
                                     </div>
                                 </div>
                                 
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3 text-sm">
                                     <div>
                                         {% for produit in annonce.annonceproduit_set.all %}
-                                        <p class="text-gray-500">Trajet: <span class="text-gray-700">{{ produit.nom_produit }}</span></p>
-                                        <p class="text-gray-500">Capacité: <span class="text-gray-700">{{ produit.quantite }} {{ produit.unite.abbr }}</span></p>
+                                        <p class="text-gray-500"><span class="text-gray-700">{{ annonce.type_annonce }}</span></p>
+                                        <p class="text-gray-500">Description: <span class="text-gray-700">{{ annonce.description }} {{ produit.unite.abbr }}</span></p>
                                         {% endfor %}
                                     </div>
-                                    <div>
-                                        <p class="text-gray-500">Prix: <span class="text-gray-700">{{ produit.prix_unitaire }} {{ produit.devise.code }}</span></p>
-                                        <p class="text-gray-500">Contacts: <span class="text-gray-700">{{ annonce.miseenrelation_set.count }}</span></p>
-                                    </div>
+                                    
                                 </div>
                                 
                                 <div class="flex flex-wrap justify-end gap-2">
@@ -592,25 +575,7 @@ nav.bg-white .flex.space-x-4 {
         </div>
     </main>
     
-    <!-- Footer -->
-    <footer class="bg-agri-dark text-white py-8">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0">
-                    <span class="text-xl font-bold">AgriConnect</span>
-                    <p class="text-sm mt-1">Plateforme de mise en relation agricole</p>
-                </div>
-                <div class="flex space-x-6">
-                    <a href="#" class="text-gray-300 hover:text-white transition-colors"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="text-gray-300 hover:text-white transition-colors"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-gray-300 hover:text-white transition-colors"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            <div class="border-t border-agri-gray/20 mt-6 pt-6 text-center text-sm">
-                <p>© {% now "Y" %} AgriConnect. Tous droits réservés.</p>
-            </div>
-        </div>
-    </footer>
+     
 
     <script>
         // Gestion du scroll pour la navigation

@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de Bord Acheteur - AgriConnect</title>
+    <link rel="stylesheet" href="{% static 'Agri_Connect_CI/autres/css/styles.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -167,13 +168,7 @@
             to { opacity: 0; transform: translateY(-10px); }
         }
         
-        .footer-link {
-            transition: color 0.3s ease;
-        }
-        
-        .footer-link:hover {
-            color: #4CAF50;
-        }
+       
         
         .line-clamp-2 {
             display: -webkit-box;
@@ -185,16 +180,8 @@
 </head>
 <body class="bg-agri-light">
    
-    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2">
-        {% for message in messages %}
-        <div class="toast-enter px-4 py-2 rounded-md shadow-md mb-2 
-            {% if message.tags == 'success' %}bg-green-500 text-white
-            {% elif message.tags == 'error' %}bg-red-500 text-white
-            {% else %}bg-blue-500 text-white{% endif %}">
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
+    {% include 'Agri_Connect_CI/links/message.html' %}
+
 
     <main>
         <div class="container mx-auto py-8 px-4 max-w-7xl">
@@ -531,7 +518,7 @@
                                         </form>
                                         {% endif %}
                                         
-                                        <a href="{% url 'modifier_annonce' annonce.id %}" class="px-3 py-1 border border-agri-primary text-agri-primary rounded-md text-sm hover:bg-agri-primary hover:text-white transition-colors duration-300">
+                                        <a href="" class="px-3 py-1 border border-agri-primary text-agri-primary rounded-md text-sm hover:bg-agri-primary hover:text-white transition-colors duration-300">
                                             <i class="fas fa-edit mr-1"></i> Modifier
                                         </a>
                                         
@@ -578,80 +565,8 @@
         </div>
     </main>
 
-    <footer class="footer bg-agri-dark text-white py-8">
-        <div class="container mx-auto px-4">
-            <div class="footer-content grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="footer-logo">
-                    <div class="logo flex items-center mb-4">
-                        <div class="logo-icon bg-agri-primary rounded-full w-10 h-10 flex items-center justify-center mr-2">
-                            <i class="fas fa-leaf text-white"></i>
-                        </div>
-                        <div class="logo-text font-bold text-xl">AgriConnect</div>
-                    </div>
-                    <p class="text-agri-gray mb-4">AgriConnect connecte les producteurs locaux, les acheteurs et les livreurs pour favoriser une agriculture de proximité et des échanges plus directs et justes.</p>
-                    <a href="{% url 'page' 'about' %}" class="footer-link text-agri-primary hover:text-agri-secondary">
-                        En savoir plus →
-                    </a>
-                </div>
-                
-                <div class="footer-links">
-                    <h3 class="font-semibold text-lg mb-4">Liens utiles</h3>
-                    <ul class="space-y-2">
-                        <li><a href="{% url 'home' %}" class="footer-link hover:text-agri-primary">Accueil</a></li>
-                        <li><a href="{% url 'page' 'catalog' %}" class="footer-link hover:text-agri-primary">Catalogue</a></li>
-                        <li><a href="{% url 'page' 'about' %}" class="footer-link hover:text-agri-primary">À propos</a></li>
-                        <li><a href="{% url 'page' 'faq' %}" class="footer-link hover:text-agri-primary">FAQ</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-links">
-                    <h3 class="font-semibold text-lg mb-4">S'inscrire</h3>
-                    <ul class="space-y-2">
-                        <li><a href="{% url 'inscription' %}?role=acheteur" class="footer-link hover:text-agri-primary">Devenir acheteur</a></li>
-                        <li><a href="{% url 'inscription' %}?role=producteur" class="footer-link hover:text-agri-primary">Devenir producteur</a></li>
-                        <li><a href="{% url 'inscription' %}?role=livreur" class="footer-link hover:text-agri-primary">Devenir livreur</a></li>
-                        <li><a href="{% url 'connexion' %}" class="footer-link hover:text-agri-primary">Se connecter</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-contact">
-                    <h3 class="font-semibold text-lg mb-4">Contact</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-agri-primary"></i>
-                            <span>123 Rue de l'Agriculture<br>75000 Paris, France</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-phone mr-3 text-agri-primary"></i>
-                            <span>+33 1 23 45 67 89</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-envelope mr-3 text-agri-primary"></i>
-                            <span>contact@agriconnect.fr</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-divider border-t border-agri-gray/20 my-6"></div>
-            
-            <div class="footer-bottom flex justify-between items-center">
-                <p>© <span id="current-year">{{ now|date:"Y" }}</span> AgriConnect. Tous droits réservés.</p>
-                <div class="flex space-x-4">
-                    <a href="#" class="text-agri-gray hover:text-white transition-colors duration-300">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="#" class="text-agri-gray hover:text-white transition-colors duration-300">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" class="text-agri-gray hover:text-white transition-colors duration-300">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
+       <!-- Pied de page -->
+      {% include 'Agri_Connect_CI/header_footer/footer.html' %}
     <script>
         // Gestion de l'avatar
         document.getElementById('id_photo_profil')?.addEventListener('change', function(e) {
@@ -674,20 +589,6 @@
         // Mise à jour de l'année du footer
         document.getElementById('current-year').textContent = new Date().getFullYear();
 
-        // Gestion des messages toast
-        const toastContainer = document.getElementById('toast-container');
-        if (toastContainer) {
-            setTimeout(() => {
-                const toasts = toastContainer.querySelectorAll('.toast-enter');
-                toasts.forEach(toast => {
-                    toast.classList.remove('toast-enter');
-                    setTimeout(() => {
-                        toast.classList.add('toast-exit');
-                        setTimeout(() => toast.remove(), 300);
-                    }, 5000);
-                });
-            }, 50);
-        }
 
         // Scroll doux pour les ancres
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {

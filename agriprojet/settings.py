@@ -42,6 +42,13 @@ if RENDER_EXTERNAL_HOSTNAME:
 if DEBUG:
     ALLOWED_HOSTS += ['localhost', '127.0.0.1']
 
+# Render serves the whole site over HTTPS, so cookies never need to travel
+# over plain HTTP. Not enabling SECURE_SSL_REDIRECT/HSTS here since that
+# requires SECURE_PROXY_SSL_HEADER tuned to Render's proxy and can cause a
+# redirect loop if misconfigured.
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+
 
 # Application definition
 

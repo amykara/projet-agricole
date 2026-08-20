@@ -235,3 +235,47 @@
     </div>
 </section>
 
+<script>document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('.recent-annonces .annonces-container');
+    const grid = document.querySelector('.recent-annonces .annonces-grid');
+    const prevButton = document.querySelector('.recent-annonces .carousel-button.prev');
+    const nextButton = document.querySelector('.recent-annonces .carousel-button.next');
+    if (!container || !grid || !prevButton || !nextButton) return;
+
+    const cards = grid.querySelectorAll('.annonce-card');
+    if (!cards.length) return;
+
+    let currentIndex = 0;
+
+    function getCardsPerView() {
+        const width = window.innerWidth;
+        if (width < 576) return 1;
+        if (width < 992) return 2;
+        return 3;
+    }
+
+    function update() {
+        const maxIndex = Math.max(0, cards.length - getCardsPerView());
+        currentIndex = Math.min(currentIndex, maxIndex);
+        const gap = parseFloat(getComputedStyle(grid).gap) || 0;
+        const offset = currentIndex * (cards[0].offsetWidth + gap);
+        grid.style.transform = `translateX(-${offset}px)`;
+        prevButton.disabled = currentIndex === 0;
+        nextButton.disabled = currentIndex >= maxIndex;
+    }
+
+    prevButton.addEventListener('click', () => {
+        currentIndex = Math.max(0, currentIndex - 1);
+        update();
+    });
+
+    nextButton.addEventListener('click', () => {
+        const maxIndex = Math.max(0, cards.length - getCardsPerView());
+        currentIndex = Math.min(maxIndex, currentIndex + 1);
+        update();
+    });
+
+    window.addEventListener('resize', update);
+    update();
+});</script>
+

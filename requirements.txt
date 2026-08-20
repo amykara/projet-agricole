@@ -1,13 +1,13 @@
 asgiref==3.8.1
-Django==4.2.21
+Django==4.2.30
 django-jazzmin==3.0.1
 django-widget-tweaks==1.5.0
 djangorestframework==3.16.0
-pillow==11.2.1
-sqlparse==0.5.3
+pillow==12.3.0
+sqlparse==0.6.0
 tzdata==2025.2
 dj-database-url==2.3.0
 psycopg2-binary==2.9.10
 whitenoise==6.8.2
 gunicorn==23.0.0
-python-dotenv==1.0.1
+python-dotenv==1.2.2

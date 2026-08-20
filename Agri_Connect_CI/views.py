@@ -228,6 +228,7 @@ def contacter_via_whatsapp(request, annonce_id):
         return redirect('annonce_detail', annonce_id=annonce.id)
 
 @login_required
+@require_POST
 def toggle_favori(request, annonce_id):
     annonce = get_object_or_404(Annonce, id=annonce_id)
     favori, created = Favoris.objects.get_or_create(
@@ -1142,6 +1143,7 @@ def autocomplete_produits(request):
 
 
 @login_required
+@require_POST
 def ajouter_favori(request, annonce_id):
     annonce = get_object_or_404(Annonce, id=annonce_id)
     Favoris.objects.get_or_create(utilisateur=request.user, annonce=annonce)
@@ -1149,12 +1151,14 @@ def ajouter_favori(request, annonce_id):
     return redirect(request.META.get('HTTP_REFERER', 'tableau_de_bord_acheteur'))
 
 @login_required
+@require_POST
 def supprimer_favori(request, annonce_id):
     Favoris.objects.filter(utilisateur=request.user, annonce_id=annonce_id).delete()
     messages.success(request, "Retiré des favoris")
     return redirect(request.META.get('HTTP_REFERER', 'tableau_de_bord_acheteur'))
 
 @login_required
+@require_POST
 def supprimer_annonce(request, annonce_id):
     annonce = get_object_or_404(Annonce, id=annonce_id, auteur=request.user)
     annonce.delete()
@@ -1498,7 +1502,7 @@ def editer_profil_livreur(request):
 
 
 
-require_POST
+@require_POST
 @login_required
 def marquer_notifications_lues(request):
     Notification.objects.filter(utilisateur=request.user, lu=False).update(lu=True)

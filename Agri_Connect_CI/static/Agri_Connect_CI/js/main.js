@@ -1,5 +1,16 @@
 
 
+// Menu burger mobile
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.querySelector('.mobile-menu-toggle');
+    const mobileNav = document.querySelector('.nav-mobile');
+    if (toggleBtn && mobileNav) {
+        toggleBtn.addEventListener('click', () => {
+            mobileNav.classList.toggle('active');
+        });
+    }
+});
+
 // Détermine le nombre de cartes visibles selon la largeur d'écran
 function getVisibleCardsCount() {
     const width = window.innerWidth;

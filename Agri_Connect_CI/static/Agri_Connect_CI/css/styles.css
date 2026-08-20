@@ -323,6 +323,10 @@ img {
     z-index: 90;
 }
 
+.nav-mobile.active {
+    display: block;
+}
+
 .nav-mobile ul {
     display: flex;
     flex-direction: column;

@@ -16,6 +16,18 @@ from Agri_Connect_CI.models import (
     Producteur,
 )
 
+
+def safe_get_or_create(model, defaults=None, **kwargs):
+    """Like get_or_create, but tolerates pre-existing duplicate rows in
+    production (no unique constraint backs these lookup fields) instead of
+    raising MultipleObjectsReturned."""
+    obj = model.objects.filter(**kwargs).first()
+    if obj is not None:
+        return obj, False
+    params = dict(kwargs)
+    params.update(defaults or {})
+    return model.objects.create(**params), True
+
 ZONES = {
     1: ('Abidjan', 'Cocody', '22501'),
     2: ('Abidjan', 'Yopougon', '22502'),
@@ -132,31 +144,31 @@ class Command(BaseCommand):
                 "producteur (via l'inscription du site) avant de relancer cette commande."
             )
 
-        type_annonce, _ = TypeAnnonce.objects.get_or_create(nom='Vente de produits agricoles')
+        type_annonce, _ = safe_get_or_create(TypeAnnonce, nom='Vente de produits agricoles')
 
         zones = {
-            zid: Zone.objects.get_or_create(ville=v, quartier=q, code_postal=cp)[0]
+            zid: safe_get_or_create(Zone, ville=v, quartier=q, code_postal=cp)[0]
             for zid, (v, q, cp) in ZONES.items()
         }
         categories = {
-            cid: CategorieProduit.objects.get_or_create(nom=n)[0]
+            cid: safe_get_or_create(CategorieProduit, nom=n)[0]
             for cid, n in CATEGORIES.items()
         }
         unites = {
-            uid: UniteMesure.objects.get_or_create(nom=n, defaults={'abbr': a})[0]
+            uid: safe_get_or_create(UniteMesure, nom=n, defaults={'abbr': a})[0]
             for uid, (n, a) in UNITES.items()
         }
         devises = {
-            did: Devise.objects.get_or_create(code=c, nom=n)[0]
+            did: safe_get_or_create(Devise, code=c, nom=n)[0]
             for did, (c, n) in DEVISES.items()
         }
         conditionnements = {
-            cid: Conditionnement.objects.get_or_create(nom=n, defaults={'description': d})[0]
+            cid: safe_get_or_create(Conditionnement, nom=n, defaults={'description': d})[0]
             for cid, (n, d) in CONDITIONNEMENTS.items()
         }
         certifications = {
-            cid: Certification.objects.get_or_create(
-                nom=n, defaults={'organisme_emetteur': o, 'description': d}
+            cid: safe_get_or_create(
+                Certification, nom=n, defaults={'organisme_emetteur': o, 'description': d}
             )[0]
             for cid, (n, o, d) in CERTIFICATIONS.items()
         }
@@ -166,7 +178,8 @@ class Command(BaseCommand):
 
         with transaction.atomic():
             for titre, description, zone_id, images, produit in ANNONCES:
-                annonce, created = Annonce.objects.get_or_create(
+                annonce, created = safe_get_or_create(
+                    Annonce,
                     titre=titre,
                     defaults={
                         'description': description,
@@ -185,7 +198,8 @@ class Command(BaseCommand):
                 (nom_produit, quantite, prix_unitaire, livraison, cat_id,
                  cert_id, cond_id, dev_id, unit_id) = produit
 
-                AnnonceProduit.objects.get_or_create(
+                safe_get_or_create(
+                    AnnonceProduit,
                     annonce=annonce,
                     nom_produit=nom_produit,
                     defaults={
@@ -201,7 +215,8 @@ class Command(BaseCommand):
                 )
 
                 for filename in images:
-                    AnnonceImage.objects.get_or_create(
+                    safe_get_or_create(
+                        AnnonceImage,
                         annonce=annonce,
                         url_image=f'annonces/images/{filename}',
                     )

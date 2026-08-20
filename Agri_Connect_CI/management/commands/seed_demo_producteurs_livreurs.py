@@ -18,6 +18,18 @@ from Agri_Connect_CI.models import (
     Annonce, AnnonceImage, TypeAnnonce,
 )
 
+
+def safe_get_or_create(model, defaults=None, **kwargs):
+    """Like get_or_create, but tolerates pre-existing duplicate rows in
+    production (no unique constraint backs these lookup fields) instead of
+    raising MultipleObjectsReturned."""
+    obj = model.objects.filter(**kwargs).first()
+    if obj is not None:
+        return obj, False
+    params = dict(kwargs)
+    params.update(defaults or {})
+    return model.objects.create(**params), True
+
 ZONES = {
     1: ('Abidjan', 'Cocody', '22501'),
     2: ('Abidjan', 'Yopougon', '22502'),
@@ -108,11 +120,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         zones = {
-            zid: Zone.objects.get_or_create(ville=v, quartier=q, code_postal=cp)[0]
+            zid: safe_get_or_create(Zone, ville=v, quartier=q, code_postal=cp)[0]
             for zid, (v, q, cp) in ZONES.items()
         }
-        devise_xof, _ = Devise.objects.get_or_create(code='XOF', nom='Franc CFA')
-        unite_kg, _ = UniteMesure.objects.get_or_create(nom='kilogramme', defaults={'abbr': 'kg'})
+        devise_xof, _ = safe_get_or_create(Devise, code='XOF', nom='Franc CFA')
+        unite_kg, _ = safe_get_or_create(UniteMesure, nom='kilogramme', defaults={'abbr': 'kg'})
 
         with transaction.atomic():
             users = {}
@@ -149,11 +161,11 @@ class Command(BaseCommand):
                     nb_producteurs += 1
 
             type_livreurs = {
-                nom: TypeLivreur.objects.get_or_create(nom=nom)[0]
+                nom: safe_get_or_create(TypeLivreur, nom=nom)[0]
                 for nom in ('Individuel', 'Entreprise')
             }
             etats = {
-                nom: EtatLivreur.objects.get_or_create(nom=nom)[0]
+                nom: safe_get_or_create(EtatLivreur, nom=nom)[0]
                 for nom in ('Disponible', 'Indisponible')
             }
 
@@ -163,8 +175,8 @@ class Command(BaseCommand):
                 tarif = None
                 if tarif_info:
                     tarif_type, tarif_valeur = tarif_info
-                    tarif, _ = Tarif.objects.get_or_create(
-                        type_tarif=tarif_type, valeur=tarif_valeur, devise=devise_xof,
+                    tarif, _ = safe_get_or_create(
+                        Tarif, type_tarif=tarif_type, valeur=tarif_valeur, devise=devise_xof,
                     )
                 livreur, created = Livreur.objects.get_or_create(
                     utilisateur=users[username],
@@ -182,14 +194,11 @@ class Command(BaseCommand):
             nb_vehicules = 0
             for username, vehicules in VEHICULES.items():
                 for type_v, immat, photo, cap_valeur, cap_desc in vehicules:
-                    capacite = CapaciteVehicule.objects.filter(
-                        valeur=cap_valeur, unite=unite_kg, description=cap_desc,
-                    ).first()
-                    if capacite is None:
-                        capacite = CapaciteVehicule.objects.create(
-                            valeur=cap_valeur, unite=unite_kg, description=cap_desc,
-                        )
-                    _, created = Vehicule.objects.get_or_create(
+                    capacite, _ = safe_get_or_create(
+                        CapaciteVehicule, valeur=cap_valeur, unite=unite_kg, description=cap_desc,
+                    )
+                    _, created = safe_get_or_create(
+                        Vehicule,
                         livreur=livreur_objs[username],
                         immatriculation=immat,
                         defaults={
@@ -203,14 +212,15 @@ class Command(BaseCommand):
 
             for username, zone_ids in LIVREUR_ZONES.items():
                 for zid in zone_ids:
-                    LivreurZone.objects.get_or_create(
-                        livreur=livreur_objs[username], zone=zones[zid],
+                    safe_get_or_create(
+                        LivreurZone, livreur=livreur_objs[username], zone=zones[zid],
                     )
 
             nb_annonces = 0
             for titre, description, zone_id, auteur_username, type_nom, image in ANNONCES_SERVICE:
-                type_annonce, _ = TypeAnnonce.objects.get_or_create(nom=type_nom)
-                annonce, created = Annonce.objects.get_or_create(
+                type_annonce, _ = safe_get_or_create(TypeAnnonce, nom=type_nom)
+                annonce, created = safe_get_or_create(
+                    Annonce,
                     titre=titre,
                     defaults={
                         'description': description,
@@ -222,8 +232,8 @@ class Command(BaseCommand):
                 )
                 if created:
                     nb_annonces += 1
-                    AnnonceImage.objects.get_or_create(
-                        annonce=annonce, url_image=f'annonces/images/{image}',
+                    safe_get_or_create(
+                        AnnonceImage, annonce=annonce, url_image=f'annonces/images/{image}',
                     )
 
         self.stdout.write(self.style.SUCCESS(

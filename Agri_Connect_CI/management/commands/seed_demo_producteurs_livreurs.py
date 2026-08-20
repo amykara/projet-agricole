@@ -182,9 +182,13 @@ class Command(BaseCommand):
             nb_vehicules = 0
             for username, vehicules in VEHICULES.items():
                 for type_v, immat, photo, cap_valeur, cap_desc in vehicules:
-                    capacite, _ = CapaciteVehicule.objects.get_or_create(
-                        valeur=cap_valeur, unite=unite_kg, defaults={'description': cap_desc},
-                    )
+                    capacite = CapaciteVehicule.objects.filter(
+                        valeur=cap_valeur, unite=unite_kg, description=cap_desc,
+                    ).first()
+                    if capacite is None:
+                        capacite = CapaciteVehicule.objects.create(
+                            valeur=cap_valeur, unite=unite_kg, description=cap_desc,
+                        )
                     _, created = Vehicule.objects.get_or_create(
                         livreur=livreur_objs[username],
                         immatriculation=immat,

@@ -37,9 +37,32 @@ TarifFormSet = inlineformset_factory(
 
 logger = logging.getLogger(__name__)
 
+# ====================
+# TYPES D'ANNONCES (identifiés par leur nom, jamais par leur id)
+# ====================
+TYPE_VENTE_PRODUITS = 'Vente de produits agricoles'
+TYPE_SERVICE = 'Service'
+
+
+def get_type_vente_produits():
+    """Retourne le type 'Vente de produits agricoles' (le crée s'il n'existe pas)."""
+    return (
+        TypeAnnonce.objects.filter(nom=TYPE_VENTE_PRODUITS).first()
+        or TypeAnnonce.objects.create(nom=TYPE_VENTE_PRODUITS)
+    )
+
+
+def get_type_service():
+    """Retourne le type 'Service' (le crée s'il n'existe pas)."""
+    return (
+        TypeAnnonce.objects.filter(nom=TYPE_SERVICE).first()
+        or TypeAnnonce.objects.create(nom=TYPE_SERVICE)
+    )
+
+
 def home(request):
     # Récupération du type de vente produits 
-    type_vente_produits = TypeAnnonce.objects.only('id').get(id=1)
+    type_vente_produits = get_type_vente_produits()
     
     # Section Produits 
     produits_recents = AnnonceProduit.objects.filter(
@@ -261,7 +284,9 @@ def noter_producteur(request, producteur_id):
         return redirect('annonce_detail', annonce_id=annonce_id)
     
     # Trouver la mise en relation
-    mise_en_relation = MiseEnRelation.objects.get(client=request.user, producteur=producteur)
+    mise_en_relation = MiseEnRelation.objects.filter(
+        client=request.user, producteur=producteur
+    ).latest('date_contact')
     
     # Créer ou mettre à jour la notation
     notation, created = Notation.objects.update_or_create(
@@ -271,7 +296,6 @@ def noter_producteur(request, producteur_id):
         defaults={
             'note': note,
             'commentaire': commentaire,
-            'contexte': 'produit'
         }
     )
     
@@ -297,28 +321,27 @@ def annonce_detail(request, annonce_id):
         statut='active'
     )
 
-    # Correction des fautes de frappe dans les noms de variables
     produit = annonce.annonceproduit_set.first()
     
-    # Récupération des annonces similaires
-    annonces_similaires = Annonce.objects.filter(
-        annonceproduit__categorie=produit.categorie,  # Correction: annonceproduit -> annonceproduit
-        statut='active'
-    ).exclude(
-        id=annonce.id
-    ).select_related(
-        'auteur', 'zone'
-    ).prefetch_related(
-        Prefetch('annonceimage_set', queryset=AnnonceImage.objects.all()),
-        Prefetch('annonceproduit_set', queryset=AnnonceProduit.objects.all())
-    ).distinct()[:4]
-
-    # Préparation des données pour le template
+    # Annonces similaires (uniquement si l'annonce a un produit)
     annonces_similaires_prepared = []
-    for annonce_sim in annonces_similaires:
-        annonce_sim.first_image = annonce_sim.annonceimage_set.first()
-        annonce_sim.first_product = annonce_sim.annonceproduit_set.first()
-        annonces_similaires_prepared.append(annonce_sim)
+    if produit:
+        annonces_similaires = Annonce.objects.filter(
+            annonceproduit__categorie=produit.categorie,
+            statut='active'
+        ).exclude(
+            id=annonce.id
+        ).select_related(
+            'auteur', 'zone'
+        ).prefetch_related(
+            Prefetch('annonceimage_set', queryset=AnnonceImage.objects.all()),
+            Prefetch('annonceproduit_set', queryset=AnnonceProduit.objects.all())
+        ).distinct()[:4]
+
+        for annonce_sim in annonces_similaires:
+            annonce_sim.first_image = annonce_sim.annonceimage_set.first()
+            annonce_sim.first_product = annonce_sim.annonceproduit_set.first()
+            annonces_similaires_prepared.append(annonce_sim)
 
     # Notation - calcul de la moyenne et du nombre d'avis
     note_moyenne = 0
@@ -379,7 +402,7 @@ def annonce_detail(request, annonce_id):
         'note_moyenne': note_moyenne,
         'nb_avis': nb_avis,
         'note_etoiles': range(1, 6),
-        'annonces_similaires': annonces_similaires_prepared,  # Utilisation de la version préparée
+        'annonces_similaires': annonces_similaires_prepared,
         'notations': notations,
         'est_favori': est_favori,
         'peut_noter': peut_noter,
@@ -532,7 +555,7 @@ def livreur_detail(request, livreur_id):
         'contacts': contacts,
         'whatsapp_contact': contacts.filter(type_contact__nom='WhatsApp').first(),
         'user_connected': request.user.is_authenticated,
-        'is_entreprise': livreur.type_livreur.nom == 'Entreprise',
+        'is_entreprise': livreur.type_livreur.nom == 'Entreprise' if livreur.type_livreur else False,
         'peut_noter': peut_noter,
         'note_existante': note_existante,
     }
@@ -629,10 +652,10 @@ def produits_agricoles(request):
     sort_key = request.GET.get('tri', 'recent')
     order_field = ORDER_MAPPING.get(sort_key, '-annonce__date_annonce')
 
-    # Requête de base avec le tri
+    # Requête de base avec le tri : uniquement les annonces de vente de produits
     produits = AnnonceProduit.objects.filter(
         annonce__statut='active',
-        annonce__type_annonce=1
+        annonce__type_annonce__nom=TYPE_VENTE_PRODUITS
     ).select_related(
         'annonce__auteur',
         'annonce__zone',
@@ -698,7 +721,7 @@ def faq_view(request):
 def annonces_view(request):
     """Sous-fonction dédiée à la gestion des annonces"""
     # Récupération du type de vente produits à exclure
-    type_vente_produits = TypeAnnonce.objects.only('id').get(id=1)
+    type_vente_produits = get_type_vente_produits()
     
     # Récupération des annonces actives (sauf vente de produits)
     annonces_list = Annonce.objects.filter(
@@ -735,8 +758,8 @@ def annonces_view(request):
             min_price=Min('annonceproduit__prix_unitaire')
         ).order_by('-min_price')
 
-    # Types d'annonces pour le filtre
-    types_annonce = TypeAnnonce.objects.exclude(id=1).all()
+    # Types d'annonces pour le filtre (sans la vente de produits)
+    types_annonce = TypeAnnonce.objects.exclude(nom=TYPE_VENTE_PRODUITS)
     
     # Villes disponibles pour le filtre
     villes = Zone.objects.values_list('ville', flat=True).distinct()
@@ -896,8 +919,8 @@ def tableau_bord_producteur(request):
     if not hasattr(request.user, 'role') or request.user.role != 'producteur':
         return redirect('home')
 
-    # Récupérer le type de vente produits (id=1)
-    type_vente_produits = TypeAnnonce.objects.only('id').get(id=1)
+    # Récupérer le type de vente produits
+    type_vente_produits = get_type_vente_produits()
     
     # Récupérer les annonces (tout sauf type_vente_produits)
     mes_annonces = Annonce.objects.filter(auteur=request.user)\
@@ -923,7 +946,7 @@ def tableau_bord_producteur(request):
         'produits': mes_produits,  # Pour la section Mes produits
         'contacts': Contact.objects.filter(utilisateur=request.user).select_related('type_contact'),
         'mises_en_relation': MiseEnRelation.objects.filter(producteur=producteur)
-                            .select_related('client', 'annonce')
+                            .select_related('client')
                             .order_by('-date_contact')[:10],
         'stats': {
             'annonces_actives': Annonce.objects.filter(auteur=request.user, statut='active').count(),
@@ -987,7 +1010,7 @@ def creer_annonce(request):
     devises = Devise.objects.all()
     conditionnements = Conditionnement.objects.all()
     certifications = Certification.objects.all()
-    other_types = TypeAnnonce.objects.exclude(nom__icontains='produit')
+    other_types = TypeAnnonce.objects.exclude(nom=TYPE_VENTE_PRODUITS)
     
     if request.method == 'POST':
         form_type = request.POST.get('form_type')
@@ -1001,7 +1024,7 @@ def creer_annonce(request):
                 with transaction.atomic():
                     annonce = Annonce(
                         auteur=request.user,
-                        type_annonce=TypeAnnonce.objects.get(nom__icontains='produit'),
+                        type_annonce=get_type_vente_produits(),
                         titre=request.POST.get('titre'),
                         description=request.POST.get('description'),
                         zone=request.user.zone,
@@ -1205,7 +1228,7 @@ def creer_annonce_livreur(request):
         if form.is_valid():
             annonce = form.save(commit=False)
             annonce.auteur = request.user
-            annonce.type_annonce_id = 2
+            annonce.type_annonce = get_type_service()
             annonce.save()
             
             # Gestion des images
